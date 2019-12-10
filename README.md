@@ -1,2 +1,2 @@
 # Redox
-Core module for RedoxMod
+Core component for RedoxMod
