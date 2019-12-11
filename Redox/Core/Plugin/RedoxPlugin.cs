@@ -4,14 +4,13 @@ namespace Redox.Core.Plugin
     public abstract class RedoxPlugin : System.IDisposable
     {
 
-
-
-        public virtual string Title { get;  }
-        public virtual string Description { get;}
-        public virtual string Author { get;}
+        public virtual string Title { get { return "Unknown"; } }
+        public virtual string Description { get { return "Plugin"; } }
+        public virtual string Author { get { return "Unknown"; } }
+        public virtual string Version { get { return "1.0.0.0"; } }
         public virtual string Credits { get;}
         public virtual string ResourceID { get; }
-        public virtual string Version { get;}
+        
 
         public string Path { get; }
 

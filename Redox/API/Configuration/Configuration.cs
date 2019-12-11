@@ -9,10 +9,13 @@ using Redox.Core.Plugin;
 
 namespace Redox.API.Configuration
 {
+    /// <summary>
+    /// Represents a json configuration
+    /// </summary>
     public class Configuration
     {
         
-        public readonly RedoxPlugin plugin;
+        private readonly RedoxPlugin plugin;
         private Dictionary<string, object> Settings;
         private string name;
 
@@ -64,7 +67,10 @@ namespace Redox.API.Configuration
         }
         public void Save()
         {
-            //TODO: Save configuration file to plugin folder path
+            StreamWriter writer = new StreamWriter(Path.Combine(plugin.Path, name));
+            writer.Write(JsonConvert.SerializeObject(Settings, Formatting.Indented));
+            writer.Close();
+
         }
     }
 }

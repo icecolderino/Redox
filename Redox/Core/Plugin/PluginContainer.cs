@@ -49,7 +49,7 @@ namespace Redox.Core.Plugin
         public object Call(string name, object[] parameters)
         {
             if (Methods.ContainsKey(name))
-                return Methods[name].Invoke(name, parameters);
+                return Methods[name].Invoke(Plugin, parameters);
             return null;
         }
 

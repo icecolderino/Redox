@@ -23,6 +23,15 @@ namespace Redox.API.Libraries
             return collector;
         }
 
+
+        public void AddPlugin(PluginContainer container)
+        {
+            string name = container.Plugin.Title;
+
+            if(!Plugins.ContainsKey(name))
+                Plugins.Add(name, container);
+        }
+
         /// <summary>
         /// Returns the container associated with the plugin
         /// </summary>
@@ -34,7 +43,6 @@ namespace Redox.API.Libraries
                 return Plugins[name];
             return null;
         }
-
 
 
     }

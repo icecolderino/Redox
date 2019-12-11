@@ -1,0 +1,2 @@
+D:\VisualStudio projects\Michiel\Redox\Redox\Redox\obj\Debug\Redox.csprojAssemblyReference.cache
+D:\VisualStudio projects\Michiel\Redox\Redox\Redox\obj\Debug\Redox.csproj.CoreCompileInputs.cache

@@ -47,10 +47,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\Commands\CommandFlags.cs" />
+    <Compile Include="API\Commands\ICommand.cs" />
     <Compile Include="API\Configuration\Configuration.cs" />
+    <Compile Include="API\Player\IIventory.cs" />
+    <Compile Include="API\Player\IPlayer.cs" />
+    <Compile Include="API\Player\IInventoryItem.cs" />
     <Compile Include="Bootstrap.cs" />
     <Compile Include="API\Libraries\PluginCollector.cs" />
     <Compile Include="Core\Plugin\PluginContainer.cs" />
+    <Compile Include="Core\Plugin\PluginLoader.cs" />
     <Compile Include="Core\Plugin\RedoxPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Redox.cs" />
@@ -58,5 +64,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
