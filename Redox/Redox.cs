@@ -1,8 +1,12 @@
-﻿using System;
+﻿
+using System;
 using System.IO;
 using System.Reflection;
 
 using UnityEngine;
+
+using Redox.API.Libraries;
+using Redox.Core.Plugin;
 
 namespace Redox
 {
@@ -13,13 +17,22 @@ namespace Redox
 
         #region Paths
         public static readonly string DefaultPath = Directory.GetCurrentDirectory() + "\\Redox\\";
-        public static readonly string PluginPath = DefaultPath + "Plugins\\";
+        public static readonly string PluginPath = Path.Combine(DefaultPath, "Plugins");
+        public static readonly string AssemblePath = Path.GetDirectoryName(assembly.Location);
 
         #endregion Paths
 
         void Start()
         {
-            //TODO: Add all codes here that should be executed at Initialize
+
+
+            if (!Directory.Exists(DefaultPath)) Directory.CreateDirectory(DefaultPath);
+            if (!Directory.Exists(PluginPath)) Directory.CreateDirectory(PluginPath);
+
+            DataStore.GetInstance();
+            PluginCollector.GetCollector();
+
+
         }
 
 

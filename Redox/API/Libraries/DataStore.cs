@@ -141,6 +141,24 @@ namespace Redox.API.Libraries
             return new Dictionary<object, object>();
         }
 
+        public Dictionary<object, object> FilterType<T>(string tablename)
+        {
+            Hashtable hash = table[tablename] as Hashtable;
+            if (hash != null)
+            {
+                var dict = new Dictionary<object, object>();
+
+                foreach(KeyValuePair<object, object> pair in hash)
+                {
+                    if (pair.Value is T)
+                        dict.Add(pair.Key, pair.Value);
+
+                }
+                return dict;
+            }
+            return new Dictionary<object, object>();
+        }
+
         public void ClearTable(string tablename)
         {
             Hashtable hash = table[tablename] as Hashtable;
