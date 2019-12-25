@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Redox")]
 [assembly: AssemblyProduct("Redox")]
-[assembly: AssemblyCopyright("Copyright © Michiel Arkema & Daniel Markwat. 2019")]
+[assembly: AssemblyCopyright("Copyright © Michiel Arkema")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

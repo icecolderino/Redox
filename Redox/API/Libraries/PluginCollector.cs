@@ -18,6 +18,7 @@ namespace Redox.API.Libraries
         }
         public static PluginCollector GetCollector()
         {
+
             if(collector == null)
                 collector = new PluginCollector();
             return collector;
@@ -43,7 +44,7 @@ namespace Redox.API.Libraries
                 return Plugins[name];
             return null;
         }
-
+                                                    
 
     }
 }

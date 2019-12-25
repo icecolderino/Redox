@@ -1,27 +1,25 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Collections.Generic;
+using System.Runtime.Serialization.Formatters.Binary;
 
-
-using Newtonsoft.Json;
 using Redox.Core.Plugin;
 
 namespace Redox.API.Configuration
 {
     /// <summary>
-    /// Represents a json configuration
+    /// Represents a binaire datafile
     /// </summary>
-    public class Configuration
+    public class Datafile
     {
-        
+
         private readonly RedoxPlugin plugin;
         private Dictionary<string, object> Settings;
         private string name;
 
-        public Configuration(string name, RedoxPlugin plugin)
+        public Datafile(string name, RedoxPlugin plugin)
         {
-            this.name = name + ".json";
+            this.name = name + ".data";
             Settings = new Dictionary<string, object>();
             this.plugin = plugin;
         }
@@ -39,7 +37,7 @@ namespace Redox.API.Configuration
         }
         public bool TryGetSetting(string key, out object ob)
         {
-            if(Settings.ContainsKey(key))
+            if (Settings.ContainsKey(key))
             {
                 ob = Settings[key];
                 return true;
@@ -51,7 +49,7 @@ namespace Redox.API.Configuration
         public bool HasSetting(string key)
         {
             return Settings.ContainsKey(key);
-        }    
+        }
 
         public bool Exists()
         {
@@ -59,19 +57,31 @@ namespace Redox.API.Configuration
         }
         public void LoadConfig()
         {
-            if(Exists())
+            if (Exists())
             {
                 Settings.Clear();
-                Settings = JsonConvert.DeserializeObject(File.ReadAllText(Path.Combine(plugin.Path, name))) as Dictionary<string, object>;
+
+                string path = Path.Combine(plugin.Path, name);
+
+                using (FileStream fs = new FileStream(path, FileMode.Open))
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    Settings = formatter.Deserialize(fs) as Dictionary<string, object>;
+                    fs.Dispose();
+                }
+
             }
         }
         public void Save()
         {
-            StreamWriter writer = new StreamWriter(Path.Combine(plugin.Path, name));
-            writer.Write(JsonConvert.SerializeObject(Settings, Formatting.Indented));
-            writer.Close();
+            string path = Path.Combine(plugin.Path, name);
+            using (FileStream fs = new FileStream(path, FileMode.Create))
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(fs, Settings);
+                fs.Dispose();
+            }
 
         }
     }
 }
-  

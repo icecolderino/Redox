@@ -1,22 +1,18 @@
 ﻿using System;
 
+using Redox.Core.User;
 
 namespace Redox.API.Player
 {
     /// <summary>
     /// Base representation for Players
     /// </summary>
-    public interface IPlayer
+    public interface IPlayer : IUser
     {
         /// <summary>
-        /// The display name of the player
+        /// The display name of the Player
         /// </summary>
-        string Name { get; }
-
-        /// <summary>
-        /// The type name of the player, Example "Guard", "Monster"
-        /// </summary>
-        string TypeName { get; }
+        string displayName { get; }
 
         /// <summary>
         /// The SteamID of the player
@@ -41,7 +37,7 @@ namespace Redox.API.Player
         /// <summary>
         /// The date of the join session
         /// </summary>
-        DateTime JoinDate { get; }
+        DateTime? JoinDate { get; }
 
         /// <summary>
         /// The date of the leave session
@@ -53,7 +49,7 @@ namespace Redox.API.Player
         /// <summary>
         /// The original object of the player
         /// </summary>
-        object OriginalPlayer { get; }
+        object Object { get; }
 
         /// <summary>
         /// Sends a chat message to the user

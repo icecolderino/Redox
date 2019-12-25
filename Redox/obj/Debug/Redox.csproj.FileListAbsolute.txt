@@ -1,2 +1,10 @@
 D:\VisualStudio projects\Michiel\Redox\Redox\Redox\obj\Debug\Redox.csprojAssemblyReference.cache
 D:\VisualStudio projects\Michiel\Redox\Redox\Redox\obj\Debug\Redox.csproj.CoreCompileInputs.cache
+D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\Redox.dll
+D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\Redox.pdb
+D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\Newtonsoft.Json.dll
+D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\UnityEngine.dll
+D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\Newtonsoft.Json.xml
+D:\VisualStudio projects\Michiel\Redox\Redox\Redox\obj\Debug\Redox.csproj.CopyComplete
+D:\VisualStudio projects\Michiel\Redox\Redox\Redox\obj\Debug\Redox.dll
+D:\VisualStudio projects\Michiel\Redox\Redox\Redox\obj\Debug\Redox.pdb

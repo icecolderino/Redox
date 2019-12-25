@@ -1,8 +1,13 @@
 ﻿
+using Redox.API.Commands;
+
 namespace Redox.Core.Plugin
 {
     public abstract class RedoxPlugin : System.IDisposable
     {
+
+        protected CommandManager Commands { get; }
+       
 
         public virtual string Title { get { return "Unknown"; } }
         public virtual string Description { get { return "Plugin"; } }
@@ -18,7 +23,10 @@ namespace Redox.Core.Plugin
 
         public abstract void Disable();
 
-
+        public RedoxPlugin()
+        {
+            Commands = CommandManager.GetInstance(this);
+        }
 
         ~RedoxPlugin()
         {
@@ -35,3 +43,4 @@ namespace Redox.Core.Plugin
 
     }
 }
+            
