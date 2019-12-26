@@ -6,9 +6,10 @@ using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 
 using UnityEngine;
+
 namespace Redox.API.Libraries
 {
-    public class DataStore
+    public class DataStore 
     {
         private readonly Hashtable table = new Hashtable();
         private readonly string path = Path.Combine(Redox.DefaultPath, "Datastore.ds");
@@ -21,6 +22,21 @@ namespace Redox.API.Libraries
                 instance = new DataStore();
             return instance;
         }
+
+        public DataStore()
+        {
+            if(File.Exists(path))
+            {
+                using (FileStream fs = new FileStream(path, FileMode.Open))
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    table = formatter.Deserialize(fs) as Hashtable;
+                    fs.Dispose();
+                }
+            }
+        }
+
+
         public void Append(string tablename, object key, object value)
         {
             if(key != null)
@@ -176,6 +192,7 @@ namespace Redox.API.Libraries
             {
                 BinaryFormatter formatter = new BinaryFormatter();
                 formatter.Serialize(fs, table);
+                fs.Dispose();
             }
         }
 

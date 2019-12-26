@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-using Redox.Core.Plugin;
+using Redox.Core.Plugins;
 
 namespace Redox.API.Libraries
 {
@@ -29,8 +29,10 @@ namespace Redox.API.Libraries
         {
             string name = container.Plugin.Title;
 
-            if(!Plugins.ContainsKey(name))
+            if (!Plugins.ContainsKey(name))
                 Plugins.Add(name, container);
+
+            container.Start();
         }
 
         /// <summary>

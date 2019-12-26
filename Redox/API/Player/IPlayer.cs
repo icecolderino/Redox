@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Globalization;
 using Redox.Core.User;
 
 namespace Redox.API.Player
@@ -25,9 +25,14 @@ namespace Redox.API.Player
         ulong UID { get; }
 
         /// <summary>
+        /// The ipaddress of the player
+        /// </summary>
+        string IP { get; }
+
+        /// <summary>
         /// Health of the player
         /// </summary>
-        float Health { get; }
+        float Health { get; set; }
 
         /// <summary>
         /// Maximum health of the player
@@ -35,9 +40,24 @@ namespace Redox.API.Player
         float MaxHealth { get; }
 
         /// <summary>
+        /// Gets if the player is an admin on the server
+        /// </summary>
+        bool IsAdmin { get; set; }
+
+        /// <summary>
+        /// Gets the inventory of the player
+        /// </summary>
+        IPlayerInv Inventory { get; }
+
+        /// <summary>
         /// The date of the join session
         /// </summary>
         DateTime? JoinDate { get; }
+
+        /// <summary>
+        /// The language of the player
+        /// </summary>
+        CultureInfo Language { get; }
 
         /// <summary>
         /// The date of the leave session

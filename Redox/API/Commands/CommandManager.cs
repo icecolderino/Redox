@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 
-using Redox.Core.Plugin;
+using Redox.API.Plugins;
 
 namespace Redox.API.Commands
 {

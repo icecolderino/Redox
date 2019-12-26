@@ -8,6 +8,7 @@ using UnityEngine;
 using Redox.API.Libraries;
 using Redox.Core.Plugin;
 
+
 namespace Redox
 {
     public sealed class Redox  : MonoBehaviour
@@ -33,6 +34,7 @@ namespace Redox
             PluginCollector.GetCollector();
 
 
+            PluginLoader.LoadPlugins();
         }
 
 

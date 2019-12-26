@@ -3,14 +3,14 @@ using System.IO;
 using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 
-using Redox.Core.Plugin;
-
+using Redox.API.Plugins;
+using Redox.Core.Configuration;
 namespace Redox.API.Configuration
 {
     /// <summary>
     /// Represents a binaire datafile
     /// </summary>
-    public class Datafile
+    public class Datafile : IConfiguration
     {
 
         private readonly RedoxPlugin plugin;
@@ -28,7 +28,18 @@ namespace Redox.API.Configuration
         {
             if (!Settings.ContainsKey(key))
                 Settings.Add(key, value);
+            else
+                SetSetting(key, value);
         }
+
+        public void SetSetting(string key, object value)
+        {
+            if (Settings.ContainsKey(key))
+                Settings[key] = value;
+            else
+                AddSetting(key, value);
+        }
+
         public object GetSetting(string key)
         {
             if (Settings.ContainsKey(key))
@@ -83,5 +94,7 @@ namespace Redox.API.Configuration
             }
 
         }
+
+      
     }
 }
