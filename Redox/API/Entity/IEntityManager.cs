@@ -1,7 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
-
+using System.Threading.Tasks;
 using Redox.API.Player;
 
 
@@ -21,10 +21,11 @@ namespace Redox.API.Entity
 
         IEnumerable<IEntity> GetEntitiesOfPlayer(IPlayer player);
 
-        IEntity GetClosestEntity(Vector3 location);
+        IEntity GetClosestEntity(Vector3 location, float radius);
 
-        void DestroyAll();
+        Task DestroyAll();
 
     }
 
 }
+

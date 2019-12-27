@@ -45,27 +45,23 @@ namespace Redox.API.Player
         bool IsAdmin { get; set; }
 
         /// <summary>
-        /// Gets the inventory of the player
-        /// </summary>
-        IPlayerInv Inventory { get; }
-
-        /// <summary>
         /// The date of the join session
         /// </summary>
-        DateTime? JoinDate { get; }
-
-        /// <summary>
-        /// The language of the player
-        /// </summary>
-        CultureInfo Language { get; }
+        DateTime? JoinDate { get;  }
 
         /// <summary>
         /// The date of the leave session
         /// 
         /// <para> Returns null if the player never left</para>
         /// </summary>
-        DateTime? LeaveDate { get; }
+        DateTime? LeaveDate { set; get; }
 
+        /// <summary>
+        /// The language of the player
+        /// </summary>
+        CultureInfo Language { get; }
+
+   
         /// <summary>
         /// The original object of the player
         /// </summary>

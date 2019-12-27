@@ -18,22 +18,20 @@ namespace Redox
 
         #region Paths
         public static readonly string DefaultPath = Directory.GetCurrentDirectory() + "\\Redox\\";
-        public static readonly string PluginPath = Path.Combine(DefaultPath, "Plugins");
+        public static readonly string PluginPath = Path.Combine(DefaultPath, "Plugins\\");
         public static readonly string AssemblePath = Path.GetDirectoryName(assembly.Location);
 
         #endregion Paths
 
         void Start()
         {
-
-
             if (!Directory.Exists(DefaultPath)) Directory.CreateDirectory(DefaultPath);
-            if (!Directory.Exists(PluginPath)) Directory.CreateDirectory(PluginPath);
-
-            DataStore.GetInstance();
+            if (!Directory.Exists(PluginPath)) Directory.CreateDirectory(PluginPath);          
+           
+            DataStore.GetInstance().Save();
             PluginCollector.GetCollector();
 
-
+            Logger.LogInfo("Loading Plugins..");
             PluginLoader.LoadPlugins();
         }
 

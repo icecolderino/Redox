@@ -78,14 +78,13 @@
     <Compile Include="API\Events\PlayerBanEvent.cs" />
     <Compile Include="API\IServer.cs" />
     <Compile Include="API\Libraries\DataStore.cs" />
+    <Compile Include="API\Libraries\Logger.cs" />
     <Compile Include="API\Libraries\SQLiteConnector.cs" />
     <Compile Include="API\Libraries\Timer.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="API\Libraries\Web.cs" />
-    <Compile Include="API\Player\IPlayerInv.cs" />
     <Compile Include="API\Player\IPlayer.cs" />
-    <Compile Include="API\Player\IPlayerItem.cs" />
     <Compile Include="API\Player\IPlayerManager.cs" />
     <Compile Include="API\Plugins\RedoxPlugin.cs" />
     <Compile Include="Bootstrap.cs" />

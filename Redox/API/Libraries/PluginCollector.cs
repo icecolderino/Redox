@@ -47,6 +47,12 @@ namespace Redox.API.Libraries
             return null;
         }
                                                     
-
+        public void CallHook(string hookName, params object[] args)
+        {
+            foreach(var container in Plugins.Values)
+            {
+                container.Call(hookName, args);
+            }
+        }
     }
 }

@@ -51,21 +51,23 @@ namespace Redox.Core.Plugin
                             PluginContainer container = new PluginContainer(plugin);
                             PluginCollector.GetCollector().AddPlugin(container);
 
-                            container.Plugin.Path = Path.GetDirectoryName(info.FullName);
+                            container.Plugin.Path = Path.GetDirectoryName(info.Directory.FullName);
                             
-                            Debug.Log(string.Format("[Redox] Succesfully loaded plugin {0}, {1}, {2} ({3})", plugin.Title, plugin.Author, plugin.Version, plugin.Description));
+                            Logger.LogInfo(string.Format("[Redox] Succesfully loaded plugin {0}, {1}, {2} ({3})", plugin.Title, plugin.Author, plugin.Version, plugin.Description));
 
                         }
                     }
                 }
                 else
-                    Debug.LogWarning(string.Format("[Redox] Denied plugin {0} because of forbidden references", assembly.FullName));
+                    Logger.LogInfo(string.Format("[Redox] Denied plugin {0} because of forbidden references", assembly.FullName));
 
             }
         }
 
         private static bool ValidPlugin(Assembly assembly)
         {
+            return true;
+            /*
             foreach (var dir in Directory.GetDirectories(path))
             {
                 foreach (var file in Directory.GetFiles(dir, Expression))
@@ -75,6 +77,7 @@ namespace Redox.Core.Plugin
                 }
             }
             return false;
+            */
         }
     }
 }
