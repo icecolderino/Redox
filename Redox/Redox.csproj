@@ -73,12 +73,15 @@
     <Compile Include="API\Configuration\Config.cs" />
     <Compile Include="API\Configuration\Datafile.cs" />
     <Compile Include="API\Console\IConsole.cs" />
+    <Compile Include="API\DependencyInjection\DependencyContainer.cs" />
+    <Compile Include="API\DependencyInjection\ServiceLifetime.cs" />
+    <Compile Include="API\DependencyInjection\ServiceDescriptor.cs" />
     <Compile Include="API\Entity\IEntity.cs" />
     <Compile Include="API\Entity\IEntityManager.cs" />
     <Compile Include="API\Events\PlayerBanEvent.cs" />
     <Compile Include="API\IServer.cs" />
     <Compile Include="API\Libraries\DataStore.cs" />
-    <Compile Include="API\Libraries\Logger.cs" />
+    <Compile Include="API\ILogger.cs" />
     <Compile Include="API\Libraries\SQLiteConnector.cs" />
     <Compile Include="API\Libraries\Timer.cs">
       <SubType>Component</SubType>
@@ -90,6 +93,8 @@
     <Compile Include="Bootstrap.cs" />
     <Compile Include="API\Libraries\PluginCollector.cs" />
     <Compile Include="Core\Configuration\IConfiguration.cs" />
+    <Compile Include="Core\Extension\ExtensionLoader.cs" />
+    <Compile Include="Core\Extension\RedoxExtension.cs" />
     <Compile Include="Core\Plugins\PluginContainer.cs" />
     <Compile Include="Core\Plugins\PluginLoader.cs" />
     <Compile Include="Core\User\IUser.cs" />
@@ -100,9 +105,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Core\Extension\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

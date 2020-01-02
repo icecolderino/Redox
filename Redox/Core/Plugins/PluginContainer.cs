@@ -2,9 +2,11 @@
 using System.Reflection;
 using System.Collections.Generic;
 
+using Redox.API;
 using Redox.API.Plugins;
 using Redox.API.Commands;
 using Redox.API.Configuration;
+using Redox.API.DependencyInjection;
 
 namespace Redox.Core.Plugins
 {
@@ -17,7 +19,14 @@ namespace Redox.Core.Plugins
         {
             get;
             private set;
+        }    
+        
+        public object instance
+        {
+            get;
+            private set;
         }
+
 
 
         public RedoxPlugin Plugin
@@ -26,10 +35,11 @@ namespace Redox.Core.Plugins
             private set;
         }
         
-        public PluginContainer(RedoxPlugin plugin)
+        public PluginContainer(RedoxPlugin plugin, object instance)
         {
-            this.Running = false;
+            this.Running = true;
             this.Plugin = plugin;
+            this.instance = instance;
 
         }
         public void Start()
@@ -55,7 +65,7 @@ namespace Redox.Core.Plugins
         public object Call(string name, object[] parameters)
         {
             if (Methods.ContainsKey(name))
-                return Methods[name].Invoke(Plugin, parameters);
+                return Methods[name].Invoke(instance, parameters);
             return null;
         }
         public T Call<T>(string name, object[] parameters)
@@ -65,9 +75,11 @@ namespace Redox.Core.Plugins
 
         private void LoadMethods()
         {
+            var logger = DependencyContainer.Resolve<ILogger>();
             foreach (var method in Plugin.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
             {
                 Methods.Add(method.Name, method);
+                logger.Log("[CSharp]Loaded method: " + method.Name);
             }
         }
 

@@ -7,11 +7,6 @@ namespace Redox.API.Player
     public interface IPlayerManager 
     {
         /// <summary>
-        /// Returns all online players in the server
-        /// </summary>
-        IList<IPlayer> Players { get; }
-
-        /// <summary>
         /// Finds a player by name
         /// </summary>
         /// <param name="name"></param>
@@ -24,8 +19,6 @@ namespace Redox.API.Player
         /// <param name="ID"></param>
         /// <returns></returns>
         IPlayer FindPlayerByID(string ID);
-
-
 
     }
 }

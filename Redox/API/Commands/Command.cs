@@ -2,7 +2,7 @@
 
 namespace Redox.API.Commands
 {
-    internal sealed class Command
+    public sealed class Command
     {
         public string Name { get; }
 

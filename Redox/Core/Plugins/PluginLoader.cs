@@ -2,13 +2,16 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
-
+using Redox.API;
 using Redox.API.Libraries;
-using Redox.Core.Plugins;
 using Redox.API.Plugins;
-using UnityEngine;
+using Redox.API.DependencyInjection;
+using Redox.Core.Plugins;
+
 
 namespace Redox.Core.Plugin
 {
@@ -19,51 +22,68 @@ namespace Redox.Core.Plugin
 
         private const string Expression = "*.dll";
 
+        private static ILogger logger;
+
         public static void LoadPlugins()
         {
+            logger = DependencyContainer.Resolve<ILogger>();
+
+            logger.LogInfo("[Redox] Loading plugins..");
+
             foreach (var dir in Directory.GetDirectories(path))
-            {
                 LoadPlugin(dir);
-            }
+
+            logger.LogInfo($"[CSharp] Loaded {Plugins.Count} plugins.");
+          
         }
 
         public static void LoadPlugin(string dir)
         {
-            foreach (var file in Directory.GetFiles(dir, Expression))
+            FileInfo info = null;
+
+            try
             {
-                FileInfo info = new FileInfo(file);
-                string name = info.Name.Replace(".dll", string.Empty);
-                Assembly assembly;
-
-                if (!Plugins.TryGetValue(name, out assembly))
+                foreach (var file in Directory.GetFiles(dir, Expression))
                 {
-                    assembly = Assembly.Load(File.ReadAllBytes(file));
-                    Plugins.Add(name, assembly);
-                }
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+                    info = new FileInfo(file);
+                    string name = info.Name.Replace(".dll", string.Empty);
+                    Assembly assembly;
 
-                if (ValidPlugin(assembly))
-                {
+                    if (!Plugins.TryGetValue(name, out assembly))
+                    {
+                        assembly = Assembly.Load(File.ReadAllBytes(file));
+                        Plugins.Add(name, assembly);
+                    }
                     foreach (Type type in assembly.GetExportedTypes())
                     {
                         if (type.IsSubclassOf(typeof(RedoxPlugin)) && type.IsPublic && !type.IsAbstract)
                         {
-                            RedoxPlugin plugin = (RedoxPlugin)Activator.CreateInstance(type);
-                            PluginContainer container = new PluginContainer(plugin);
+                            object instance = Activator.CreateInstance(type);
+                            RedoxPlugin plugin = (RedoxPlugin)instance;
+                            PluginContainer container = new PluginContainer(plugin, instance);
                             PluginCollector.GetCollector().AddPlugin(container);
 
                             container.Plugin.Path = Path.GetDirectoryName(info.Directory.FullName);
-                            
-                            Logger.LogInfo(string.Format("[Redox] Succesfully loaded plugin {0}, {1}, {2} ({3})", plugin.Title, plugin.Author, plugin.Version, plugin.Description));
+
+                            logger.LogInfo(string.Format("[Redox] Succesfully loaded plugin {0}, {1}, Author {2} ({3}", plugin.Title, plugin.Version, plugin.Author, plugin.Description));
 
                         }
                     }
-                }
-                else
-                    Logger.LogInfo(string.Format("[Redox] Denied plugin {0} because of forbidden references", assembly.FullName));
+                    sw.Stop();
+                    int time = sw.Elapsed.Milliseconds;
 
+                    if (time > 500)
+                        logger.LogSpeed(string.Format("[Redox] Plugin {0} took {1} milliseconds to load", name, time));
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("An exception has thrown while trying to load plugin {0}, Error: {1}", info.FullName, ex));
             }
         }
-
+     
         private static bool ValidPlugin(Assembly assembly)
         {
             return true;

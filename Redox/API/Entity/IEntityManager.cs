@@ -11,9 +11,9 @@ namespace Redox.API.Entity
 {
     public interface IEntityManager
     {
-        IEnumerable<IEntity> Entities { get; }
+        IList<IEntity> Entities { get; }
 
-        IEnumerable<IEntity> GetEntitiesAt(Vector3 location);
+        IEntity GetEntityAt(Vector3 location);
 
         IEnumerable<IEntity> GetEntitiesOfType<T>(T obj);
 
@@ -23,7 +23,7 @@ namespace Redox.API.Entity
 
         IEntity GetClosestEntity(Vector3 location, float radius);
 
-        Task DestroyAll();
+        void DestroyAll();
 
     }
 

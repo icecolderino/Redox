@@ -2,6 +2,7 @@
 using Redox.API.Commands;
 using Redox.API.Configuration;
 using Redox.API.Libraries;
+using Redox.API.DependencyInjection;
 
 namespace Redox.API.Plugins
 {
@@ -9,9 +10,11 @@ namespace Redox.API.Plugins
     {
 
         protected PluginCollector Manager = PluginCollector.GetCollector();
+        protected IServer Server = DependencyContainer.Resolve<IServer>();
+        protected ILogger Logger = DependencyContainer.Resolve<ILogger>();
+
 
         public CommandManager Commands { get; internal set; }
-
         public Config DefaultConfig { get; internal set; }
 
         public virtual string Title { get { return "Unknown"; } }

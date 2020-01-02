@@ -56,12 +56,7 @@ namespace Redox.API.Player
         /// </summary>
         DateTime? LeaveDate { set; get; }
 
-        /// <summary>
-        /// The language of the player
-        /// </summary>
-        CultureInfo Language { get; }
-
-   
+ 
         /// <summary>
         /// The original object of the player
         /// </summary>

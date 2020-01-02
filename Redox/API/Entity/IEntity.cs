@@ -35,7 +35,9 @@ namespace Redox.API.Entity
 
         object Object { get; }
 
-        T GetObject<T>(T obj);
+        IEntity OriginalEntity { get; }
+
+        T GetObject<T>();
 
         Vector3 Location { get; }
 

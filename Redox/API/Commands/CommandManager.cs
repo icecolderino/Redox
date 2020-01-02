@@ -48,6 +48,19 @@ namespace Redox.API.Commands
                 var action = _commands.First(x => x.Name == command).Action;
                 action.DynamicInvoke(executor, args);
             }
+        }  
+        
+        public bool HasCommand(string cmd)
+        {
+            return _commands.Any(x => x.Name == cmd);
+        }
+        public Command GetCommand(string cmd)
+        {
+            if(HasCommand(cmd))
+            {
+                return _commands.First(x => x.Name == cmd);
+            }
+            return null;
         }
     }
 }

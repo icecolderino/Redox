@@ -46,7 +46,16 @@ namespace Redox.API.Libraries
                 return Plugins[name];
             return null;
         }
-                                                    
+                
+        public IReadOnlyCollection<PluginContainer> GetPlugins()
+        {
+            List<PluginContainer> list = new List<PluginContainer>();
+
+            foreach (var x in Plugins.Values)
+                list.Add(x);
+            return list.AsReadOnly();
+        }
+
         public void CallHook(string hookName, params object[] args)
         {
             foreach(var container in Plugins.Values)
