@@ -33,7 +33,8 @@ namespace Redox.Core.Plugin
             foreach (var dir in Directory.GetDirectories(path))
                 LoadPlugin(dir);
 
-            logger.LogInfo($"[CSharp] Loaded {Plugins.Count} plugins.");
+            PluginCollector.GetCollector().CallHook("OnPluginsLoaded");
+            logger.LogInfo($"[CSharp] Loaded {PluginCollector.GetCollector().GetPlugins().Count} plugins.");
           
         }
 
@@ -63,9 +64,8 @@ namespace Redox.Core.Plugin
                             object instance = Activator.CreateInstance(type);
                             RedoxPlugin plugin = (RedoxPlugin)instance;
                             PluginContainer container = new PluginContainer(plugin, instance);
+                            container.Plugin.Path = info.DirectoryName + "\\";
                             PluginCollector.GetCollector().AddPlugin(container);
-
-                            container.Plugin.Path = Path.GetDirectoryName(info.Directory.FullName);
 
                             logger.LogInfo(string.Format("[Redox] Succesfully loaded plugin {0}, {1}, Author {2} ({3}", plugin.Title, plugin.Version, plugin.Author, plugin.Description));
 

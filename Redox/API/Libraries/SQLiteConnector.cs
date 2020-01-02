@@ -9,7 +9,7 @@ namespace Redox.API.Libraries
         private static SQLiteConnector _instance;
         private readonly string _path = Path.Combine(Redox.DefaultPath, "RedoxSQL.sqlite");
         private  SQLiteConnection _connection;
-
+     
         public static SQLiteConnector GetInstance()
         {
             if (_instance == null)

@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-
-using Redox.API.Plugins;
+using Redox.Core.Plugins;
 
 namespace Redox.API.Commands
 {
     public class CommandManager
     {
         private static CommandManager instance;
-        private readonly RedoxPlugin plugin;
+        private readonly Plugin plugin;
 
         private readonly IList<Command> _commands = new List<Command>();
 
@@ -17,7 +16,7 @@ namespace Redox.API.Commands
         public static readonly IList<CommandManager> Commands = new List<CommandManager>();
       
 
-        public static CommandManager GetInstance(RedoxPlugin plugin)
+        public static CommandManager GetInstance(Plugin plugin)
         {
             if (instance == null)
                 instance = new CommandManager(plugin);
@@ -25,17 +24,17 @@ namespace Redox.API.Commands
             return instance;
         }
 
-        public CommandManager(RedoxPlugin plugin)
+        public CommandManager(Plugin plugin)
         {
             _commands = new List<Command>();
             this.plugin = plugin;          
         }
 
-        public void Register(string command, string description, CommandFlags commandFlags, Action<CommandExecutor, string[]> action)
+        public void Register(string command, string description, string[] permissions, CommandFlags commandFlags, Action<CommandExecutor, string[]> action)
         {
             if (_commands.Any(x => x.Name == command))
             {
-                _commands.Add(new Command(command, description, commandFlags, action));
+                _commands.Add(new Command(command, description, permissions, commandFlags, action));
             }
             else
                 UnityEngine.Debug.LogWarning(string.Format("[Redox] Plugin {0} tried to register command {1} but its already registered!", plugin.Title, command));

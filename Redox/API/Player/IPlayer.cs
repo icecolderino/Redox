@@ -29,6 +29,8 @@ namespace Redox.API.Player
         /// </summary>
         string IP { get; }
 
+        string Language { get; }
+
         /// <summary>
         /// Health of the player
         /// </summary>

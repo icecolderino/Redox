@@ -1,30 +1,30 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Collections.Generic;
-
+using System.Threading.Tasks;
 
 using Newtonsoft.Json;
 using Redox.Core.Configuration;
-using Redox.API.Plugins;
+using Redox.Core.Plugins;
 
 namespace Redox.API.Configuration
 {
     /// <summary>
-    /// Represents a json configuration
+    /// Represents a json & XML configuration
     /// </summary>
     public class Config : IConfiguration
     {
+       
         
-        private readonly RedoxPlugin plugin;
+        private readonly Plugin plugin;
         private Dictionary<string, object> Settings;
         private string name;
 
-        public Config(string name, RedoxPlugin plugin)
-        {
-            this.name = name + ".json";
+        public Config(string name, Plugin plugin)
+        {          
             Settings = new Dictionary<string, object>();
             this.plugin = plugin;
+            this.name = name + ".json";
         }
 
         public void AddSetting(string key, object value)
@@ -68,19 +68,32 @@ namespace Redox.API.Configuration
         {
             return File.Exists(Path.Combine(plugin.Path, name));
         }
-        public void LoadConfig()
+        public async Task LoadConfig()
         {
-            if(Exists())
+            await Task.Run(() =>
             {
-                Settings.Clear();
-                Settings = JsonConvert.DeserializeObject(File.ReadAllText(Path.Combine(plugin.Path, name))) as Dictionary<string, object>;
-            }
+                if (Exists())
+                {
+                    var text = File.ReadAllText(Path.Combine(plugin.Path, name));
+                    Settings = JsonConvert.DeserializeObject<Dictionary<string, object>>(text);
+                }
+            });                 
         }
-        public void Save()
+        public async Task Save()
         {
-            StreamWriter writer = new StreamWriter(Path.Combine(plugin.Path, name));
-            writer.Write(JsonConvert.SerializeObject(Settings, Formatting.Indented));
-            writer.Close();
+            await Task.Run(() =>
+            {
+                try
+                {
+                    StreamWriter writer = new StreamWriter(Path.Combine(plugin.Path, name));
+                    writer.Write(JsonConvert.SerializeObject(Settings, Newtonsoft.Json.Formatting.Indented));
+                    writer.Close();
+                }
+                catch (Exception ex)
+                {
+
+                }
+            });
 
         }
     }

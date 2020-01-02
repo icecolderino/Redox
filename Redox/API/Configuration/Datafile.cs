@@ -5,6 +5,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 using Redox.API.Plugins;
 using Redox.Core.Configuration;
+using System.Threading.Tasks;
+
 namespace Redox.API.Configuration
 {
     /// <summary>
@@ -66,35 +68,39 @@ namespace Redox.API.Configuration
         {
             return File.Exists(Path.Combine(plugin.Path, name));
         }
-        public void LoadConfig()
+        public async Task LoadConfig()
         {
-            if (Exists())
+            await Task.Run(() =>
             {
-                Settings.Clear();
+                if (Exists())
+                {
+                    Settings.Clear();
 
+                    string path = Path.Combine(plugin.Path, name);
+
+                    using (FileStream fs = new FileStream(path, FileMode.Open))
+                    {
+                        BinaryFormatter formatter = new BinaryFormatter();
+                        Settings = formatter.Deserialize(fs) as Dictionary<string, object>;
+                        fs.Dispose();
+                    }
+                }
+            });
+        }
+        public async Task Save()
+        {
+            await Task.Run(() =>
+            {
                 string path = Path.Combine(plugin.Path, name);
-
-                using (FileStream fs = new FileStream(path, FileMode.Open))
+                using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     BinaryFormatter formatter = new BinaryFormatter();
-                    Settings = formatter.Deserialize(fs) as Dictionary<string, object>;
+                    formatter.Serialize(fs, Settings);
                     fs.Dispose();
                 }
-
-            }
+            });
+           
         }
-        public void Save()
-        {
-            string path = Path.Combine(plugin.Path, name);
-            using (FileStream fs = new FileStream(path, FileMode.Create))
-            {
-                BinaryFormatter formatter = new BinaryFormatter();
-                formatter.Serialize(fs, Settings);
-                fs.Dispose();
-            }
-
-        }
-
-      
+           
     }
 }

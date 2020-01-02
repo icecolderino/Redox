@@ -34,6 +34,7 @@ namespace Redox
 
                 ExtensionLoader.Load();
 
+                SQLiteConnector.GetInstance();
                 DataStore.GetInstance().Save();
                 PluginCollector.GetCollector();
             }

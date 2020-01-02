@@ -1,52 +1,69 @@
-﻿
-using Redox.API.Commands;
-using Redox.API.Configuration;
+﻿using System;
+using System.Linq;
+using System.Reflection;
+using System.Collections.Generic;
+
+using Redox.API.Configuration.Translation;
 using Redox.API.Libraries;
 using Redox.API.DependencyInjection;
+using Redox.Core.Plugins;
+using Redox.API.Entity;
 
 namespace Redox.API.Plugins
 {
-    public abstract class RedoxPlugin : System.IDisposable
-    {
+    public abstract class RedoxPlugin : Plugin
+    {         
+        protected override PluginCollector Manager => PluginCollector.GetCollector();
+        protected override IServer Server => DependencyContainer.Resolve<IServer>();
+        protected override IEntityManager World => DependencyContainer.Resolve<IEntityManager>();
 
-        protected PluginCollector Manager = PluginCollector.GetCollector();
-        protected IServer Server = DependencyContainer.Resolve<IServer>();
-        protected ILogger Logger = DependencyContainer.Resolve<ILogger>();
-
-
-        public CommandManager Commands { get; internal set; }
-        public Config DefaultConfig { get; internal set; }
-
-        public virtual string Title { get { return "Unknown"; } }
-        public virtual string Description { get { return "Plugin"; } }
-        public virtual string Author { get { return "Unknown"; } }
-        public virtual string Version { get { return "1.0.0.0"; } }
-        public virtual string Credits { get;}
-        public virtual string ResourceID { get; }
-        
-
-        public string Path { get; internal set; }
-
-
+        private readonly IDictionary<string, MethodInfo> Methods = new Dictionary<string, MethodInfo>();
 
         public abstract void Load();
 
         public abstract void Unload();
 
 
-        ~RedoxPlugin()
+
+        public override void Initialize()
         {
-            this.Dispose(false);
+            this.Load();
         }
-        public void Dispose()
+        public override void Deinitialize()
         {
-            this.Dispose(true);
-            System.GC.SuppressFinalize(this);
-        }
-        protected virtual void Dispose(bool disposing)
-        {
+            this.Unload();
         }
 
+        /// <summary>
+        /// Invokes a method in the plugin
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public override object Call(string name, object[] parameters)
+        {
+            if (Methods.ContainsKey(name))
+                return Methods[name].Invoke(this, parameters);
+            return null;
+        }
+        public override T Call<T>(string name, object[] parameters)
+        {
+            return (T)Call(name, parameters);
+        }
+        public override void LoadMethods()
+        {
+            Logger = DependencyContainer.Resolve<ILogger>();
+            foreach (var method in this.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+            {
+                object[] attributes = method.GetCustomAttributes(typeof(NotCollectable), true);
+                if (attributes.Length == 0)
+                {
+                    Methods.Add(method.Name, method);
+                    Logger.Log("[CSharp]Loaded method: " + method.Name);
+                }
+            
+            }  
+        }
     }
 }
             

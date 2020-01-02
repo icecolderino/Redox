@@ -72,6 +72,8 @@
     <Compile Include="API\Commands\CommandManager.cs" />
     <Compile Include="API\Configuration\Config.cs" />
     <Compile Include="API\Configuration\Datafile.cs" />
+    <Compile Include="API\Configuration\Translation\Translation.cs" />
+    <Compile Include="API\Configuration\Translation\Translations.cs" />
     <Compile Include="API\Console\IConsole.cs" />
     <Compile Include="API\DependencyInjection\DependencyContainer.cs" />
     <Compile Include="API\DependencyInjection\ServiceLifetime.cs" />
@@ -89,12 +91,14 @@
     <Compile Include="API\Libraries\Web.cs" />
     <Compile Include="API\Player\IPlayer.cs" />
     <Compile Include="API\Player\IPlayerManager.cs" />
+    <Compile Include="API\Plugins\NotCollectable.cs" />
     <Compile Include="API\Plugins\RedoxPlugin.cs" />
     <Compile Include="Bootstrap.cs" />
     <Compile Include="API\Libraries\PluginCollector.cs" />
     <Compile Include="Core\Configuration\IConfiguration.cs" />
     <Compile Include="Core\Extension\ExtensionLoader.cs" />
     <Compile Include="Core\Extension\RedoxExtension.cs" />
+    <Compile Include="Core\Plugins\Plugin.cs" />
     <Compile Include="Core\Plugins\PluginContainer.cs" />
     <Compile Include="Core\Plugins\PluginLoader.cs" />
     <Compile Include="Core\User\IUser.cs" />

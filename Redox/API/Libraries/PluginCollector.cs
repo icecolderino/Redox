@@ -40,10 +40,10 @@ namespace Redox.API.Libraries
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public PluginContainer GetPlugin(string name)
+        public Plugin GetPlugin(string name)
         {
             if (Plugins.ContainsKey(name))
-                return Plugins[name];
+                return Plugins[name].Plugin;
             return null;
         }
                 
@@ -56,11 +56,16 @@ namespace Redox.API.Libraries
             return list.AsReadOnly();
         }
 
+        /// <summary>
+        /// Invokes a method in all plugins
+        /// </summary>
+        /// <param name="hookName"></param>
+        /// <param name="args"></param>
         public void CallHook(string hookName, params object[] args)
         {
             foreach(var container in Plugins.Values)
             {
-                container.Call(hookName, args);
+                container.Plugin.Call(hookName, args);
             }
         }
     }

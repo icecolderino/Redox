@@ -1,5 +1,7 @@
 ﻿
 
+using System.Threading.Tasks;
+
 namespace Redox.Core.Configuration
 {
     /// <summary>
@@ -52,12 +54,12 @@ namespace Redox.Core.Configuration
         /// <summary>
         /// Loads the existing configuration file
         /// </summary>
-        void LoadConfig();
+        Task LoadConfig();
 
         /// <summary>
         /// Saves the configuration file
         /// </summary>
-        void Save();
+        Task Save();
 
     }
 }

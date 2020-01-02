@@ -1,4 +1,3 @@
-D:\VisualStudio projects\Michiel\Redox\Redox\Redox\obj\Debug\Redox.csprojAssemblyReference.cache
 D:\VisualStudio projects\Michiel\Redox\Redox\Redox\obj\Debug\Redox.csproj.CoreCompileInputs.cache
 D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\Redox.dll
 D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\Redox.pdb
@@ -18,3 +17,4 @@ D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\EntityFramework.xml
 D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\EntityFramework.SqlServer.xml
 D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\System.Data.SQLite.xml
 D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\System.Data.SQLite.dll.config
+D:\VisualStudio projects\Michiel\Redox\Redox\Redox\obj\Debug\Redox.csprojAssemblyReference.cache
