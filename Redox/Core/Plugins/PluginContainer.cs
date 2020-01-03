@@ -26,10 +26,17 @@ namespace Redox.Core.Plugins
             private set;
         }
         
-        public PluginContainer(Plugin plugin, object instance)
+        public string Language
+        {
+            get;
+            private set;
+        }
+
+        public PluginContainer(Plugin plugin, object instance, string Language)
         {
             this.Running = true;
             this.Plugin = plugin;
+            this.Language = Language;
 
         }
         public void Start()

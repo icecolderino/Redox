@@ -35,6 +35,18 @@ namespace Redox.API.Libraries
             container.Start();
         }
 
+        public void RemovePlugin(PluginContainer container)
+        {
+            string name = container.Plugin.Title;
+
+            if(Plugins.ContainsKey(name))
+            {
+                Plugins.Remove(name);
+                container.Disable();
+
+            }
+        }
+
         /// <summary>
         /// Returns the container associated with the plugin
         /// </summary>
@@ -46,7 +58,13 @@ namespace Redox.API.Libraries
                 return Plugins[name].Plugin;
             return null;
         }
-                
+             
+        public PluginContainer GetContainer(string name)
+        {
+            if (Plugins.ContainsKey(name))
+                return Plugins[name];
+            return null;
+        }
         public IReadOnlyCollection<PluginContainer> GetPlugins()
         {
             List<PluginContainer> list = new List<PluginContainer>();

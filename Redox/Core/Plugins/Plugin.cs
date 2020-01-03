@@ -1,11 +1,11 @@
-﻿using Redox.API;
+﻿using System;
+using Redox.API;
 using Redox.API.Commands;
 using Redox.API.Configuration;
 using Redox.API.Configuration.Translation;
 using Redox.API.DependencyInjection;
 using Redox.API.Entity;
 using Redox.API.Libraries;
-using System;
 
 namespace Redox.Core.Plugins
 {
@@ -22,7 +22,7 @@ namespace Redox.Core.Plugins
         public virtual string Credits { get; }
         public virtual string ResourceID { get; }
 
-        public virtual string Path { get; internal set; }
+        public virtual string Path { get; set; }
 
         public virtual CommandManager Commands { get; internal set; }
         public virtual Config DefaultConfig { get; internal set; }

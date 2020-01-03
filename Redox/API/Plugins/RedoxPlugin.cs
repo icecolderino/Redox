@@ -57,10 +57,7 @@ namespace Redox.API.Plugins
             {
                 object[] attributes = method.GetCustomAttributes(typeof(NotCollectable), true);
                 if (attributes.Length == 0)
-                {
                     Methods.Add(method.Name, method);
-                    Logger.Log("[CSharp]Loaded method: " + method.Name);
-                }
             
             }  
         }

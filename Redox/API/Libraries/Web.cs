@@ -7,9 +7,9 @@ using System.Text;
 
 namespace Redox.API.Libraries
 {
-    public static class Web
+    public class Web
     {
-        public static void CreateAsync(string url, Action<int, string> callback, string method = "POST", string[] headers = null)
+        public  void CreateAsync(string url, Action<int, string> callback, string method = "POST", string[] headers = null)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = method;
@@ -36,7 +36,7 @@ namespace Redox.API.Libraries
             }
         }
 
-        public static string GET(string url)
+        public string GET(string url)
         {
             using (WebClient web = new WebClient())
             {
@@ -44,7 +44,7 @@ namespace Redox.API.Libraries
             }
         }
         
-        public static void POST(string url, string data)
+        public void POST(string url, string data)
         {
             using (WebClient web = new WebClient())
             {

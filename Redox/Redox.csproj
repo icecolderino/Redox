@@ -98,9 +98,11 @@
     <Compile Include="Core\Configuration\IConfiguration.cs" />
     <Compile Include="Core\Extension\ExtensionLoader.cs" />
     <Compile Include="Core\Extension\RedoxExtension.cs" />
+    <Compile Include="Core\PluginEngine\IPluginEngine.cs" />
+    <Compile Include="Core\PluginEngine\PluginEngines.cs" />
     <Compile Include="Core\Plugins\Plugin.cs" />
     <Compile Include="Core\Plugins\PluginContainer.cs" />
-    <Compile Include="Core\Plugins\PluginLoader.cs" />
+    <Compile Include="Core\Plugins\CSPluginEngine.cs" />
     <Compile Include="Core\User\IUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Redox.cs" />
