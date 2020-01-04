@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using Redox.Core.User;
 
@@ -80,12 +81,52 @@ namespace Redox.API.Player
         /// <summary>
         /// Disconnects the player from the server
         /// </summary>
-        void Disconnect();
+        void Kick();
 
         /// <summary>
         /// Disconnects the player from the server with a message
         /// </summary>
         /// <param name="reason"></param>
-        void Disconnect(string reason);
+        void Kick(string reason);
+
+
+        /// <summary>
+        /// Bans a player from the server
+        /// </summary>
+        /// <param name="duration"></param>
+        void Ban(TimeSpan duration = default(TimeSpan));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="reason"></param>
+        /// <param name="duration"></param>
+        void Ban(string reason, TimeSpan duration = default(TimeSpan));
+
+
+
+        #region Permissions
+
+        HashSet<string> Permissions { get; }
+
+        void RegisterPermission(string Permission);
+
+        void UnregisterPermission(string Permission);
+
+        bool HasPermission(string Permission);
+
+        #endregion
+
+        #region Groups
+
+
+        void SetGroup(string Name);
+
+        void RemoveGroup(string Name);
+
+        bool InGroup(string Name);
+
+        #endregion
     }
+
 }

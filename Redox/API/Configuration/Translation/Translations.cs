@@ -31,6 +31,12 @@ namespace Redox.API.Configuration.Translation
             }
 
         }
+
+        public string Translate(string Language, string Key)
+        {
+            return base[Language][Key] ?? string.Empty;
+        }
+
         public static Translations LoadTranslation (Plugin plugin)
         {
             string path = Path.Combine(plugin.Path, "Translation.json");

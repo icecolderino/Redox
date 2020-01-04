@@ -84,6 +84,8 @@
     <Compile Include="API\IServer.cs" />
     <Compile Include="API\Libraries\DataStore.cs" />
     <Compile Include="API\ILogger.cs" />
+    <Compile Include="API\Libraries\Groups.cs" />
+    <Compile Include="API\Libraries\Permissions.cs" />
     <Compile Include="API\Libraries\SQLiteConnector.cs" />
     <Compile Include="API\Libraries\Timer.cs">
       <SubType>Component</SubType>

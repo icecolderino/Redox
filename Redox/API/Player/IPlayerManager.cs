@@ -6,6 +6,12 @@ namespace Redox.API.Player
 {
     public interface IPlayerManager 
     {
+
+        /// <summary>
+        /// List of players
+        /// </summary>
+        IList<IPlayer> Players { get; }
+
         /// <summary>
         /// Finds a player by name
         /// </summary>

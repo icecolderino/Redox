@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Collections.Generic;
 
 using UnityEngine;
 
@@ -33,10 +34,11 @@ namespace Redox
                 if (!Directory.Exists(PluginPath)) Directory.CreateDirectory(PluginPath);
 
                 ExtensionLoader.Load();
-
                 SQLiteConnector.GetInstance();
-                DataStore.GetInstance().Save();
+                DataStore.GetInstance();               
                 PluginCollector.GetCollector();
+                Groups.Load();
+
             }
             catch(Exception ex)
             {

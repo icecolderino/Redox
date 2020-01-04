@@ -66,6 +66,17 @@ namespace Redox.Core.PluginEngines
                     
             }
         }
+        public static void UnloadAll()
+        {
+            var logger = DependencyContainer.Resolve<ILogger>();
+
+            foreach(var instance in _instances)
+            {
+                logger.LogColor(string.Format("[Redox] Unloading engine {0}", instance.Language), ConsoleColor.DarkBlue);
+                instance.UnloadPlugins();
+            }
+        }
+
         private static IPluginEngine GetEngineByName(string name)
         {
             return _instances.SingleOrDefault(x => x.GetType().Name == name);
