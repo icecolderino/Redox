@@ -71,7 +71,6 @@
     <Compile Include="API\Commands\CommandFlags.cs" />
     <Compile Include="API\Commands\CommandManager.cs" />
     <Compile Include="API\Configuration\Config.cs" />
-    <Compile Include="API\Configuration\Datafile.cs" />
     <Compile Include="API\Configuration\Translation\Translation.cs" />
     <Compile Include="API\Configuration\Translation\Translations.cs" />
     <Compile Include="API\Console\IConsole.cs" />
@@ -82,14 +81,14 @@
     <Compile Include="API\Entity\IEntityManager.cs" />
     <Compile Include="API\Events\PlayerBanEvent.cs" />
     <Compile Include="API\IServer.cs" />
+    <Compile Include="API\Libraries\Datafile.cs" />
     <Compile Include="API\Libraries\DataStore.cs" />
     <Compile Include="API\ILogger.cs" />
     <Compile Include="API\Libraries\Groups.cs" />
+    <Compile Include="API\Libraries\JSONHelper.cs" />
     <Compile Include="API\Libraries\Permissions.cs" />
     <Compile Include="API\Libraries\SQLiteConnector.cs" />
-    <Compile Include="API\Libraries\Timer.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="API\Libraries\Timer.cs" />
     <Compile Include="API\Libraries\Web.cs" />
     <Compile Include="API\Player\IPlayer.cs" />
     <Compile Include="API\Player\IPlayerManager.cs" />

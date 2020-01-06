@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using System.Linq;
 
 namespace Redox.Core.Extension
 {
@@ -11,7 +11,7 @@ namespace Redox.Core.Extension
     {
         private static readonly Dictionary<string, RedoxExtension> Extensions = new Dictionary<string, RedoxExtension>();
 
-        private static readonly string Pattern = "Redox.*.dll";
+        private static readonly string Pattern = "*.dll";
 
         private static readonly string path = Redox.AssemblePath;
 
@@ -19,7 +19,15 @@ namespace Redox.Core.Extension
         {
             Console.WriteLine("[Redox] Loading extension...");
 
+            List<string> files = new List<string>();
+
+
             foreach (var file in Directory.GetFiles(path, Pattern))
+                files.Add(file);
+            foreach (var file in Directory.GetFiles(Redox.ExtensionPath, Pattern))
+                files.Add(file);
+
+            foreach (var file in files)
             {
                 try
                 {

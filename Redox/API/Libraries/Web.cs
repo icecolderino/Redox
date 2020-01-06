@@ -2,14 +2,15 @@
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 
 
 
 namespace Redox.API.Libraries
 {
-    public class Web
+    public static class Web
     {
-        public  void CreateAsync(string url, Action<int, string> callback, string method = "POST", string[] headers = null)
+        public static void CreateAsync(string url, Action<int, string> callback, string method = "POST", string[] headers = null)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = method;
@@ -31,26 +32,33 @@ namespace Redox.API.Libraries
                     string data = reader.ReadToEnd();
                     callback.Invoke(code, data);
 
-                }
-
+                }      
             }
         }
-
-        public string GET(string url)
+        public static async Task<string> GET(string url)
         {
-            using (WebClient web = new WebClient())
+            await Task.Run(() =>
             {
-                return web.DownloadString(url);
-            }
+                using (WebClient web = new WebClient())
+                {
+                    return web.DownloadString(url);
+                }              
+            });
+            return string.Empty;
+           
         }
         
-        public void POST(string url, string data)
+        public static async Task POST(string url, object data, string application = "application/x-www-form-urlencoded")
         {
-            using (WebClient web = new WebClient())
+            await Task.Run(() =>
             {
-                web.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
-                web.UploadData(url, Encoding.ASCII.GetBytes(data));
-            }
+                using (WebClient web = new WebClient())
+                {
+                    web.Headers[HttpRequestHeader.ContentType] = application;
+                    web.UploadData(url, Encoding.ASCII.GetBytes(JSONHelper.ToJson(data)));
+                }
+            });
+         
         }
 
     }

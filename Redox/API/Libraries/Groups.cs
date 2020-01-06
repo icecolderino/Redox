@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Redox.API.Libraries
 {
@@ -10,13 +10,17 @@ namespace Redox.API.Libraries
     {
         private static HashSet<Group> _groups = new HashSet<Group>();
 
-        public static void Load()
+        public static async Task Load()
         {
-            if(DataStore.GetInstance().ContainsKey("Redox", "Groups"))
-            {
-                _groups = (HashSet<Group>)DataStore.GetInstance().GetValue("Redox", "Groups");
-            }
+            Redox.Logger.Log("[Redox] Loading groups..");
+            _groups = await JSONHelper.FromFileAsync<HashSet<Group>>(Path.Combine(Redox.DataPath, "groups.json"));
         }
+
+        public static async Task Save()
+        {
+            await JSONHelper.ToFileAsync(Path.Combine(Redox.DataPath, "groups.json"), _groups);
+        }
+
         public static Group CreateGroup(string Name)
         {
             if(!Exists(Name))
@@ -58,6 +62,11 @@ namespace Redox.API.Libraries
             }
         }
 
+        public static bool InGroup(string Group, string steamID)
+        {
+            return GetGroup(Group)?.Users.Contains(steamID) ?? false;
+        }
+
         public static void RemovePermission(string Group, string permission)
         {
             if (Exists(Group))
@@ -73,6 +82,12 @@ namespace Redox.API.Libraries
                 return GetGroup(Group).Permissions.Contains(permission);
             }
             return false;
+        }
+
+        public static IEnumerable<string> GetPlayerGroups(string steamID)
+        {
+            var groups = _groups.Where(x => x.Users.Contains(steamID)).Select(x => x.Name);
+            return groups;
         }
     }
 

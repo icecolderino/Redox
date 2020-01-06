@@ -107,7 +107,9 @@ namespace Redox.API.Player
 
         #region Permissions
 
-        HashSet<string> Permissions { get; }
+        HashSet<string> Perms { get; }
+
+        HashSet<string> groups { get; }
 
         void RegisterPermission(string Permission);
 

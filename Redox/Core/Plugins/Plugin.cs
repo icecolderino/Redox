@@ -27,10 +27,10 @@ namespace Redox.Core.Plugins
         public virtual CommandManager Commands { get; internal set; }
         public virtual Config DefaultConfig { get; internal set; }
 
-        protected virtual Translations DefaultTranslation { get; set; }
+        protected virtual Translations translation { get; set; }
         protected virtual PluginCollector Manager { get;  }
         protected virtual IServer Server { get;}
-        protected ILogger Logger = DependencyContainer.Resolve<ILogger>();
+        protected ILogger Logger = Redox.Logger;
         protected virtual IEntityManager World { get; }
 
         public virtual void Initialize() { }
@@ -41,9 +41,9 @@ namespace Redox.Core.Plugins
 
         public void CheckTranslation()
         {
-            DefaultTranslation = Translations.LoadTranslation(this);
+            translation= Translations.LoadTranslation(this);
 
-            if (DefaultTranslation == null)
+            if (translation == null)
                 LoadDefaultTranslations();
         }
 

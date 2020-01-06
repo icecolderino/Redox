@@ -3,6 +3,8 @@ using System.IO;
 using System.Collections.Generic;
 
 using Newtonsoft.Json;
+
+using Redox.API.Libraries;
 using Redox.Core.Plugins;
 
 namespace Redox.API.Configuration.Translation
@@ -16,25 +18,14 @@ namespace Redox.API.Configuration.Translation
         public void Save(Plugin plugin)
         {
             _plugin = plugin;
-
             string path = Path.Combine(plugin.Path, "Translation.json");
-
-            using (FileStream fs = new FileStream(path, FileMode.Create))
-            {
-                using (StreamWriter writer = new StreamWriter(fs))
-                {
-                    string json = JsonConvert.SerializeObject(this, Formatting.Indented);
-                    writer.Write(json);
-                    writer.Dispose();
-                    fs.Dispose();
-                }
-            }
-
+            JSONHelper.ToFile(path, this);
+            
         }
-
+        
         public string Translate(string Language, string Key)
-        {
-            return base[Language][Key] ?? string.Empty;
+        {           
+            return base[Language]?[Key] ?? string.Empty;
         }
 
         public static Translations LoadTranslation (Plugin plugin)

@@ -1,6 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
-
+using System.Threading.Tasks;
 
 namespace Redox.API.Libraries
 {
@@ -8,14 +9,59 @@ namespace Redox.API.Libraries
     {
         private static Dictionary<string, UserData> _users = new Dictionary<string, UserData>();
 
-        public static void Load()
+        public static async Task Load()
         {
-            if(DataStore.GetInstance().ContainsKey("Redox", "Permissions"))
+            Redox.Logger.Log("[Redox] Loading permissions..");
+            _users = await JSONHelper.FromFileAsync<Dictionary<string, UserData>>(Path.Combine(Redox.DataPath, "permissions.json"));
+        }
+
+        public static async Task Save()
+        {
+            await JSONHelper.ToFileAsync(Path.Combine(Redox.DataPath, "permissions.json"), _users);
+        }
+
+        /// <summary>
+        /// Checks if the user is in the list, otherwise it adds him
+        /// </summary>
+        /// <param name="steamID"></param>
+        public static void CheckUser(string steamID)
+        {
+            if (!_users.ContainsKey(steamID))
+                _users.Add(steamID, new UserData());
+        }
+
+        public static void RegisterPermission(string steamID, string permission)
+        {
+            UserData data;
+            if (_users.TryGetValue(steamID, out data))
             {
-                _users = (Dictionary<string, UserData>)DataStore.GetInstance().GetValue("Redox", "Permissions");
+                if (!data.Permissions.Contains(permission))
+                    data.Permissions.Add(permission);
+                _users[steamID] = data;
             }
 
+        }
 
+        public static bool HasPermission(string steamID, string permission)
+        {
+            return _users[steamID]?.Permissions.Contains(permission) ?? false;
+        }
+
+        public static void UnregisterPermission(string steamID, string permission)
+        {
+            UserData data;
+
+            if (_users.TryGetValue(steamID, out data))
+            {
+                if (data.Permissions.Contains(permission))
+                    data.Permissions.Remove(permission);
+                _users[steamID] = data;
+            }
+        }
+
+        public static HashSet<string> GetPermissions(string steamID)
+        {
+            return _users[steamID]?.Permissions ?? new HashSet<string>();
         }
     }
 
@@ -24,6 +70,5 @@ namespace Redox.API.Libraries
     {
         public HashSet<string> Permissions = new HashSet<string>();
 
-        public HashSet<string> Groups = new HashSet<string>();
     }
 }
