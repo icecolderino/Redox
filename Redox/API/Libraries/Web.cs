@@ -48,18 +48,22 @@ namespace Redox.API.Libraries
            
         }
         
-        public static async Task POST(string url, object data, string application = "application/x-www-form-urlencoded")
+        public static async Task POST(string url, string data, string application = "application/x-www-form-urlencoded")
         {
             await Task.Run(() =>
             {
                 using (WebClient web = new WebClient())
                 {
                     web.Headers[HttpRequestHeader.ContentType] = application;
-                    web.UploadData(url, Encoding.ASCII.GetBytes(JSONHelper.ToJson(data)));
+                    web.UploadData(url, Encoding.ASCII.GetBytes(data));
                 }
             });
          
         }
 
+        public static async Task POSTJSON(string url, object data)
+        {
+            await POST(url, JSONHelper.ToJson(data), "application/json");
+        }
     }
 }

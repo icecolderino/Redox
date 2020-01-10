@@ -88,7 +88,7 @@
     <Compile Include="API\Libraries\JSONHelper.cs" />
     <Compile Include="API\Libraries\Permissions.cs" />
     <Compile Include="API\Libraries\SQLiteConnector.cs" />
-    <Compile Include="API\Libraries\Timer.cs" />
+    <Compile Include="API\Libraries\Timers.cs" />
     <Compile Include="API\Libraries\Web.cs" />
     <Compile Include="API\Player\IPlayer.cs" />
     <Compile Include="API\Player\IPlayerManager.cs" />
