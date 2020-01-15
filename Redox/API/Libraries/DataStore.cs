@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 
 using UnityEngine;
+using System.Threading.Tasks;
 
 namespace Redox.API.Libraries
 {
@@ -25,6 +26,7 @@ namespace Redox.API.Libraries
 
         public DataStore()
         {
+            Redox.Logger.LogInfo("[DataStore] Loading data..");
             if(File.Exists(path))
             {
                 using (FileStream fs = new FileStream(path, FileMode.Open))
@@ -184,16 +186,20 @@ namespace Redox.API.Libraries
             }
         }
 
-        public void Save()
+        public async Task Save()
         {
-            File.Delete(path);
-
-            using (FileStream fs = new FileStream(path, FileMode.Create))
+            await Task.Run(() =>
             {
-                BinaryFormatter formatter = new BinaryFormatter();
-                formatter.Serialize(fs, table);
-                fs.Dispose();
-            }
+                File.Delete(path);
+
+                using (FileStream fs = new FileStream(path, FileMode.Create))
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    formatter.Serialize(fs, table);
+                    fs.Dispose();
+                }
+            });
+           
         }
 
         private void stringify(ref object value)

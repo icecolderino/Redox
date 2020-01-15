@@ -6,6 +6,9 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
+using System.Security;
+using System.Security.Permissions;
+
 using Redox.API;
 using Redox.API.Libraries;
 using Redox.API.Plugins;
@@ -16,6 +19,15 @@ namespace Redox.Core.Plugins
 {
     public sealed class CSPluginEngine : IPluginEngine
     {
+        public enum ViolationType : short
+        {   
+            None = 0x01,
+            Resources = 0x02,
+            ForbiddenTypes = 0x03,
+            UntrustedAssembly = 0x04
+
+        }
+
         private static readonly Dictionary<string, Assembly> Plugins = new Dictionary<string, Assembly>();
         private static string path = Redox.PluginPath;
 
@@ -28,10 +40,13 @@ namespace Redox.Core.Plugins
 
         private static ILogger logger;
 
-        public void LoadPlugins()
+        public CSPluginEngine()
         {
-            logger = DependencyContainer.Resolve<ILogger>();
+            logger = Redox.Logger;
+        }
 
+        public void LoadPlugins()
+        {          
             logger.LogInfo("[CSharp] Loading plugins..");
 
             foreach (var dir in Directory.GetDirectories(path))
@@ -46,9 +61,9 @@ namespace Redox.Core.Plugins
         {
             FileInfo info = null;
 
-            try
+            foreach (var file in Directory.GetFiles(dir, Pattern))
             {
-                foreach (var file in Directory.GetFiles(dir, Pattern))
+                try
                 {
                     Stopwatch sw = new Stopwatch();
                     sw.Start();
@@ -61,31 +76,62 @@ namespace Redox.Core.Plugins
                         assembly = Assembly.Load(File.ReadAllBytes(file));
                         Plugins.Add(name, assembly);
                     }
-                    foreach (Type type in assembly.GetExportedTypes())
+                    ViolationType violationType;
+                    if (this.IsSecure(assembly, out violationType))
                     {
-                        if (type.IsSubclassOf(typeof(RedoxPlugin)) && type.IsPublic && !type.IsAbstract)
-                        {
-                            object instance = Activator.CreateInstance(type);
-                            RedoxPlugin plugin = (RedoxPlugin)instance;
-                            PluginContainer container = new PluginContainer(plugin, instance, Language);
-                            container.Plugin.Path = info.DirectoryName + "\\";
-                            PluginCollector.GetCollector().AddPlugin(container);
+                        foreach (Type type in assembly.GetExportedTypes())
+                        {          
+                            if (type.IsSubclassOf(typeof(RedoxPlugin)) && type.IsPublic && !type.IsAbstract)
+                            {
+                                object instance = Activator.CreateInstance(type);
+                                RedoxPlugin plugin = (RedoxPlugin)instance;
+                                
+                                PluginContainer container = new PluginContainer(plugin, instance, Language);
+                                container.Plugin.Path = info.DirectoryName + "\\";
+                                PluginCollector.GetCollector().AddPlugin(container);
 
-                            logger.LogInfo(string.Format("[CSharp] Succesfully loaded plugin {0}, {1}, Author {2} ({3}", plugin.Title, plugin.Version, plugin.Author, plugin.Description));
-
+                                logger.LogInfo(string.Format("[CSharp] Succesfully loaded plugin {0}, {1}, Author {2} ({3}", plugin.Title, plugin.Version, plugin.Author, plugin.Description));
+                            }
                         }
-                    }
-                    sw.Stop();
-                    int time = sw.Elapsed.Milliseconds;
+                        sw.Stop();
+                        int time = sw.Elapsed.Milliseconds;
 
-                    if (time > 500)
-                        logger.LogSpeed(string.Format("[CSharp] Plugin {0} took {1} milliseconds to load", name, time));
+                        if (time > 500)
+                            logger.LogSpeed(string.Format("[CSharp] Plugin {0} took {1} milliseconds to load", name, time));
+                    }                
+                    else
+                        logger.LogWarning(string.Format("[CSharp] {0} has been blocked due security violation: {1}", assembly.GetName().Name, violationType));
+                  
                 }
-            }
-            catch (Exception ex)
+                catch (Exception ex)
+                {
+                    
+                    logger.LogError(string.Format("[CSharp] Failed to load {0}, Error: {1}", info.Name, ex));
+                }
+                
+            }         
+        }
+
+        private bool IsSecure(Assembly assembly, out ViolationType violationType)
+        {
+            if(Redox.config.PluginSecurity)
             {
-                logger.LogError(string.Format("[CSharp] An exception has thrown while trying to load plugin {0}, Error: {1}", info.FullName, ex));
+                if(assembly.IsFullyTrusted)
+                {
+                    bool flag = assembly.GetManifestResourceNames().Count() == 0;
+
+                    if (flag)
+                        violationType = ViolationType.None;
+                    else
+                        violationType = ViolationType.Resources;
+
+                    return flag;
+                }
+                violationType = ViolationType.UntrustedAssembly;
+                return false;
             }
+            violationType = ViolationType.None;
+            return true;
         }
 
         public void UnloadPlugins()

@@ -7,10 +7,10 @@ namespace Redox
     {
         private static GameObject _mod;
 
-        public static void Init()
+        public static void Init(string customPath)
         {
             _mod = new GameObject("Redox");
-            _mod.AddComponent<Redox>();
+            _mod.AddComponent<Redox>().Initialize(customPath);
             UnityEngine.Object.DontDestroyOnLoad(_mod);
          
         }

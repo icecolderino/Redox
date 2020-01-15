@@ -49,7 +49,7 @@ namespace Redox.Core.PluginEngines
 
         public static void StartAll()
         {
-            var logger = DependencyContainer.Resolve<ILogger>();
+            var logger = Redox.Logger;
             foreach (var engine in _engines)
             {
                 var instance = (IPluginEngine)Activator.CreateInstance(engine);
@@ -61,10 +61,9 @@ namespace Redox.Core.PluginEngines
                     
                 }
                 else
-                   logger.LogWarning(string.Format("[Redox] Skipping engine {0} because its already loaded!", engine.Name));
-
-                    
+                   logger.LogWarning(string.Format("[Redox] Skipping engine {0} because its already loaded!", engine.Name));                   
             }
+          //  API.Libraries.PluginCollector.GetCollector().CallHook("OnPluginsLoaded");
         }
         public static void UnloadAll()
         {

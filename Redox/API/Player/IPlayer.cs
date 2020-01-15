@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Redox.API.Permissions;
 using Redox.Core.User;
 
 namespace Redox.API.Player
@@ -107,20 +108,13 @@ namespace Redox.API.Player
 
         #region Permissions
 
-        HashSet<string> Perms { get; }
-
-        HashSet<string> groups { get; }
-
-        void RegisterPermission(string Permission);
-
-        void UnregisterPermission(string Permission);
-
-        bool HasPermission(string Permission);
+        Permission Permission { get; }
 
         #endregion
 
         #region Groups
 
+        IEnumerable<Group> Groups { get; }
 
         void SetGroup(string Name);
 

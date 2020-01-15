@@ -66,6 +66,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AmazingPlugin.cs" />
     <Compile Include="API\Commands\Command.cs" />
     <Compile Include="API\Commands\CommandExecutor.cs" />
     <Compile Include="API\Commands\CommandFlags.cs" />
@@ -84,12 +85,13 @@
     <Compile Include="API\Libraries\Datafile.cs" />
     <Compile Include="API\Libraries\DataStore.cs" />
     <Compile Include="API\ILogger.cs" />
-    <Compile Include="API\Libraries\Groups.cs" />
     <Compile Include="API\Libraries\JSONHelper.cs" />
-    <Compile Include="API\Libraries\Permissions.cs" />
     <Compile Include="API\Libraries\SQLiteConnector.cs" />
     <Compile Include="API\Libraries\Timers.cs" />
     <Compile Include="API\Libraries\Web.cs" />
+    <Compile Include="API\Permissions\Group.cs" />
+    <Compile Include="API\Permissions\Permission.cs" />
+    <Compile Include="API\Permissions\PermissionManager.cs" />
     <Compile Include="API\Player\IPlayer.cs" />
     <Compile Include="API\Player\IPlayerManager.cs" />
     <Compile Include="API\Plugins\NotCollectable.cs" />
