@@ -40,6 +40,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="MySql.Data">
+      <HintPath>D:\Unturned Server\server\Modules\Redox.Unturned\MySql.Data.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -86,6 +89,7 @@
     <Compile Include="API\Libraries\DataStore.cs" />
     <Compile Include="API\ILogger.cs" />
     <Compile Include="API\Libraries\JSONHelper.cs" />
+    <Compile Include="API\Libraries\MySQL.cs" />
     <Compile Include="API\Libraries\SQLiteConnector.cs" />
     <Compile Include="API\Libraries\Timers.cs" />
     <Compile Include="API\Libraries\Web.cs" />

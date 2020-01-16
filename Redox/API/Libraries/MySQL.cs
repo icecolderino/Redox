@@ -14,19 +14,25 @@ namespace Redox.API.Libraries
         private string database;
         private string uid;
         private string password;
+        private static MySQL _instance;
 
-        //Initialize values
-        private void StartInitialize()
+        public static MySQL GetInstance()
         {
-            server = "localhost";
-            database = "mysql";
-            uid = "username";
-            password = "password";
-            string connectionString;
-            connectionString = "SERVER=" + server + ";" + "DATABASE=" +
-            database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
+            if (_instance == null)
+                _instance = new MySQL();
+            return _instance;
+        }
 
-            connection = new MySqlConnection(connectionString);
+        public void SetupNewConnection()
+        {
+            connection = new MySqlConnection("SERVER=" + server + ";" + "DATABASE=" +
+            database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";");
+        }
+
+        public void SetupNewConnection(string server, string database, string uid, string password)
+        {
+            connection = new MySqlConnection("SERVER=" + server + ";" + "DATABASE=" +
+            database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";");
         }
 
         //open connection to database
