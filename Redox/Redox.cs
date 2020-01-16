@@ -83,13 +83,14 @@ namespace Redox
                 SQLiteConnector.GetInstance();
                 DataStore.GetInstance();               
                 PluginCollector.GetCollector();
-
-                //if MySQL enabled in settings, load user/pass etc then start MySQL
-                Logger.LogInfo("[Redox] Starting MySQL...");
-                MySQL.GetInstance().SetupNewConnection();
-                if (MySQL.GetInstance().OpenConnection())//Test connection to MySQL
-                    MySQL.GetInstance().CloseConnection();//Does it close?
-
+                
+                if ((bool)config.Mysql["Enabled"])
+                {
+                    Logger.LogInfo("[Redox] Starting MySQL...");
+                    MySQL.GetInstance().SetupNewConnection();
+                    if (MySQL.GetInstance().OpenConnection())//Test connection to MySQL
+                        MySQL.GetInstance().CloseConnection();//Does it close?
+                }
             }
             catch(Exception ex)
             {
@@ -125,7 +126,7 @@ namespace Redox
 
         }
 
-        public struct RedoxConfig
+        public class RedoxConfig
         {
             public string UnknownCommand;
 
@@ -133,11 +134,18 @@ namespace Redox
 
             public string[] WhitelistedAssemblyNames;
 
+            public Dictionary<string, object> Mysql = new Dictionary<string, object>() { };
+
             public RedoxConfig Init()
             {
                 UnknownCommand = "Unknown Command!";
                 PluginSecurity = true;
                 WhitelistedAssemblyNames = new string[] { };
+                Mysql["Enabled"] = true;
+                Mysql["ServerIP"] = "localhost";
+                Mysql["Database"] = "database";
+                Mysql["Username"] = "username";
+                Mysql["Password"] = "password";
                 return this;
             }
         }
