@@ -79,13 +79,13 @@ namespace Redox.API.Libraries
         /// </summary>
         /// <param name="hookName"></param>
         /// <param name="args"></param>
-        public object CallHook(string hookName, params object[] args)
+        public void CallHook(string hookName, params object[] args)
         {
             foreach(var container in Plugins.Values)
             {
-                return container.Plugin.Call(hookName, args);
+                container.Plugin.Call(hookName, args);
             }
-            return null;
+
         }
     }
 }

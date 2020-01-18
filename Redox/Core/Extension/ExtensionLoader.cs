@@ -9,9 +9,9 @@ namespace Redox.Core.Extension
 {
     public sealed class ExtensionLoader
     {
-        private static readonly Dictionary<string, RedoxExtension> Extensions = new Dictionary<string, RedoxExtension>();
+        public static readonly Dictionary<string, RedoxExtension> Extensions = new Dictionary<string, RedoxExtension>();
 
-        private static readonly string Pattern = "*.dll";
+        private static readonly string Pattern = "Redox.*.dll";
 
         private static readonly string path = Redox.AssemblePath;
 

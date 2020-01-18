@@ -16,6 +16,7 @@ using Redox.Core.PluginEngines;
 using System.Threading.Tasks;
 using Redox.API.Permissions;
 
+using Redox.API.Collections;
 namespace Redox
 {
     public sealed class Redox  : MonoBehaviour
@@ -65,11 +66,11 @@ namespace Redox
 
                 await this.LoadDependencies();
 
-                string path = Path.Combine(DefaultPath, "Redox.json");
+                string path = Path.Combine(DefaultPath, "Redox.yaml");
                 if (File.Exists(path))
-                    config = JSONHelper.FromFile<RedoxConfig>(path);
+                    config = YAMLHelper.FromFile<RedoxConfig>(path);
                 else
-                    JSONHelper.ToFile<RedoxConfig>(path, config.Init());
+                    YAMLHelper.ToFile(path, config.Init());
 
                 ExtensionLoader.Load();
 
@@ -78,19 +79,13 @@ namespace Redox
 
                 await PermissionManager.Initialize();
                 PermissionManager.CreateGroup("default");
+                PermissionManager.CreateGroup("admin");
 
-                Logger.LogInfo("[Redox] Loading standard library...");
+                Logger.LogInfo("[Redox] Loading standard library..");
                 SQLiteConnector.GetInstance();
                 DataStore.GetInstance();               
                 PluginCollector.GetCollector();
-                
-                if ((bool)config.Mysql["Enabled"])
-                {
-                    Logger.LogInfo("[Redox] Starting MySQL...");
-                    MySQL.GetInstance().SetupNewConnection();
-                    if (MySQL.GetInstance().OpenConnection())//Test connection to MySQL
-                        MySQL.GetInstance().CloseConnection();//Does it close?
-                }
+
             }
             catch(Exception ex)
             {
@@ -121,12 +116,13 @@ namespace Redox
 
             Logger.Log("[Redox] Preparing to shutdown..");
 
-            PluginEngines.UnloadAll();
             await DataStore.GetInstance().Save();
+            PluginEngines.UnloadAll();
+           
 
         }
 
-        public class RedoxConfig
+        public struct RedoxConfig
         {
             public string UnknownCommand;
 
@@ -134,18 +130,21 @@ namespace Redox
 
             public string[] WhitelistedAssemblyNames;
 
-            public Dictionary<string, object> Mysql = new Dictionary<string, object>() { };
+            public Dictionary<string, object> Rest;
 
             public RedoxConfig Init()
             {
                 UnknownCommand = "Unknown Command!";
                 PluginSecurity = true;
                 WhitelistedAssemblyNames = new string[] { };
-                Mysql["Enabled"] = true;
-                Mysql["ServerIP"] = "localhost";
-                Mysql["Database"] = "database";
-                Mysql["Username"] = "username";
-                Mysql["Password"] = "password";
+
+                Rest = new Dictionary<string, object>
+                {
+                    {"URL", "https://exampledomain.com"  },
+                    {"Username", "username" },
+                    {"password", "password" }
+                };
+                    
                 return this;
             }
         }

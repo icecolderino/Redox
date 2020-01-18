@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Redox.API.Libraries
 {
-    public class Datafile : IEnumerable<KeyValuePair<string, object>>, IEnumerable
+    public sealed class Datafile
     {
 
         private Dictionary<string, object> _settings;
@@ -14,7 +14,7 @@ namespace Redox.API.Libraries
         private readonly string path;
 
 
-        public Datafile(string Name) : base()
+        public Datafile(string Name)
         {
             _settings = new Dictionary<string, object>();
             path = Path.Combine(Redox.DataPath, Name + ".json");              
@@ -57,16 +57,14 @@ namespace Redox.API.Libraries
         }
 
    
-        public void WriteObject<T>(T obj)
+        public static void WriteObject<T>(string filename, T obj)
         {
-            JSONHelper.ToFile(path, obj);
+            JSONHelper.ToFile(Path.Combine(Redox.DataPath, filename), obj);
         }
-        public T ReadObject<T>()
+        public static T ReadObject<T>(string filename)
         {
-            return JSONHelper.FromFile<T>(path);
+            return JSONHelper.FromFile<T>(Path.Combine(Redox.DataPath, filename));
         }
-
-
         public void Remove(string key)
         {
             _settings.Remove(key);
@@ -75,16 +73,7 @@ namespace Redox.API.Libraries
         {
             _settings.Clear();
         }
-        public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
-        {
-            return _settings.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _settings.GetEnumerator();
-        }
-
+     
         public override string ToString()
         {
             return JSONHelper.ToJson(_settings);

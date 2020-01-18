@@ -1,30 +1,39 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
-using Newtonsoft.Json;
-using Redox.Core.Configuration;
 using Redox.Core.Plugins;
+using Redox.Core.Configuration;
+
+using Redox.API.Libraries;
+using Redox.API.Collections;
 
 namespace Redox.API.Configuration
 {
+
+    public enum ConfigType : ushort
+    {
+        JSON = 0,
+        YAML = 1
+    }
     /// <summary>
-    /// Represents a json & XML configuration
+    /// Represents a json & YAML configuration
     /// </summary>
     public class Config : IConfiguration
     {
-       
-        
+             
         private readonly Plugin plugin;
-        private Dictionary<string, object> Settings;
+        private HashMap<string, object> Settings;
         private string name;
+        private ConfigType configType;
 
-        public Config(string name, Plugin plugin)
-        {          
-            Settings = new Dictionary<string, object>();
+        public Config(string name, Plugin plugin, ConfigType configType = ConfigType.JSON)
+        {
+            Settings = new HashMap<string, object>();
             this.plugin = plugin;
-            this.name = name + ".json";
+            this.configType = configType;
+            this.name = configType == ConfigType.JSON ? name + ".json" : name + ".yaml";
         }
 
         public void AddSetting(string key, object value)
@@ -66,7 +75,7 @@ namespace Redox.API.Configuration
 
         public bool Exists()
         {
-            return File.Exists(Path.Combine(plugin.Path, name));
+            return File.Exists(Path.Combine(plugin.PluginPath, name));
         }
         public async Task LoadConfig()
         {
@@ -74,8 +83,11 @@ namespace Redox.API.Configuration
             {
                 if (Exists())
                 {
-                    var text = File.ReadAllText(Path.Combine(plugin.Path, name));
-                    Settings = JsonConvert.DeserializeObject<Dictionary<string, object>>(text);
+                    string path = Path.Combine(plugin.PluginPath, name);
+                    if (configType == ConfigType.JSON)
+                        JSONHelper.FromFile<Dictionary<string, object>>(path);
+                    else
+                        YAMLHelper.FromFile<Dictionary<string, object>>(path);
                 }
             });                 
         }
@@ -85,13 +97,16 @@ namespace Redox.API.Configuration
             {
                 try
                 {
-                    StreamWriter writer = new StreamWriter(Path.Combine(plugin.Path, name));
-                    writer.Write(JsonConvert.SerializeObject(Settings, Newtonsoft.Json.Formatting.Indented));
-                    writer.Close();
+                    string path = Path.Combine(plugin.PluginPath, name);
+
+                    if (configType == ConfigType.JSON)
+                        JSONHelper.ToFile(path, Settings);
+                    else
+                        YAMLHelper.ToFile(path, Settings);
                 }
                 catch (Exception ex)
                 {
-
+                    Redox.Logger.LogError(string.Format("[{0}] Failed to save config, Error: {1}", plugin.Title, ex.Message));
                 }
             });
 

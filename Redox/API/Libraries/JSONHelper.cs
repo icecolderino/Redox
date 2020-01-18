@@ -9,7 +9,7 @@ namespace Redox.API.Libraries
     public static class JSONHelper
     {
      
-        public static string ToJson<T>(T obj)
+        public static string ToJson(object obj)
         {
             return SerializeObject(obj, Newtonsoft.Json.Formatting.Indented);
         }
@@ -28,7 +28,7 @@ namespace Redox.API.Libraries
             
         }
 
-        public static void ToFile<T>(string path, T obj)
+        public static void ToFile(string path, object obj)
         {
             try
             {
@@ -48,7 +48,7 @@ namespace Redox.API.Libraries
          
         }
 
-        public static async Task ToFileAsync<T>(string path, T obj)
+        public static async Task ToFileAsync(string path, object obj)
         {
             await Task.Run(() =>
             {

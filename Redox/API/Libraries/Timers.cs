@@ -44,8 +44,7 @@ namespace Redox.API.Libraries
 
             private int _repeatRate;
 
-            private int _repeated = 0;
-
+            private int _repeated = 0;        
             private readonly Action _callBack;
 
             private readonly double _interval;
@@ -53,6 +52,8 @@ namespace Redox.API.Libraries
             private readonly TimerType _timerType;
 
             private System.Timers.Timer _timer;
+
+            public bool IsDestroyed = false;
 
 
             public double TimeLeft
@@ -98,6 +99,7 @@ namespace Redox.API.Libraries
             }
             public void Stop()
             {
+                IsDestroyed = true;
                 _timer.Stop();
                 _timer.Dispose();
                 _timers.Remove(this);

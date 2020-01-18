@@ -17,3 +17,8 @@ D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\EntityFramework.xml
 D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\EntityFramework.SqlServer.xml
 D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\System.Data.SQLite.xml
 D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\System.Data.SQLite.dll.config
+D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\YamlDotNet.dll
+D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\YamlDotNet.xml
+D:\VisualStudio projects\Michiel\Redox\Redox\Redox\obj\Debug\Redox.csprojAssemblyReference.cache
+D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\RestSharp.dll
+D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\RestSharp.xml

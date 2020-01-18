@@ -22,7 +22,7 @@ namespace Redox.Core.Plugins
         public virtual string Credits { get; }
         public virtual string ResourceID { get; }
 
-        public virtual string Path { get; set; }
+        public virtual string PluginPath { get; set; }
 
         public virtual CommandManager Commands { get; internal set; }
         public virtual Config DefaultConfig { get; internal set; }

@@ -87,10 +87,10 @@ namespace Redox.Core.Plugins
                                 RedoxPlugin plugin = (RedoxPlugin)instance;
                                 
                                 PluginContainer container = new PluginContainer(plugin, instance, Language);
-                                container.Plugin.Path = info.DirectoryName + "\\";
+                                container.Plugin.PluginPath = info.DirectoryName + "\\";
                                 PluginCollector.GetCollector().AddPlugin(container);
 
-                                logger.LogInfo(string.Format("[CSharp] Succesfully loaded plugin {0}, {1}, Author {2} ({3})", plugin.Title, plugin.Version, plugin.Author, plugin.Description));
+                                logger.LogInfo(string.Format("[CSharp] Succesfully loaded plugin {0}, {1}, Author {2} ({3}", plugin.Title, plugin.Version, plugin.Author, plugin.Description));
                             }
                         }
                         sw.Stop();

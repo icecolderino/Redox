@@ -35,16 +35,16 @@ namespace Redox.API.Libraries
                 }      
             }
         }
-        public static async Task<string> GET(string url)
+        public static async Task GET(string url, Action<string> callBack)
         {
             await Task.Run(() =>
             {
                 using (WebClient web = new WebClient())
                 {
-                    return web.DownloadString(url);
+                    string json = web.DownloadString(url);
+                    callBack.Invoke(json);
                 }              
             });
-            return string.Empty;
            
         }
         

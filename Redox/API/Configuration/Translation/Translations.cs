@@ -18,7 +18,7 @@ namespace Redox.API.Configuration.Translation
         public void Save(Plugin plugin)
         {
             _plugin = plugin;
-            string path = Path.Combine(plugin.Path, "Translation.json");
+            string path = Path.Combine(plugin.PluginPath, "Translation.json");
             JSONHelper.ToFile(path, this);
             
         }
@@ -30,7 +30,7 @@ namespace Redox.API.Configuration.Translation
 
         public static Translations LoadTranslation (Plugin plugin)
         {
-            string path = Path.Combine(plugin.Path, "Translation.json");
+            string path = Path.Combine(plugin.PluginPath, "Translation.json");
 
             if(File.Exists(path))
             {
