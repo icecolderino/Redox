@@ -3,11 +3,11 @@ using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
 
-using Redox.API.Configuration.Translation;
+using Redox.API;
 using Redox.API.Libraries;
 using Redox.API.DependencyInjection;
-using Redox.Core.Plugins;
 using Redox.API.Entity;
+using Redox.Core.Plugins;
 
 namespace Redox.API.Plugins
 {
@@ -22,7 +22,6 @@ namespace Redox.API.Plugins
         public abstract void Load();
 
         public abstract void Unload();
-
 
 
         public override void Initialize()

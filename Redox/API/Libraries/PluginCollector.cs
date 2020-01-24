@@ -33,6 +33,7 @@ namespace Redox.API.Libraries
                 Plugins.Add(name, container);
 
             container.Start();
+            CallHook("OnPluginLoaded", name);
         }
 
         public void RemovePlugin(PluginContainer container)
@@ -48,7 +49,7 @@ namespace Redox.API.Libraries
         }
 
         /// <summary>
-        /// Returns the container associated with the plugin
+        /// Returns the plugin associated with the name
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>

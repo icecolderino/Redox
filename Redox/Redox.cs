@@ -1,22 +1,25 @@
 ﻿
 using System;
 using System.IO;
+using System.IO.Compression;
+using System.Net;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Security;
-using System.Security.Permissions;
 
 using UnityEngine;
 
-using Redox.API.Libraries;
-using Redox.API.DependencyInjection;
 using Redox.Core.Extension;
-using Redox.API;
 using Redox.Core.PluginEngines;
-using System.Threading.Tasks;
-using Redox.API.Permissions;
 
+using Redox.API;
+using Redox.API.Plugins;
+using Redox.API.Libraries;
 using Redox.API.Collections;
+using Redox.API.Permissions;
+using Redox.API.Plugins.JavaScript;
+using Redox.API.DependencyInjection;
+
 namespace Redox
 {
     public sealed class Redox  : MonoBehaviour
@@ -29,6 +32,7 @@ namespace Redox
         public static string PluginPath { get; private set; } = Path.Combine(DefaultPath, "Plugins\\");
         public static string ExtensionPath { get; private set; } = Path.Combine(DefaultPath, "Extensions\\");
         public static string DependencyPath { get; private set; } = Path.Combine(DefaultPath, "Dependencies\\");
+        public static string LibrariesPath { get; private set; } = Path.Combine(DefaultPath, "Libs\\");
         public static string DataPath { get; private set; } = Path.Combine(DefaultPath, "Data\\");
         public static string LoggingPath { get; private set; } = Path.Combine(DefaultPath, "Logs\\");
         public static string AssemblePath { get; private set; } = Path.GetDirectoryName(assembly.Location);
@@ -39,6 +43,13 @@ namespace Redox
         public static RedoxConfig config;
 
         private List<Assembly> dependencies = new List<Assembly>();
+
+        /// <summary>
+        /// For interpreter engines only
+        /// </summary>
+        public static readonly Dictionary<string, object> InterpreterVariables = new Dictionary<string, object>();
+
+        public static readonly List<Assembly> InterpreterAssemblies = new List<Assembly>();
 
         public async void Initialize(string customPath)
         {
@@ -51,30 +62,39 @@ namespace Redox
                     PluginPath = Path.Combine(DefaultPath, "Plugins\\");
                     ExtensionPath = Path.Combine(DefaultPath, "Extensions\\");
                     DependencyPath = Path.Combine(DefaultPath, "Dependencies\\");
+                    LibrariesPath = Path.Combine(DefaultPath, "Libs\\");
                     DataPath = Path.Combine(DefaultPath, "Data\\");
                     LoggingPath = Path.Combine(DefaultPath, "Logs\\");
                 }
-
+                
 
                 if (!Directory.Exists(DefaultPath)) Directory.CreateDirectory(DefaultPath);
                 if (!Directory.Exists(LoggingPath)) Directory.CreateDirectory(LoggingPath);
                 if (!Directory.Exists(ExtensionPath)) Directory.CreateDirectory(ExtensionPath);
                 if (!Directory.Exists(DependencyPath)) Directory.CreateDirectory(DependencyPath);
+                if (!Directory.Exists(LibrariesPath)) Directory.CreateDirectory(LibrariesPath);
                 if (!Directory.Exists(PluginPath)) Directory.CreateDirectory(PluginPath);
                 if (!Directory.Exists(DataPath)) Directory.CreateDirectory(DataPath);
 
-
-                await this.LoadDependencies();
-
+           
                 string path = Path.Combine(DefaultPath, "Redox.yaml");
                 if (File.Exists(path))
                     config = YAMLHelper.FromFile<RedoxConfig>(path);
                 else
                     YAMLHelper.ToFile(path, config.Init());
 
+                InterpreterAssemblies.Add(typeof(GameObject).Assembly);
+                
+
+                await this.LoadDependencies();
+
                 ExtensionLoader.Load();
 
                 Logger = DependencyContainer.Resolve<ILogger>();
+
+                PluginEngines.Register<CSPluginEngine>();
+                PluginEngines.Register<JsEngine>();
+
                 Logger.LogInfo("[Redox] Loading data...");
 
                 await PermissionManager.Initialize();
@@ -94,7 +114,8 @@ namespace Redox
                 Console.WriteLine(string.Format("[Error] Failed to load Redox, Error: {0}", ex));
             }
            
-        }    
+        }
+
         private async Task LoadDependencies()
         {
             await Task.Run(() =>
@@ -118,8 +139,7 @@ namespace Redox
 
             await DataStore.GetInstance().Save();
             PluginEngines.UnloadAll();
-           
-
+          
         }
 
         public struct RedoxConfig
@@ -130,7 +150,7 @@ namespace Redox
 
             public string[] WhitelistedAssemblyNames;
 
-            public Dictionary<string, object> Rest;
+            public HashMap<string, object> Rest;
 
             public RedoxConfig Init()
             {
@@ -138,7 +158,7 @@ namespace Redox
                 PluginSecurity = true;
                 WhitelistedAssemblyNames = new string[] { };
 
-                Rest = new Dictionary<string, object>
+                Rest = new HashMap<string, object>
                 {
                     {"URL", "https://exampledomain.com"  },
                     {"Username", "username" },

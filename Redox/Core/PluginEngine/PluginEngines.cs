@@ -4,8 +4,7 @@ using System.Reflection;
 using System.Collections.Generic;
 
 using Redox.API;
-using Redox.API.DependencyInjection;
-
+using Redox.API.Libraries;
 
 namespace Redox.Core.PluginEngines
 {
@@ -14,11 +13,14 @@ namespace Redox.Core.PluginEngines
         private static readonly IList<Type> _engines = new List<Type>();
         private static readonly IList<IPluginEngine> _instances = new List<IPluginEngine>();
 
+        private static ILogger Logger => Redox.Logger;
+
         public static void Register<TEngine>() where TEngine : IPluginEngine
         {
             var engine = typeof(TEngine);
             if (!_engines.Contains(engine))
                 _engines.Add(engine);
+            Logger.LogColor($"[Redox] Succesfully Registered {engine.Name}", ConsoleColor.Cyan);
         }
         public static void Unregister(string name)
         {
@@ -32,21 +34,6 @@ namespace Redox.Core.PluginEngines
                
             }
         }
-
-        public static void AddAssembly(Assembly assembly)
-        {
-            foreach (var engine in _instances)
-                engine.Assemblies.Add(assembly);
-
-        }
-
-        public static void AddInstance(string name, object instance)
-        {
-            foreach (var engine in _instances)
-                engine.Values.Add(name, instance);
-
-        }
-
         public static void StartAll()
         {
             var logger = Redox.Logger;
@@ -63,15 +50,15 @@ namespace Redox.Core.PluginEngines
                 else
                    logger.LogWarning(string.Format("[Redox] Skipping engine {0} because its already loaded!", engine.Name));                   
             }
-          //  API.Libraries.PluginCollector.GetCollector().CallHook("OnPluginsLoaded");
+            logger.LogInfo($"[Redox] Succesfully loaded {PluginCollector.GetCollector().GetPlugins().Count} Plugins");
+            PluginCollector.GetCollector().CallHook("OnPluginsLoaded");
         }
         public static void UnloadAll()
         {
-            var logger = DependencyContainer.Resolve<ILogger>();
 
             foreach(var instance in _instances)
             {
-                logger.LogColor(string.Format("[Redox] Unloading engine {0}", instance.Language), ConsoleColor.DarkBlue);
+                Logger.LogColor(string.Format("[Redox] Unloading engine {0}", instance.Language), ConsoleColor.DarkBlue);
                 instance.UnloadPlugins();
             }
         }

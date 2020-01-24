@@ -54,12 +54,16 @@ namespace Redox.Core.Configuration
         /// <summary>
         /// Loads the existing configuration file
         /// </summary>
-        Task LoadConfig();
+        void Load();
 
         /// <summary>
         /// Saves the configuration file
         /// </summary>
-        Task Save();
+        void Save();
+
+        Task LoadAsync();
+
+        Task SaveAsync();
 
     }
 }

@@ -22,3 +22,4 @@ D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\YamlDotNet.xml
 D:\VisualStudio projects\Michiel\Redox\Redox\Redox\obj\Debug\Redox.csprojAssemblyReference.cache
 D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\RestSharp.dll
 D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\RestSharp.xml
+D:\VisualStudio projects\Michiel\Redox\Redox\Redox\bin\Debug\Jint.dll

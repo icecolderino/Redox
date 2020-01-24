@@ -10,7 +10,7 @@ namespace Redox.API.Libraries
 {
     public static class Web
     {
-        public static void CreateAsync(string url, Action<int, string> callback, string method = "POST", string[] headers = null)
+        public static void CreateAsync(string url, Action<int, string> callback, string method = "GET", string[] headers = null)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = method;
@@ -48,7 +48,8 @@ namespace Redox.API.Libraries
            
         }
         
-        public static async Task POST(string url, string data, string application = "application/x-www-form-urlencoded")
+
+        public static async Task POST(string url, string data, Action callBack, string application = "application/x-www-form-urlencoded")
         {
             await Task.Run(() =>
             {
@@ -56,14 +57,10 @@ namespace Redox.API.Libraries
                 {
                     web.Headers[HttpRequestHeader.ContentType] = application;
                     web.UploadData(url, Encoding.ASCII.GetBytes(data));
+                    callBack.Invoke();
                 }
             });
          
-        }
-
-        public static async Task POSTJSON(string url, object data)
-        {
-            await POST(url, JSONHelper.ToJson(data), "application/json");
         }
     }
 }

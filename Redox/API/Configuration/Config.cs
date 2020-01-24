@@ -7,7 +7,6 @@ using Redox.Core.Plugins;
 using Redox.Core.Configuration;
 
 using Redox.API.Libraries;
-using Redox.API.Collections;
 
 namespace Redox.API.Configuration
 {
@@ -24,13 +23,13 @@ namespace Redox.API.Configuration
     {
              
         private readonly Plugin plugin;
-        private HashMap<string, object> Settings;
+        private Dictionary<string, object> Settings;
         private string name;
         private ConfigType configType;
 
         public Config(string name, Plugin plugin, ConfigType configType = ConfigType.JSON)
         {
-            Settings = new HashMap<string, object>();
+            Settings = new Dictionary<string, object>();
             this.plugin = plugin;
             this.configType = configType;
             this.name = configType == ConfigType.JSON ? name + ".json" : name + ".yaml";
@@ -56,7 +55,7 @@ namespace Redox.API.Configuration
             if (Settings.ContainsKey(key))
                 return Settings[key];
             return null;
-        }
+        }  
         public bool TryGetSetting(string key, out object ob)
         {
             if(Settings.ContainsKey(key))
@@ -77,39 +76,36 @@ namespace Redox.API.Configuration
         {
             return File.Exists(Path.Combine(plugin.PluginPath, name));
         }
-        public async Task LoadConfig()
+        public void Load()
         {
-            await Task.Run(() =>
+            if (Exists())
             {
-                if (Exists())
-                {
-                    string path = Path.Combine(plugin.PluginPath, name);
-                    if (configType == ConfigType.JSON)
-                        JSONHelper.FromFile<Dictionary<string, object>>(path);
-                    else
-                        YAMLHelper.FromFile<Dictionary<string, object>>(path);
-                }
-            });                 
+                string path = Path.Combine(plugin.PluginPath, name);
+                if (configType == ConfigType.JSON)
+                    JSONHelper.FromFile<Dictionary<string, object>>(path);
+                else
+                    YAMLHelper.FromFile<Dictionary<string, object>>(path);
+            }
         }
-        public async Task Save()
+        public void Save()
         {
-            await Task.Run(() =>
-            {
-                try
-                {
-                    string path = Path.Combine(plugin.PluginPath, name);
 
-                    if (configType == ConfigType.JSON)
-                        JSONHelper.ToFile(path, Settings);
-                    else
-                        YAMLHelper.ToFile(path, Settings);
-                }
-                catch (Exception ex)
-                {
-                    Redox.Logger.LogError(string.Format("[{0}] Failed to save config, Error: {1}", plugin.Title, ex.Message));
-                }
-            });
+            string path = Path.Combine(plugin.PluginPath, name);
 
+            if (configType == ConfigType.JSON)
+                JSONHelper.ToFile(path, Settings);
+            else
+                YAMLHelper.ToFile(path, Settings);
+        }
+
+        public async Task LoadAsync()
+        {
+            await Task.Run(() => Load());
+        }
+
+        public async Task SaveAsync()
+        {
+            await Task.Run(() => Save());
         }
     }
 }
