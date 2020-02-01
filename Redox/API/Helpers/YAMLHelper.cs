@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 using YamlDotNet.Serialization;
 
-namespace Redox.API.Libraries
+namespace Redox.API.Helpers
 {
     public static class YAMLHelper
     {

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 using static Newtonsoft.Json.JsonConvert;
 
-namespace Redox.API.Libraries
+namespace Redox.API.Helpers
 {
     public static class JSONHelper
     {

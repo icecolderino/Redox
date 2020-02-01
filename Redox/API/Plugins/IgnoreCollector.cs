@@ -4,8 +4,8 @@
 namespace Redox.API.Plugins
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public class NotCollectable : Attribute
+    public class IgnoreCollector : Attribute
     {
-        public NotCollectable() : base() { }
+        public IgnoreCollector() : base() { }
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 using Newtonsoft.Json;
 
-using Redox.API.Libraries;
+using Redox.API.Helpers;
 using Redox.Core.Plugins;
 
 namespace Redox.API.Configuration.Translation
@@ -18,7 +18,7 @@ namespace Redox.API.Configuration.Translation
         public void Save(Plugin plugin)
         {
             _plugin = plugin;
-            string path = Path.Combine(plugin.PluginPath, "Translation.json");
+            string path = Path.Combine(plugin.FileInfo.DirectoryName, "Translation.json");
             JSONHelper.ToFile(path, this);
             
         }
@@ -30,7 +30,7 @@ namespace Redox.API.Configuration.Translation
 
         public static Translations LoadTranslation (Plugin plugin)
         {
-            string path = Path.Combine(plugin.PluginPath, "Translation.json");
+            string path = Path.Combine(plugin.FileInfo.DirectoryName, "Translation.json");
 
             if(File.Exists(path))
             {

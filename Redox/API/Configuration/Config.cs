@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Redox.Core.Plugins;
 using Redox.Core.Configuration;
 
-using Redox.API.Libraries;
+using Redox.API.Helpers;
 
 namespace Redox.API.Configuration
 {
@@ -32,7 +32,7 @@ namespace Redox.API.Configuration
             Settings = new Dictionary<string, object>();
             this.plugin = plugin;
             this.configType = configType;
-            this.name = configType == ConfigType.JSON ? name + ".json" : name + ".yaml";
+            this.name = configType == ConfigType.JSON ? name + ".json" : name + ".yml";
         }
 
         public void AddSetting(string key, object value)
@@ -74,13 +74,13 @@ namespace Redox.API.Configuration
 
         public bool Exists()
         {
-            return File.Exists(Path.Combine(plugin.PluginPath, name));
+            return File.Exists(Path.Combine(plugin.FileInfo.DirectoryName, name));
         }
         public void Load()
         {
             if (Exists())
             {
-                string path = Path.Combine(plugin.PluginPath, name);
+                string path = Path.Combine(plugin.FileInfo.DirectoryName, name);
                 if (configType == ConfigType.JSON)
                     JSONHelper.FromFile<Dictionary<string, object>>(path);
                 else
@@ -90,7 +90,7 @@ namespace Redox.API.Configuration
         public void Save()
         {
 
-            string path = Path.Combine(plugin.PluginPath, name);
+            string path = Path.Combine(plugin.FileInfo.DirectoryName, name);
 
             if (configType == ConfigType.JSON)
                 JSONHelper.ToFile(path, Settings);

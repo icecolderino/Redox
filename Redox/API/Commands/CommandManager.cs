@@ -8,7 +8,7 @@ namespace Redox.API.Commands
     public class CommandManager
     {
         private static CommandManager instance;
-        private static ILogger logger;
+        private static ILogger logger => Redox.Logger;
         private readonly Plugin plugin;
         
 
@@ -17,6 +17,7 @@ namespace Redox.API.Commands
 
         public static readonly IList<CommandManager> Commands = new List<CommandManager>();
 
+        private static readonly IList<string> RegisteredCommands = new List<string>();
          
         public static CommandManager GetInstance(Plugin plugin)
         {
@@ -28,19 +29,18 @@ namespace Redox.API.Commands
 
         public CommandManager(Plugin plugin)
         {
-            logger = DependencyInjection.DependencyContainer.Resolve<ILogger>();
             _commands = new List<Command>();
             this.plugin = plugin;          
         }
 
         public void Register(string command, string description, string permission, CommandFlags commandFlags, Action<CommandExecutor, string[]> action)
         {
-            if (!_commands.Any(x => x.Name == command))
+            if (!RegisteredCommands.Contains(command))
             {
                 _commands.Add(new Command(command, description, permission, commandFlags, action));
             }
             else
-                logger.LogWarning(string.Format("[Redox] Plugin {0} tried to register command {1} but its already registered!", plugin.Title, command));
+                logger.LogWarning(string.Format("[Redox] Plugin {0} tried to register command \"/{1}\" but its already registered!", plugin.Title, command));
         }
 
         public void Call(string command, string[] args, CommandExecutor executor)

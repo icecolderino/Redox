@@ -6,6 +6,7 @@ using Redox.API;
 using Redox.API.Commands;
 using Redox.API.Configuration;
 using Redox.API.DependencyInjection;
+using Redox.API.Libraries;
 
 namespace Redox.Core.Plugins
 {
@@ -38,6 +39,8 @@ namespace Redox.Core.Plugins
             this.Plugin = plugin;
             this.Language = Language;
 
+            
+
         }
         public void Start()
         {
@@ -47,6 +50,7 @@ namespace Redox.Core.Plugins
             this.Plugin.CheckTranslation();
             this.Plugin.Initialize();
             this.Running = true;
+            PluginCollector.GetCollector().CallHook("OnPluginLoaded", Plugin);
         }
 
         public void Disable()
@@ -60,9 +64,6 @@ namespace Redox.Core.Plugins
         {
             this.Plugin.Dispose();
         }
-
-
-
 
     }
 }

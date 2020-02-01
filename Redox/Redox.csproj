@@ -25,6 +25,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -40,9 +43,6 @@
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-    </Reference>
-    <Reference Include="Jint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=2e92ba9c8d81157f, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jint.2.11.58\lib\net451\Jint.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -94,23 +94,21 @@
     <Compile Include="API\Entity\IEntityManager.cs" />
     <Compile Include="API\Events\PlayerBanEvent.cs" />
     <Compile Include="API\IServer.cs" />
-    <Compile Include="API\Libraries\Datafile.cs" />
-    <Compile Include="API\Libraries\DataStore.cs" />
+    <Compile Include="API\Configuration\Datafile.cs" />
+    <Compile Include="API\Libraries\LocalStorage.cs" />
     <Compile Include="API\ILogger.cs" />
-    <Compile Include="API\Libraries\JSONHelper.cs" />
+    <Compile Include="API\Helpers\JSONHelper.cs" />
     <Compile Include="API\Libraries\Rest.cs" />
     <Compile Include="API\Libraries\SQLiteConnector.cs" />
     <Compile Include="API\Libraries\Timers.cs" />
     <Compile Include="API\Libraries\Web.cs" />
-    <Compile Include="API\Libraries\YAMLHelper.cs" />
+    <Compile Include="API\Helpers\YAMLHelper.cs" />
     <Compile Include="API\Permissions\Group.cs" />
     <Compile Include="API\Permissions\Permission.cs" />
     <Compile Include="API\Permissions\PermissionManager.cs" />
     <Compile Include="API\Player\IPlayer.cs" />
     <Compile Include="API\Player\IPlayerManager.cs" />
-    <Compile Include="API\Plugins\JavaScript\JSEngine.cs" />
-    <Compile Include="API\Plugins\JavaScript\JSPlugin.cs" />
-    <Compile Include="API\Plugins\NotCollectable.cs" />
+    <Compile Include="API\Plugins\IgnoreCollector.cs" />
     <Compile Include="API\Plugins\RedoxPlugin.cs" />
     <Compile Include="Bootstrap.cs" />
     <Compile Include="API\Libraries\PluginCollector.cs" />

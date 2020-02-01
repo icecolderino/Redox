@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
-using System.Collections;
 using System.Collections.Generic;
 
+using Redox.API.Helpers;
 
-namespace Redox.API.Libraries
+namespace Redox.API.Configuration
 {
     public sealed class Datafile
     {
@@ -52,18 +52,21 @@ namespace Redox.API.Libraries
             }
             set
             {
-                _settings[key] = value;
+                if (_settings.ContainsKey(key))
+                    _settings[key] = value;
+                else
+                    _settings.Add(key, value);
             }
         }
 
    
-        public static void WriteObject<T>(string filename, T obj)
+        public void WriteObject(object obj)
         {
-            JSONHelper.ToFile(Path.Combine(Redox.DataPath, filename), obj);
+            JSONHelper.ToFile(path, obj);
         }
-        public static T ReadObject<T>(string filename)
+        public T ReadObject<T>()
         {
-            return JSONHelper.FromFile<T>(Path.Combine(Redox.DataPath, filename));
+            return JSONHelper.FromFile<T>(path);
         }
         public void Remove(string key)
         {

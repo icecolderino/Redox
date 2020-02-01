@@ -20,5 +20,7 @@ namespace Redox.Core.PluginEngines
         void UnloadPlugin(string Name, PluginContainer container = null);
 
         void ReloadPlugins();
+
+        void ReloadPlugin(string Name);
     }
 }

@@ -22,7 +22,7 @@ namespace Redox.API.Libraries
             {
                 return _timers.Count;
             }
-            private set
+            internal set
             {
 
             }
@@ -38,86 +38,88 @@ namespace Redox.API.Libraries
             return timer;
         }
 
-        public class Timer : IDisposable
+      
+    }
+    public class Timer : IDisposable
+    {
+        private DateTime _startTime;
+
+        private int _repeatRate = 0;
+        private int _repeated = 0;
+
+        private readonly Action _callBack;
+
+        private readonly double _interval;
+
+        private readonly TimerType _timerType;
+
+        private System.Timers.Timer _timer;
+
+        public bool IsDestroyed = false;
+
+
+        public double TimeLeft
         {
-            private DateTime _startTime;
-
-            private int _repeatRate;
-
-            private int _repeated = 0;        
-            private readonly Action _callBack;
-
-            private readonly double _interval;
-
-            private readonly TimerType _timerType;
-
-            private System.Timers.Timer _timer;
-
-            public bool IsDestroyed = false;
-
-
-            public double TimeLeft
+            get
             {
-                get
-                {
-                    return (DateTime.Now - _startTime).TotalMilliseconds;
-                }
+                return (DateTime.Now - _startTime).TotalMilliseconds;
             }
+        }
 
-            public Timer(double Interval, TimerType timerType, Action callBack, bool startOnJoin, int repeatRate)
+        public Timer(double Interval, TimerType timerType, Action callBack, bool startOnJoin, int repeatRate)
+        {
+            _callBack = callBack;
+            _interval = Interval;
+            _repeatRate = repeatRate;
+            _timerType = timerType;
+
+            if (startOnJoin)
+                this.Start();
+        }
+
+        public void Start()
+        {
+            Timers.Count++;
+            _startTime = DateTime.Now.AddMilliseconds(_interval);
+            _timer = new System.Timers.Timer();
+            _timer.Interval = _interval;
+            _timer.AutoReset = _timerType == TimerType.Once ? false : true;
+            _timer.Enabled = true;
+            _timer.Elapsed += (x, y) =>
             {
-                _callBack = callBack;
-                _interval = Interval;
-                _timerType = timerType;
+                _callBack.Invoke();
 
-                if(startOnJoin)
-                    this.Start();
-            }
-
-            public void Start()
-            {
-                Count++;
-                _startTime = DateTime.Now.AddMilliseconds(_interval);
-                _timer = new System.Timers.Timer();
-                _timer.Interval = _interval;
-                _timer.AutoReset = _timerType == TimerType.Once ? false : true;
-                _timer.Enabled = true;
-                _timer.Elapsed += (x, y) =>
+                if (_timerType == TimerType.Once)
+                    this.Stop();
+                else if (_repeatRate > 0)
                 {
-                    _callBack.Invoke();
-
-                    if (_timerType == TimerType.Once)
+                    if (_repeated == _repeatRate)
                         this.Stop();
-                    else if (_repeatRate > 0)
-                    {
-                        if (_repeated == _repeatRate)
-                            this.Stop();
-                        else
-                            _repeated++;
-                    }
-                };
-            }
-            public void Stop()
-            {
-                IsDestroyed = true;
-                _timer.Stop();
-                _timer.Dispose();
-                _timers.Remove(this);
-                this.Dispose();
-            }
+                    else
+                        _repeated++;
+                }
+            };
+        }
+        public void Stop()
+        {
+            IsDestroyed = true;
+            _timer.Stop();
+            _timer.Dispose();
+            Timers._timers.Remove(this);
+            this.Dispose();
+        }
 
-            ~Timer()
-            {
-                this.Dispose(false);
-            }
-            public void Dispose()
-            {
-                this.Dispose(true);
-                System.GC.SuppressFinalize(this);
-            }
-            protected virtual void Dispose(bool disposing)
-            {
-            }
+        ~Timer()
+        {
+            this.Dispose(false);
+        }
+        public void Dispose()
+        {
+            this.Dispose(true);
+            System.GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
         }
     }
 }

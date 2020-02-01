@@ -6,12 +6,8 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using System.Security;
-using System.Security.Permissions;
-
 using Redox.API;
 using Redox.API.Libraries;
-using Redox.API.DependencyInjection;
 using Redox.Core.PluginEngines;
 using Redox.Core.Plugins;
 
@@ -61,44 +57,65 @@ namespace Redox.API.Plugins
             {
                 try
                 {
+
                     Stopwatch sw = new Stopwatch();
                     sw.Start();
                     info = new FileInfo(file);
                     string name = info.Name.Replace(".dll", string.Empty);
                     Assembly assembly;
 
-                    if (!Plugins.TryGetValue(name, out assembly))
+                    if (PluginCollector.GetCollector().GetContainer(name) == null)
                     {
-                        assembly = Assembly.Load(File.ReadAllBytes(file));
-                        Plugins.Add(name, assembly);
-                    }
-                    ViolationType violationType;
-                    if (this.IsSecure(assembly, out violationType))
-                    {
-                        foreach (Type type in assembly.GetExportedTypes())
+                        if (!Plugins.TryGetValue(name, out assembly))
                         {
-                            if (type.IsSubclassOf(typeof(RedoxPlugin)) && type.IsPublic && !type.IsAbstract)
-                            {
-                                object instance = Activator.CreateInstance(type);
-                                RedoxPlugin plugin = (RedoxPlugin)instance;
-
-                                PluginContainer container = new PluginContainer(plugin, instance, Language);
-                                container.Plugin.PluginPath = info.DirectoryName + "\\";
-                                PluginCollector.GetCollector().AddPlugin(container);
-
-                                logger.LogInfo(string.Format("[CSharp] Succesfully loaded plugin {0}, {1}, Author {2} ({3})", plugin.Title, plugin.Version, plugin.Author, plugin.Description));
-                            }
+                            assembly = Assembly.Load(File.ReadAllBytes(file));
+                            Plugins.Add(name, assembly);
                         }
-                        sw.Stop();
-                        int time = sw.Elapsed.Milliseconds;
+                        ViolationType violationType;
+                        if (this.IsSecure(assembly, out violationType))
+                        {
+                            foreach (Type type in assembly.GetExportedTypes())
+                            {
+                                if (type.IsSubclassOf(typeof(RedoxPlugin)) && type.IsPublic && !type.IsAbstract)
+                                {
+                                    object instance = Activator.CreateInstance(type);
+                                    RedoxPlugin plugin = (RedoxPlugin)instance;
 
-                        if (time > 500)
-                            logger.LogSpeed(string.Format("[CSharp] Plugin {0} took {1} milliseconds to load", name, time));
+                                    if (((plugin.CoreVersion.ToString() == "0.0.0.0") || (plugin.CoreVersion >= Redox.version)) || Redox.config.LoadIncompitablePlugins)
+                                    {
+                                        PluginContainer container = new PluginContainer(plugin, instance, Language);
+                                        container.Plugin.FileInfo = info;
+                                        PluginCollector.GetCollector().AddPlugin(container);
+                                        logger.LogInfo(string.Format("[CSharp] Succesfully loaded plugin {0}, {1}, Author {2} ({3})", plugin.Title, plugin.Version, plugin.Author, plugin.Description));
+                                    }
+                                    else
+                                        logger.LogWarning($"[Redox] Plugin \"{plugin.Title}\" is not compitable with the current redox version!");
+                                    
+
+                                }
+                            }
+                            sw.Stop();
+                            int time = sw.Elapsed.Milliseconds;
+
+                            if (time > 500)
+                                logger.LogSpeed(string.Format("[CSharp] Plugin {0} took {1} milliseconds to load", name, time));
+                        }
+                        else
+                            logger.LogWarning(string.Format("[CSharp] {0} has been blocked due security violation: {1}", assembly.GetName().Name, violationType));
                     }
                     else
-                        logger.LogWarning(string.Format("[CSharp] {0} has been blocked due security violation: {1}", assembly.GetName().Name, violationType));
+                    {
+                        var container = PluginCollector.GetCollector().GetContainer(name);
 
+                        if(!container.Running)
+                        {
+                            container.Start();
+                            logger.LogInfo(string.Format("[CSharp] Succesfully loaded plugin {0}, {1}, Author {2} ({3})", container.Plugin.Title, container.Plugin.Version, container.Plugin.Author, container.Plugin.Description));
+                        }
+                    }
                 }
+
+
                 catch (Exception ex)
                 {
 
@@ -138,12 +155,22 @@ namespace Redox.API.Plugins
         }
         public void UnloadPlugin(string name, PluginContainer pc = null)
         {
-            var container = pc ?? PluginCollector.GetCollector().GetContainer(name);
+            var container = pc ?? PluginCollector.GetCollector().GetContainer(name);       
 
             if (container != null)
-            {
-                PluginCollector.GetCollector().RemovePlugin(container);
-                logger.LogInfo(string.Format("[CSharp] Succesfully unloaded plugin {0}", container.Plugin.Title));
+            {  
+                if(container.Language == this.Language)
+                {
+                    if (container.Running)
+                    {
+                        container.Disable();
+                        PluginCollector.GetCollector().RemovePlugin(container);
+                        logger.LogInfo(string.Format("[CSharp] Succesfully unloaded plugin {0}", container.Plugin.Title));
+                    }
+                    else
+                        logger.LogWarning($"[CSharp] Plugin \"{container.Plugin.Title}\" is already unloaded, Use /redox load instead");
+                }
+               
             }
 
 
@@ -155,6 +182,20 @@ namespace Redox.API.Plugins
             LoadPlugins();
         }
 
+        public void ReloadPlugin(string Name)
+        {
+            var container = PluginCollector.GetCollector().GetContainer(Name);
+
+            if (container != null)
+            {
+                container.Disable();
+                container.Start();
+
+                logger.LogInfo($"[CSharp] Succesfully reloaded plugin \"{container.Plugin.Title}\"");
+            }
+            else
+                logger.LogWarning($"[CSharp] There is no plugin with the name \"{Name}\"");
+        }
 
         private bool ValidPlugin(Assembly assembly)
         {

@@ -1,8 +1,6 @@
 ﻿
 using System;
 using System.IO;
-using System.IO.Compression;
-using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -14,10 +12,10 @@ using Redox.Core.PluginEngines;
 
 using Redox.API;
 using Redox.API.Plugins;
+using Redox.API.Helpers;
 using Redox.API.Libraries;
 using Redox.API.Collections;
 using Redox.API.Permissions;
-using Redox.API.Plugins.JavaScript;
 using Redox.API.DependencyInjection;
 
 namespace Redox
@@ -40,7 +38,7 @@ namespace Redox
         #endregion Paths
 
         public static ILogger Logger;
-        public static RedoxConfig config;
+        public static RedoxConfig config = new RedoxConfig();
 
         private List<Assembly> dependencies = new List<Assembly>();
 
@@ -55,7 +53,6 @@ namespace Redox
         {
             try
             {
-
                 if(!string.IsNullOrEmpty(customPath))
                 {
                     DefaultPath = customPath;
@@ -77,14 +74,13 @@ namespace Redox
                 if (!Directory.Exists(DataPath)) Directory.CreateDirectory(DataPath);
 
            
-                string path = Path.Combine(DefaultPath, "Redox.yaml");
+                string path = Path.Combine(DefaultPath, "Redox.yml");
                 if (File.Exists(path))
                     config = YAMLHelper.FromFile<RedoxConfig>(path);
                 else
                     YAMLHelper.ToFile(path, config.Init());
 
                 InterpreterAssemblies.Add(typeof(GameObject).Assembly);
-                
 
                 await this.LoadDependencies();
 
@@ -93,7 +89,6 @@ namespace Redox
                 Logger = DependencyContainer.Resolve<ILogger>();
 
                 PluginEngines.Register<CSPluginEngine>();
-                PluginEngines.Register<JsEngine>();
 
                 Logger.LogInfo("[Redox] Loading data...");
 
@@ -103,7 +98,7 @@ namespace Redox
 
                 Logger.LogInfo("[Redox] Loading standard library..");
                 SQLiteConnector.GetInstance();
-                DataStore.GetInstance();               
+                LocalStorage.GetStorage();              
                 PluginCollector.GetCollector();
 
             }
@@ -137,17 +132,17 @@ namespace Redox
 
             Logger.Log("[Redox] Preparing to shutdown..");
 
-            await DataStore.GetInstance().Save();
+            await LocalStorage.GetStorage().Save();
             PluginEngines.UnloadAll();
           
         }
 
-        public struct RedoxConfig
+        public class RedoxConfig
         {
             public string UnknownCommand;
 
             public bool PluginSecurity;
-
+            public bool LoadIncompitablePlugins;
             public string[] WhitelistedAssemblyNames;
 
             public HashMap<string, object> Rest;
@@ -156,6 +151,7 @@ namespace Redox
             {
                 UnknownCommand = "Unknown Command!";
                 PluginSecurity = true;
+                LoadIncompitablePlugins = false;
                 WhitelistedAssemblyNames = new string[] { };
 
                 Rest = new HashMap<string, object>

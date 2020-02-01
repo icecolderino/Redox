@@ -10,11 +10,10 @@ namespace Redox.API.Libraries
 {
     public static class Web
     {
-        public static void CreateAsync(string url, Action<int, string> callback, string method = "GET", string[] headers = null)
+        public static void CreateAsync(string url, Action<int, string> callback, string[] headers = null, string contentType = "application/json")
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = method;
-            request.Headers.Add("Content-Type", "application/json");
+            request.Headers.Add("Content-Type", contentType);
             if (headers != null)
                 foreach (var header in headers)
                     request.Headers.Add(header);
@@ -31,31 +30,22 @@ namespace Redox.API.Libraries
                 {
                     string data = reader.ReadToEnd();
                     callback.Invoke(code, data);
-
                 }      
             }
         }
-        public static async Task GET(string url, Action<string> callBack)
-        {
-            await Task.Run(() =>
-            {
-                using (WebClient web = new WebClient())
-                {
-                    string json = web.DownloadString(url);
-                    callBack.Invoke(json);
-                }              
-            });
-           
-        }
-        
-
-        public static async Task POST(string url, string data, Action callBack, string application = "application/x-www-form-urlencoded")
+     
+        public static async Task POST(string url, string data, Action callBack, string[] Headers = null, string application = "application/json")
         {
             await Task.Run(() =>
             {
                 using (WebClient web = new WebClient())
                 {
                     web.Headers[HttpRequestHeader.ContentType] = application;
+
+                    if (Headers != null)
+                        foreach (string header in Headers)
+                            web.Headers.Add(header);
+
                     web.UploadData(url, Encoding.ASCII.GetBytes(data));
                     callBack.Invoke();
                 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using Redox.API.Permissions;
 using Redox.Core.User;
 
@@ -103,8 +102,6 @@ namespace Redox.API.Player
         /// <param name="reason"></param>
         /// <param name="duration"></param>
         void Ban(string reason, TimeSpan duration = default(TimeSpan));
-
-
 
         #region Permissions
 

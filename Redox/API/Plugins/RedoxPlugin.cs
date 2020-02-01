@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
@@ -13,22 +14,25 @@ namespace Redox.API.Plugins
 {
     public abstract class RedoxPlugin : Plugin
     {         
-        protected override PluginCollector Manager => PluginCollector.GetCollector();
+        protected override PluginCollector Collector => PluginCollector.GetCollector();
         protected override IServer Server => DependencyContainer.Resolve<IServer>();
         protected override IEntityManager World => DependencyContainer.Resolve<IEntityManager>();
 
         private readonly IDictionary<string, MethodInfo> Methods = new Dictionary<string, MethodInfo>();
 
-        public abstract void Load();
+        protected abstract void Load();
 
-        public abstract void Unload();
+        protected abstract void Unload();
 
-
-        public override void Initialize()
+        internal override void Initialize()
         {
             this.Load();
+            if(base.LicenseURL.ToString() != "https://yourlicenseurl.com/")
+            {
+                Logger.LogColor($"[{Title}] Is licensed by: {base.LicenseURL}", ConsoleColor.DarkYellow);
+            }
         }
-        public override void Deinitialize()
+        internal override void Deinitialize()
         {
             this.Unload();
         }
@@ -51,10 +55,10 @@ namespace Redox.API.Plugins
         }
         public override void LoadMethods()
         {
-            Logger = DependencyContainer.Resolve<ILogger>();
             foreach (var method in this.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
             {
-                object[] attributes = method.GetCustomAttributes(typeof(NotCollectable), true);
+                if (Methods.ContainsKey(method.Name)) return;
+                object[] attributes = method.GetCustomAttributes(typeof(IgnoreCollector), true);
                 if (attributes.Length == 0)
                     Methods.Add(method.Name, method);
             
