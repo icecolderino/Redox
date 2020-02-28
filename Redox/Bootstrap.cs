@@ -5,13 +5,13 @@ namespace Redox
 {
     public class Bootstrap
     {
-        private static GameObject _mod;
+       public static GameObject Mod;
 
         public static void Init(string customPath)
         {
-            _mod = new GameObject("Redox");
-            _mod.AddComponent<Redox>().Initialize(customPath);
-            UnityEngine.Object.DontDestroyOnLoad(_mod);
+            Mod = new GameObject("Redox");
+            Mod.AddComponent<Redox>().Initialize(customPath);
+            UnityEngine.Object.DontDestroyOnLoad(Mod);
          
         }
     }

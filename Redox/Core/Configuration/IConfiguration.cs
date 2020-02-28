@@ -49,7 +49,7 @@ namespace Redox.Core.Configuration
         /// Checks if the configuration file exists or not
         /// </summary>
         /// <returns></returns>
-        bool Exists();
+        bool Exists { get; }
 
         /// <summary>
         /// Loads the existing configuration file

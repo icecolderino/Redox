@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 using Redox.API;
 using Redox.API.Libraries;
-using Redox.Core.Plugins;
+using Redox.API.Plugins;
 
 namespace Redox.Core.PluginEngines
 {
@@ -53,7 +53,8 @@ namespace Redox.Core.PluginEngines
                 else
                    logger.LogWarning(string.Format("[Redox] Skipping engine {0} because its already loaded!", engine.Name));                   
             }
-            logger.LogInfo($"[Redox] Succesfully loaded {PluginCollector.GetCollector().GetPlugins().Count} Plugins");           
+            logger.LogInfo($"[Redox] Succesfully loaded {PluginCollector.GetCollector().GetPlugins().Count} Plugins");
+          //  PluginCollector.GetCollector().CallHook("OnPluginsLoaded");
         }
         public static void UnloadAll()
         {

@@ -4,15 +4,15 @@ namespace Redox.API.Commands
 {
     public sealed class Command
     {
-        public string Name { get; }
+        public readonly string Name;
 
-        public string Description { get; }
+        public readonly string Description;
 
-        public string Permission { get; }
+        public readonly string Permission;
 
-        public CommandFlags Flags { get; }
+        public readonly CommandFlags Flags;
 
-        public Action<CommandExecutor, string[]> Action { get; }
+        public readonly Action<CommandExecutor, string[]> Action;
 
        
         public Command(string Name, string Description, string Permission, CommandFlags Flags, Action<CommandExecutor, string[]> Action)

@@ -8,7 +8,7 @@ namespace Redox.API.Commands
     public class CommandManager
     {
         private static CommandManager instance;
-        private static ILogger logger => Redox.Logger;
+        private static ILogger Logger => Redox.Logger;
         private readonly Plugin plugin;
         
 
@@ -33,14 +33,20 @@ namespace Redox.API.Commands
             this.plugin = plugin;          
         }
 
-        public void Register(string command, string description, string permission, CommandFlags commandFlags, Action<CommandExecutor, string[]> action)
+        public Command Register(string command, string description, string permission, CommandFlags commandFlags, Action<CommandExecutor, string[]> action)
         {
             if (!RegisteredCommands.Contains(command))
             {
-                _commands.Add(new Command(command, description, permission, commandFlags, action));
+                Command cmd = new Command(command, description, permission, commandFlags, action);
+                _commands.Add(cmd);
+                return cmd;
             }
             else
-                logger.LogWarning(string.Format("[Redox] Plugin {0} tried to register command \"/{1}\" but its already registered!", plugin.Title, command));
+            {
+                Logger.LogWarning(string.Format("[Redox] Plugin {0} tried to register command \"/{1}\" but its already registered!", plugin.Title, command));
+                return null;
+            }
+                
         }
 
         public void Call(string command, string[] args, CommandExecutor executor)

@@ -9,6 +9,5 @@ namespace Redox.API.Commands
         Player = 0,
         Console = 1,
         Both = 2,
-
     }
 }

@@ -49,11 +49,10 @@ namespace Redox.API.Libraries
         {
             if(key != null)
             {
-                stringify(ref value);
+                Stringify(ref value);
 
-                Hashtable hash = table[tablename] as Hashtable;
 
-                if(hash == null)
+                if (!(table[tablename] is Hashtable hash))
                 {
                     hash = new Hashtable();
                     table.Add(tablename, hash);
@@ -66,9 +65,7 @@ namespace Redox.API.Libraries
         {
             if(key != null)
             {
-                Hashtable hash = table[tablename] as Hashtable;
-
-                if(hash != null)
+                if (table[tablename] is Hashtable hash)
                 {
                     hash.Remove(key);
                 }
@@ -79,7 +76,7 @@ namespace Redox.API.Libraries
         {
             if((key != null) && (value != null))
             {
-                stringify(ref value);
+                Stringify(ref value);
 
                 Hashtable hash = table[tablename] as Hashtable;
 
@@ -97,9 +94,7 @@ namespace Redox.API.Libraries
         {
             if(key != null)
             {
-                Hashtable hash = table[tablename] as Hashtable;
-
-                if(hash != null)
+                if (table[tablename] is Hashtable hash)
                 {
                     return hash[key];
                 }
@@ -123,8 +118,7 @@ namespace Redox.API.Libraries
 
         public bool ContainsKey(string tablename, object key)
         {
-            Hashtable hash = table[tablename] as Hashtable;
-            if (hash != null)
+            if (table[tablename] is Hashtable hash)
             {
                 return hash.ContainsKey(key);
             }
@@ -133,9 +127,7 @@ namespace Redox.API.Libraries
 
         public object[] GetKeys (string tablename)
         {
-
-            Hashtable hash = table[tablename] as Hashtable;
-            if(hash != null)
+            if (table[tablename] is Hashtable hash)
             {
                 List<object> keys = new List<object>();
 
@@ -151,12 +143,11 @@ namespace Redox.API.Libraries
 
         public HashMap<object, object> ToMap(string tablename)
         {
-            Hashtable hash = table[tablename] as Hashtable;
-            if (hash != null)
+            if (table[tablename] is Hashtable hash)
             {
                 var dict = new HashMap<object, object>();
 
-                foreach(KeyValuePair<object, object> pair in hash)
+                foreach (KeyValuePair<object, object> pair in hash)
                 {
                     dict.Add(pair.Key, pair.Value);
                 }
@@ -167,12 +158,11 @@ namespace Redox.API.Libraries
 
         public HashMap<object, T> FilterType<T>(string tablename)
         {
-            Hashtable hash = table[tablename] as Hashtable;
-            if (hash != null)
+            if (table[tablename] is Hashtable hash)
             {
                 var dict = new HashMap<object, T>();
 
-                foreach(KeyValuePair<object, object> pair in hash)
+                foreach (KeyValuePair<object, object> pair in hash)
                 {
                     if (pair.Value is T)
                         dict.Add(pair.Key, (T)pair.Value);
@@ -185,8 +175,7 @@ namespace Redox.API.Libraries
 
         public void ClearTable(string tablename)
         {
-            Hashtable hash = table[tablename] as Hashtable;
-            if(hash != null)
+            if (table[tablename] is Hashtable hash)
             {
                 hash.Clear();
             }
@@ -208,7 +197,7 @@ namespace Redox.API.Libraries
            
         }
 
-        private void stringify(ref object value)
+        private void Stringify(ref object value)
         {
             if((value is Vector2) || (value is Vector3) || (value is Vector4) || (value is Quaternion))
                 value = value.ToString();

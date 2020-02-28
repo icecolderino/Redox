@@ -18,10 +18,10 @@ namespace Redox.API.Libraries
         private RestRequest _request;
         private IRestResponse _response;
 
-        private string _username;
-        private string _password;
+        private readonly string _username;
+        private readonly string _password;
 
-        private string _url;
+        private readonly string _url;
 
         public Rest(string url, string username, string password)
         {
@@ -35,8 +35,10 @@ namespace Redox.API.Libraries
         /// </summary>
         public void Open()
         {
-            _client = new RestClient(_url);
-            _client.Authenticator = new HttpBasicAuthenticator(_username, _password);
+            _client = new RestClient(_url)
+            {
+                Authenticator = new HttpBasicAuthenticator(_username, _password)
+            };
         }
 
         /// <summary>

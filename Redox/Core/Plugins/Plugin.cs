@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-
+using System.Threading.Tasks;
 
 using Redox.API;
 using Redox.API.Commands;
@@ -8,7 +8,7 @@ using Redox.API.Configuration;
 using Redox.API.Configuration.Translation;
 using Redox.API.DependencyInjection;
 using Redox.API.Entity;
-using Redox.API.Libraries;
+using Redox.API.Plugins;
 
 namespace Redox.Core.Plugins
 {
@@ -34,7 +34,7 @@ namespace Redox.Core.Plugins
         protected virtual Translations translation { get; set; }
         protected virtual PluginCollector Collector { get;  }
         protected virtual IServer Server { get;}
-        protected ILogger Logger = Redox.Logger;
+        public ILogger Logger = Redox.Logger;
         protected virtual IEntityManager World { get; }
 
         public FileInfo FileInfo { get; set; }
@@ -56,6 +56,7 @@ namespace Redox.Core.Plugins
 
         public abstract object Call(string name, params object[] args);
         public abstract T Call<T>(string name, params object[] args);
+        public abstract Task<object> CallAsync(string name, params object[] args);
         public abstract void LoadMethods();
 
 

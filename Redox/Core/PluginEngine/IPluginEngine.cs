@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Collections.Generic;
 
-using Redox.Core.Plugins;
+using Redox.API.Plugins;
 
 namespace Redox.Core.PluginEngines
 {

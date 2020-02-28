@@ -23,9 +23,17 @@ namespace Redox.API.Configuration
     {
              
         private readonly Plugin plugin;
-        private Dictionary<string, object> Settings;
-        private string name;
-        private ConfigType configType;
+        private readonly Dictionary<string, object> Settings;
+        private readonly string name;
+        private readonly ConfigType configType;
+
+        public bool Exists
+        {
+            get
+            {
+                return File.Exists(Path.Combine(plugin.FileInfo.DirectoryName, name));
+            }
+        }
 
         public Config(string name, Plugin plugin, ConfigType configType = ConfigType.JSON)
         {
@@ -35,26 +43,52 @@ namespace Redox.API.Configuration
             this.name = configType == ConfigType.JSON ? name + ".json" : name + ".yml";
         }
 
+        public object this[string Key]
+        {
+            get
+            {
+
+                if (Settings.TryGetValue(Key, out object value))
+                    return value;
+                return null;
+            }
+            set
+            {
+                if (Settings.ContainsKey(Key))
+                    SetSetting(Key, value);
+                else
+                    AddSetting(Key, value);
+            }
+        }
         public void AddSetting(string key, object value)
         {
+            this[key] = value;
+            /*
             if (!Settings.ContainsKey(key))
                 Settings.Add(key, value);
             else
                 SetSetting(key, value);
+                */
         }
 
         public void SetSetting(string key, object value)
         {
+            this[key] = value;
+            /*
             if (Settings.ContainsKey(key))
                 Settings[key] = value;
             else
                 AddSetting(key, value);
+                */
         }
         public object GetSetting(string key)
         {
+            return this[key];
+            /*
             if (Settings.ContainsKey(key))
                 return Settings[key];
             return null;
+            */
         }  
         public bool TryGetSetting(string key, out object ob)
         {
@@ -71,14 +105,9 @@ namespace Redox.API.Configuration
         {
             return Settings.ContainsKey(key);
         }    
-
-        public bool Exists()
-        {
-            return File.Exists(Path.Combine(plugin.FileInfo.DirectoryName, name));
-        }
         public void Load()
         {
-            if (Exists())
+            if (Exists)
             {
                 string path = Path.Combine(plugin.FileInfo.DirectoryName, name);
                 if (configType == ConfigType.JSON)
@@ -97,7 +126,6 @@ namespace Redox.API.Configuration
             else
                 YAMLHelper.ToFile(path, Settings);
         }
-
         public async Task LoadAsync()
         {
             await Task.Run(() => Load());

@@ -7,22 +7,23 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-using Redox.Core.Extension;
 using Redox.Core.PluginEngines;
 
 using Redox.API;
-using Redox.API.Plugins;
+using Redox.API.Plugins.CSharp;
 using Redox.API.Helpers;
 using Redox.API.Libraries;
 using Redox.API.Collections;
 using Redox.API.Permissions;
 using Redox.API.DependencyInjection;
+using Redox.API.Plugins;
+using Redox.API.Plugins.Extension;
 
 namespace Redox
 {
     public sealed class Redox  : MonoBehaviour
     {
-        private static Assembly assembly = Assembly.GetExecutingAssembly();
+        private readonly static Assembly assembly = Assembly.GetExecutingAssembly();
         public static readonly Version version = assembly.GetName().Version;
 
         #region Paths
@@ -40,7 +41,7 @@ namespace Redox
         public static ILogger Logger;
         public static RedoxConfig config = new RedoxConfig();
 
-        private List<Assembly> dependencies = new List<Assembly>();
+        private readonly List<Assembly> dependencies = new List<Assembly>();
 
         /// <summary>
         /// For interpreter engines only

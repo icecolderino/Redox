@@ -9,5 +9,6 @@ namespace Redox.API.Console
         void Reply(string message);
 
         void RunCommand(string command, string[] args);
+
     }
 }

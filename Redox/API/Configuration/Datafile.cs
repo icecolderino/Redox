@@ -44,9 +44,8 @@ namespace Redox.API.Configuration
         {
             get
             {
-                object value;
 
-                if (_settings.TryGetValue(key, out value))
+                if (_settings.TryGetValue(key, out object value))
                     return value;
                 return null;
             }

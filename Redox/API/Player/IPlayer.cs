@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Redox.API.Permissions;
 using Redox.Core.User;
+using UnityEngine;
 
 namespace Redox.API.Player
 {
@@ -25,6 +26,10 @@ namespace Redox.API.Player
         /// </summary>
         ulong UID { get; }
 
+        /// <summary>
+        /// The ping of the player
+        /// </summary>
+        ushort Ping { get; }
         /// <summary>
         /// The ipaddress of the player
         /// </summary>
@@ -94,14 +99,17 @@ namespace Redox.API.Player
         /// Bans a player from the server
         /// </summary>
         /// <param name="duration"></param>
-        void Ban(TimeSpan duration = default(TimeSpan));
+        void Ban(TimeSpan duration = default);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="reason"></param>
         /// <param name="duration"></param>
-        void Ban(string reason, TimeSpan duration = default(TimeSpan));
+        void Ban(string reason, TimeSpan duration = default);
+
+        void Teleport(float x, float y, float z);
+        void Teleport(Vector3 loc);
 
         #region Permissions
 
