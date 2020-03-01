@@ -1,3 +1,0 @@
-language: csharp
-solution: Redox.sln
-dotnet: 4.7
