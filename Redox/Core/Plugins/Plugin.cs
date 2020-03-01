@@ -47,9 +47,9 @@ namespace Redox.Core.Plugins
 
         public void CheckTranslation()
         {
-            translation = Translations.LoadTranslation(this);
-
-            if (translation == null)
+            translation = new Translations(this);
+            translation.LoadTranslation();
+            if (!translation.HasMessages)
                 LoadDefaultTranslations();
         }
 

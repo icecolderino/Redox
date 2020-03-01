@@ -6,7 +6,7 @@ namespace Redox.API
     public interface ILogger
     {
 
-        StreamWriter writer { get;}
+        TextWriter writer { get;}
 
         void Log(string message);
 

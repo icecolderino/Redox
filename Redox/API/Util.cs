@@ -15,10 +15,14 @@ namespace Redox.API
 {
     public class Util
     {
-        public readonly NLua.Lua Engine;
+        private readonly NLua.Lua Engine;
 
         #region Lua functions
 
+        /// <summary>
+        /// Constructor for lua plugins
+        /// </summary>
+        /// <param name="engine"></param>
         public Util(ref NLua.Lua engine)
         {
             this.Engine = engine;
@@ -142,7 +146,7 @@ namespace Redox.API
             return null;
            
         }
-        public MethodInfo FindOverLoadMethod(Type type, string methodName, BindingFlags flags, object[] args)
+        public MethodInfo FindOverLoadMethod(Type type, string methodName, BindingFlags flags, string[] args)
         {
             try
             {
@@ -173,7 +177,7 @@ namespace Redox.API
                                     var arg = args[i];
 
                                     //If the type of the parameters is the same as the  giving argument then lets set it to true
-                                    if (para.GetType() == arg.GetType())
+                                    if (para.GetType().FullName == arg)
                                         matches[i] = true;
                                     else
                                         matches[i] = false;
@@ -216,57 +220,77 @@ namespace Redox.API
             return table;
         }
 
+        /// <summary>
+        /// Converts a LuaTable to .NET Dictionary
+        /// </summary>
+        /// <param name="table"></param>
+        /// <returns></returns>
         public Dictionary<string, object> TableToDictionary(LuaTable table)
         {
-           
-            if (table.Keys.Count > 0 && table.Values.Count > 0)
-            {
-                var dict = new Dictionary<string, object>();
-                foreach (var key in table.Keys)
+            try
+            {          
+                if (table.Keys.Count > 0 && table.Values.Count > 0)
                 {
-                    foreach(var value in table.Values)
-                    {
-                        if(value is LuaTable)
-                        {
-                            var arr = ArrayFromTable((LuaTable)value);
-                            if(arr != null)
+                    var dict = new Dictionary<string, object>(); 
+                    foreach(var k in table.Keys)
+                    {                       
+                        string key = k.ToString();
+                        if (dict.ContainsKey(key)) continue;
+                        object value = table[k];
+                                    
+                        if (value is LuaTable)
+                        {     
+                            if(int.TryParse(key, out int i))
                             {
-                                dict.Add(key.ToString(), arr);
+                                dict.Add(key, ArrayFromTable((LuaTable)value));
                                 continue;
                             }
-                            else
-                            {
-                                var dict2 = TableToDictionary((LuaTable)value);
-                                if(dict2 != null)
-                                {
-                                    dict.Add(key.ToString(), dict2);
-                                    continue;
-                                }
+                            var dict2 = TableToDictionary((LuaTable)value);
+                            if (dict2 != null)
+                            {                    
+                                dict.Add(key.ToString(), ArrayFromTable((LuaTable)value));
+                                continue;
                             }
                             dict.Add(key.ToString(), null); //This should never happen
                         }
-                        dict.Add(key.ToString(), value);
+                        else
+                            dict.Add(key.ToString(), value);
                     }
-                }             
-                return dict;
+                    return dict;                  
+                }                                       
+                return null;
+                
             }
-            return null;
-        }
-        public object[] ArrayFromTable(LuaTable table)
-        {
-            if (table.Keys.Count > 0 && table.Values.Count == 0)
+            catch(Exception ex)
             {
-                object[] arr = new object[table.Keys.Count];
-
-                for(int i = 1; i < table.Keys.Count; i++)
-                {
-                    arr[i - 1] = table[i];
-                }
-                return arr;
+                Redox.Logger.LogError("[Redox] Failed to convert luatable to dict, Error: " + ex);
+                return null;
             }
-            return null;
         }
-        public LuaTable TableFromArray(object[] array)
+
+        /// <summary>
+        /// Converts a LuaTable to .NET array
+        /// </summary>
+        /// <param name="table"></param>
+        /// <returns></returns>
+        public Array ArrayFromTable(LuaTable table)
+        {
+            object[] array = new object[table.Keys.Count];
+
+            for(int i = 0; i < table.Keys.Count; i++)
+            {
+                array[i] = table[i];
+            }
+            
+            return array;
+        }
+
+        /// <summary>
+        /// Converts a .NET array to luatable
+        /// </summary>
+        /// <param name="array"></param>
+        /// <returns></returns>
+        public LuaTable TableFromArray(Array array)
         {
             Engine.NewTable("_tempTable");
             LuaTable table = Engine["_tempTable"] as LuaTable;
@@ -274,10 +298,17 @@ namespace Redox.API
             Engine["_tempTable"] = null;
 
             for (int i = 0; i < array.Length; i++)
-                table[i + 1] = array[i];
+                table[i + 1] = array.GetValue(i);
             return table;
         }
-        public LuaTable TableFromDictionary(Dictionary<object, object> dict)
+        /// <summary>
+        /// Converts a .NET Dictionary to luatable
+        /// </summary>
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="dict"></param>
+        /// <returns></returns>
+        public LuaTable TableFromDictionary(Dictionary<string, object> dict)
         {
             Engine.NewTable("_tempTable");
             LuaTable table = Engine["_tempTable"] as LuaTable;
@@ -288,6 +319,28 @@ namespace Redox.API
                 table[pair.Key] = pair.Value;
             return table;
         }
+
+        public Array CreateEmptyArray()
+        {
+            return Array.Empty<object>();
+        }
+
+        public Vector3 CreateEmptyVector3()
+        {
+            return new Vector3();
+        }
+        public Vector3 CreateVector3(float x, float y, float z)
+        {
+            return new Vector3(x, y, z);
+        }
+
+        private readonly DateTime epoch = new DateTime(1970, 1, 1);
+        public uint GetTimeStamp()
+        {
+            DateTime utc = DateTime.UtcNow;
+            return (uint)(epoch - utc).TotalSeconds;
+        }
+
         #endregion
     }
 }

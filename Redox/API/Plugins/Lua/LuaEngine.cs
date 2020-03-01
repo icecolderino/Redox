@@ -12,14 +12,40 @@ namespace Redox.API.Plugins.Lua
 
         public string Pattern => "*.lua";
 
-        public void LoadPlugin(string dir)
-        {
-            throw new NotImplementedException();
-        }
+        private readonly Dictionary<string, LuaPlugin> Plugins = new Dictionary<string, LuaPlugin>();
 
         public void LoadPlugins()
         {
-            throw new NotImplementedException();
+            foreach(string dir in Directory.GetDirectories(Redox.PluginPath))
+            {
+                LoadPlugin(dir);
+            }
+        }
+        public void LoadPlugin(string dir)
+        {
+            foreach (string file in Directory.GetFiles(dir, Pattern))
+            {
+                FileInfo info = new FileInfo(file);
+                string name = info.Name.Replace(".lua", string.Empty);
+                try
+                {                 
+                    if (!Plugins.ContainsKey(name))
+                    {
+                        LuaPlugin plugin = new LuaPlugin(info, File.ReadAllText(file));
+                        PluginContainer container = new PluginContainer(plugin, null, Language);
+                        container.Plugin.FileInfo = info;
+                        PluginCollector.GetCollector().AddPlugin(container);
+                        Redox.Logger.LogInfo(string.Format("[Lua] Succesfully loaded plugin {0}, {1}, Author {2} ({3})", plugin.Title, plugin.Version, plugin.Author, plugin.Description));
+
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Redox.Logger.LogError(string.Format("[Redox] Failed to load plugin {0} error: {1}", name, ex));
+                }
+             
+            }
+                
         }
 
         public void ReloadPlugin(string Name)

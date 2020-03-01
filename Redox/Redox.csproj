@@ -90,7 +90,6 @@
     <Compile Include="API\Commands\CommandFlags.cs" />
     <Compile Include="API\Commands\CommandManager.cs" />
     <Compile Include="API\Configuration\Config.cs" />
-    <Compile Include="API\Configuration\Translation\Translation.cs" />
     <Compile Include="API\Configuration\Translation\Translations.cs" />
     <Compile Include="API\Console\IConsole.cs" />
     <Compile Include="API\DependencyInjection\DependencyContainer.cs" />

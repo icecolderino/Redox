@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using Redox.API.Console;
 using Redox.API.Player;
@@ -27,6 +28,7 @@ namespace Redox.API
         /// </summary>
         Version GameVersion { get; }
 
+        CultureInfo Language { get; }
         /// <summary>
         /// The console of the game server
         /// </summary>

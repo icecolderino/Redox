@@ -9,35 +9,55 @@ using Redox.Core.Plugins;
 
 namespace Redox.API.Configuration.Translation
 {
-    public sealed class Translations : Dictionary<string, Translation>
+    public sealed class Translations
     {
         private Plugin _plugin;
+        private Dictionary<string, Dictionary<string, string>> _message = new Dictionary<string, Dictionary<string, string>>();
 
-        public Translations() : base() { }
+        public bool HasMessages
+        {
+            get
+            {
+                return _message.Count > 0;
+            }
+        }
 
-        public void Save(Plugin plugin)
+        public Translations(Plugin plugin)
         {
             _plugin = plugin;
-            string path = Path.Combine(plugin.FileInfo.DirectoryName, "Translation.json");
+        }
+
+        public void Save()
+        {
+            string path = Path.Combine(_plugin.FileInfo.DirectoryName, "Translation.json");
             JSONHelper.ToFile(path, this);
             
         }
         
+        public void Register(string Language, Dictionary<string, string> messages)
+        {
+            if(!_message.ContainsKey(Language))
+            {
+                _message.Add(Language, messages);
+            }
+        }
         public string Translate(string Language, string Key)
         {           
-            return base[Language]?[Key] ?? string.Empty;
+            if(_message.ContainsKey(Language) && _message[Language].ContainsKey(Key))
+            {
+                return _message[Language][Key];
+            }
+            return string.Empty;
         }
 
-        public static Translations LoadTranslation (Plugin plugin)
+        public void LoadTranslation()
         {
-            string path = Path.Combine(plugin.FileInfo.DirectoryName, "Translation.json");
+            string path = Path.Combine(_plugin.FileInfo.DirectoryName, "Translation.json");
 
             if(File.Exists(path))
             {
-                Translations translation = JsonConvert.DeserializeObject<Translations>(File.ReadAllText(path));
-                return translation;
+                _message = JSONHelper.FromFile<Dictionary<string, Dictionary<string, string>>>(path);
             }
-            return null;
         }
     }
 }

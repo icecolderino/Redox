@@ -62,33 +62,35 @@ namespace Redox.API.Configuration
         }
         public void AddSetting(string key, object value)
         {
-            this[key] = value;
-            /*
+            //this[key] = value;
+            
             if (!Settings.ContainsKey(key))
+            {
+                //Todo: Add a check if the value is a luatable or not
                 Settings.Add(key, value);
-            else
-                SetSetting(key, value);
-                */
+            }
+                
+                
         }
 
         public void SetSetting(string key, object value)
         {
-            this[key] = value;
-            /*
+           // this[key] = value;
+            
             if (Settings.ContainsKey(key))
                 Settings[key] = value;
             else
                 AddSetting(key, value);
-                */
+                
         }
         public object GetSetting(string key)
         {
-            return this[key];
-            /*
+          //  return this[key];
+            
             if (Settings.ContainsKey(key))
                 return Settings[key];
             return null;
-            */
+           
         }  
         public bool TryGetSetting(string key, out object ob)
         {
@@ -104,7 +106,11 @@ namespace Redox.API.Configuration
         public bool HasSetting(string key)
         {
             return Settings.ContainsKey(key);
-        }    
+        }
+        public Dictionary<string, object> GetSettings()
+        {
+            return Settings;
+        }
         public void Load()
         {
             if (Exists)

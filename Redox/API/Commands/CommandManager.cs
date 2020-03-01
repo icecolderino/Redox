@@ -33,11 +33,11 @@ namespace Redox.API.Commands
             this.plugin = plugin;          
         }
 
-        public Command Register(string command, string description, string permission, CommandFlags commandFlags, Action<CommandExecutor, string[]> action)
+        public Command Register(string command, string description, CommandFlags commandFlags, Action<CommandExecutor, string[]> action)
         {
             if (!RegisteredCommands.Contains(command))
             {
-                Command cmd = new Command(command, description, permission, commandFlags, action);
+                Command cmd = new Command(command, description, commandFlags, action);
                 _commands.Add(cmd);
                 return cmd;
             }

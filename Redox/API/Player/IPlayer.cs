@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Collections.Generic;
 using Redox.API.Permissions;
 using Redox.Core.User;
@@ -34,8 +35,7 @@ namespace Redox.API.Player
         /// The ipaddress of the player
         /// </summary>
         string IP { get; }
-
-        string Language { get; }
+      
 
         /// <summary>
         /// Health of the player
@@ -51,6 +51,14 @@ namespace Redox.API.Player
         /// Gets if the player is an admin on the server
         /// </summary>
         bool IsAdmin { get; set; }
+
+        bool IsOnline { get; }
+
+
+        /// <summary>
+        /// The culture of the player
+        /// </summary>
+        CultureInfo Language { get; }
 
         /// <summary>
         /// The date of the join session
@@ -83,6 +91,7 @@ namespace Redox.API.Player
         /// <param name="message"></param>
         void Message(string prefix, string message);
 
+
         /// <summary>
         /// Disconnects the player from the server
         /// </summary>
@@ -110,6 +119,8 @@ namespace Redox.API.Player
 
         void Teleport(float x, float y, float z);
         void Teleport(Vector3 loc);
+
+        uint TimeOnline { get; }
 
         #region Permissions
 

@@ -10,13 +10,14 @@ using UnityEngine;
 using Redox.Core.PluginEngines;
 
 using Redox.API;
-using Redox.API.Plugins.CSharp;
 using Redox.API.Helpers;
 using Redox.API.Libraries;
 using Redox.API.Collections;
 using Redox.API.Permissions;
 using Redox.API.DependencyInjection;
 using Redox.API.Plugins;
+using Redox.API.Plugins.CSharp;
+using Redox.API.Plugins.Lua;
 using Redox.API.Plugins.Extension;
 
 namespace Redox
@@ -90,7 +91,7 @@ namespace Redox
                 Logger = DependencyContainer.Resolve<ILogger>();
 
                 PluginEngines.Register<CSPluginEngine>();
-
+                PluginEngines.Register<LuaEngine>();
                 Logger.LogInfo("[Redox] Loading data...");
 
                 await PermissionManager.Initialize();

@@ -20,13 +20,13 @@ namespace Redox.API.Plugins.CSharp
 
         private readonly IDictionary<string, MethodInfo> Methods = new Dictionary<string, MethodInfo>();
 
-        protected abstract void Load();
+        protected abstract void Initialized();
 
-        protected abstract void Unload();
+        protected abstract void Deinitialized();
 
         internal override void Initialize()
         {
-            this.Load();
+            this.Initialize();
             if(base.LicenseURL.ToString() != "https://yourlicenseurl.com/")
             {
                 Logger.LogColor($"[{Title}] Is licensed by: {base.LicenseURL}", ConsoleColor.DarkYellow);
@@ -34,7 +34,7 @@ namespace Redox.API.Plugins.CSharp
         }
         internal override void Deinitialize()
         {
-            this.Unload();
+            this.Deinitialize();
         }
 
         /// <summary>
