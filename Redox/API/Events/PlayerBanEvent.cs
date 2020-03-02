@@ -19,12 +19,12 @@ namespace Redox.API.Events
         /// <summary>
         /// The player that got banned
         /// </summary>
-        public IPlayer Victim { get; private set; }
+        public IPlayer Victim { get; }
 
         /// <summary>
         /// The Executor of the ban command, This either be an console or player
         /// </summary>
-        public IUser Executor { get; private set; }
+        public IUser Executor { get; }
 
         /// <summary>
         /// Gets if the Executor is an player

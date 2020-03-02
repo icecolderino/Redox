@@ -97,6 +97,9 @@
     <Compile Include="API\DependencyInjection\ServiceDescriptor.cs" />
     <Compile Include="API\Entity\IEntity.cs" />
     <Compile Include="API\Entity\IEntityManager.cs" />
+    <Compile Include="API\Entity\IInventory.cs" />
+    <Compile Include="API\Entity\IItem.cs" />
+    <Compile Include="API\Events\ChatEvent.cs" />
     <Compile Include="API\Events\PlayerBanEvent.cs" />
     <Compile Include="API\Extensions\CollectionExtension.cs" />
     <Compile Include="API\Extensions\ObjectExtension.cs" />

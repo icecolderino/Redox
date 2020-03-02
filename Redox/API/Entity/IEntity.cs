@@ -27,6 +27,8 @@ namespace Redox.API.Entity
 
         IPlayer Creator { get; }
 
+        IInventory Inventory { get; }
+
         float Health { get; set; }
 
         float MaxHealth { get; }
@@ -34,8 +36,6 @@ namespace Redox.API.Entity
         int UniqueID { get; }
 
         object Object { get; }
-
-        IEntity OriginalEntity { get; }
 
         T GetObject<T>();
 

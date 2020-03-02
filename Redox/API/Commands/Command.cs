@@ -18,8 +18,6 @@ namespace Redox.API.Commands
             this.Name = Name;
             this.Flags = Flags;
             this.Action = Action;
-
         }
-
     }
 }

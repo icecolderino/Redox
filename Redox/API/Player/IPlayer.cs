@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Globalization;
 using System.Collections.Generic;
-using Redox.API.Permissions;
+
 using Redox.Core.User;
+
+using Redox.API.Entity;
+using Redox.API.Permissions;
+
+
+
 using UnityEngine;
 
 namespace Redox.API.Player
@@ -10,7 +16,7 @@ namespace Redox.API.Player
     /// <summary>
     /// Base representation for Players
     /// </summary>
-    public interface IPlayer : IUser
+    public interface IPlayer
     {
         /// <summary>
         /// The display name of the Player
@@ -54,6 +60,7 @@ namespace Redox.API.Player
 
         bool IsOnline { get; }
 
+        IInventory Inventory { get; }
 
         /// <summary>
         /// The culture of the player
