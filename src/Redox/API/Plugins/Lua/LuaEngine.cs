@@ -31,7 +31,7 @@ namespace Redox.API.Plugins.Lua
                 {                 
                     if (!Plugins.ContainsKey(name))
                     {
-                        LuaPlugin plugin = new LuaPlugin(info, File.ReadAllText(file));
+                        LuaPlugin plugin = new LuaPlugin(File.ReadAllText(file));
                         PluginContainer container = new PluginContainer(plugin, null, Language);
                         container.Plugin.FileInfo = info;
                         PluginCollector.GetCollector().AddPlugin(container);

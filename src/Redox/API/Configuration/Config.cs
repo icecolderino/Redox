@@ -7,7 +7,6 @@ using Redox.Core.Plugins;
 using Redox.Core.Configuration;
 
 using Redox.API.Helpers;
-using NLua;
 
 namespace Redox.API.Configuration
 {
