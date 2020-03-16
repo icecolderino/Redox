@@ -41,9 +41,11 @@ namespace Redox.API.Plugins
         /// <param name="Title"></param>
         public void UnloadPlugin(string Title)
         {
-            var container = Plugins.Values.FirstOrDefault(x => x.Plugin.Title.ToLower() == Title.ToLower());
-
-            PluginEngines.UnloadPlugin(null, container);
+            if(Plugins.TryGetValue(Title, out PluginContainer container))
+            {
+                PluginEngines.UnloadPlugin(Title, container);
+            }
+            
         }
         /// <summary>
         /// Reloads the specified plugin
@@ -78,12 +80,13 @@ namespace Redox.API.Plugins
         /// <param name="container"></param>
         public void AddPlugin(PluginContainer container)
         {
-            string name = container.Plugin.Title.ToLower();
+            string name = container.Plugin.Title;
 
             if (!Plugins.ContainsKey(name))
+            {
                 Plugins.Add(name, container);
-
-            container.Start();            
+                container.Start();
+            }                                   
         }
 
         /// <summary>
@@ -109,10 +112,7 @@ namespace Redox.API.Plugins
         /// <returns></returns>
         public Plugin GetPlugin(string name)
         {
-            name = name.ToLower();
-            if (Plugins.ContainsKey(name))
-                return Plugins[name].Plugin;
-            return null;
+            return Plugins.FirstOrDefault(x => x.Value.Plugin.Title == name).Value.Plugin;
         }
 
         /// <summary>
@@ -122,10 +122,7 @@ namespace Redox.API.Plugins
         /// <returns></returns>
         public PluginContainer GetContainer(string name)
         {
-            name = name.ToLower();
-            if (Plugins.ContainsKey(name))
-                return Plugins[name];
-            return null;
+            return Plugins.FirstOrDefault(x => x.Value.Plugin.Title == name).Value;
         }
         public IReadOnlyCollection<PluginContainer> GetPlugins()
         {

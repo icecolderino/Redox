@@ -17,7 +17,7 @@ using Redox.API.Permissions;
 using Redox.API.DependencyInjection;
 using Redox.API.Plugins;
 using Redox.API.Plugins.CSharp;
-using Redox.API.Plugins.Lua;
+using Redox.API.Plugins.Javascript;
 using Redox.API.Plugins.Extension;
 
 namespace Redox
@@ -82,16 +82,16 @@ namespace Redox
                 else
                     YAMLHelper.ToFile(path, config.Init());
 
-                InterpreterAssemblies.Add(typeof(GameObject).Assembly);
+                InterpreterAssemblies.Add(Assembly.GetAssembly(typeof(GameObject)));
 
-                await this.LoadDependencies();
+               this.LoadDependencies();
 
                 ExtensionLoader.Load();
 
                 Logger = DependencyContainer.Resolve<ILogger>();
 
                 PluginEngines.Register<CSPluginEngine>();
-                PluginEngines.Register<LuaEngine>();
+                PluginEngines.Register<JSEngine>();
                 Logger.LogInfo("[Redox] Loading data...");
 
                 await PermissionManager.Initialize();
@@ -99,7 +99,6 @@ namespace Redox
                 PermissionManager.CreateGroup("admin");
 
                 Logger.LogInfo("[Redox] Loading standard library..");
-                SQLiteConnector.GetInstance();
                 LocalStorage.GetStorage();              
                 PluginCollector.GetCollector();
 
@@ -113,18 +112,32 @@ namespace Redox
            
         }
 
-        private async Task LoadDependencies()
+        public void Update()
         {
-            await Task.Run(() =>
+            if(Web.Requests.Count <= 2)
             {
-                foreach(var file in Directory.GetFiles(DependencyPath, "*.dll"))
-                {
-                    var assembly = Assembly.LoadFrom(file);
-                    dependencies.Add(assembly);
-                }
-            });
+                if (Web.RequestsQueue.Count != 0 && Web.RequestsQueue.Peek() != null) 
+                    Web.Requests.Add(Web.RequestsQueue.Dequeue());
+            }
+
+            if (Web.Requests.Count == 0)
+                return;
+
+            foreach(var request in Web.Requests)
+            {
+                if (request.Complete)
+                    Web.Requests.Remove(request);
+            }
+        }
 
 
+        private void LoadDependencies()
+        {
+            foreach (var file in Directory.GetFiles(DependencyPath, "*.dll"))
+            { 
+                 var assembly = Assembly.LoadFrom(file);
+                 dependencies.Add(assembly);
+            }
         }
 
         public static async void Disable()

@@ -24,6 +24,7 @@ namespace Redox.API.Libraries
 
         public static LocalStorage GetStorage()
         {
+            
             if (instance == null)
                 instance = new LocalStorage();
             return instance;
@@ -38,8 +39,6 @@ namespace Redox.API.Libraries
                 {
                     BinaryFormatter formatter = new BinaryFormatter();
                     table = formatter.Deserialize(fs) as Hashtable;
-                    fs.Dispose();
-
                 }
             }
         }

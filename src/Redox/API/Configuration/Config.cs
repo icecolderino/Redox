@@ -23,7 +23,7 @@ namespace Redox.API.Configuration
     {
              
         private readonly Plugin plugin;
-        private readonly Dictionary<string, object> Settings;
+        private Dictionary<string, object> Settings;
         private readonly string name;
         private readonly ConfigType configType;
 
@@ -62,11 +62,9 @@ namespace Redox.API.Configuration
         }
         public void AddSetting(string key, object value)
         {
-            //this[key] = value;
-            
+           
             if (!Settings.ContainsKey(key))
             {
-                //Todo: Add a check if the value is a luatable or not
                 Settings.Add(key, value);
             }
                 
@@ -117,9 +115,9 @@ namespace Redox.API.Configuration
             {
                 string path = Path.Combine(plugin.FileInfo.DirectoryName, name);
                 if (configType == ConfigType.JSON)
-                    JSONHelper.FromFile<Dictionary<string, object>>(path);
+                    Settings = JSONHelper.FromFile<Dictionary<string, object>>(path);
                 else
-                    YAMLHelper.FromFile<Dictionary<string, object>>(path);
+                    Settings = YAMLHelper.FromFile<Dictionary<string, object>>(path);
             }
         }
         public void Save()
@@ -131,6 +129,20 @@ namespace Redox.API.Configuration
                 JSONHelper.ToFile(path, Settings);
             else
                 YAMLHelper.ToFile(path, Settings);
+        }
+
+        public void Write(object obj)
+        {
+            JSONHelper.ToFile(Path.Combine(plugin.FileInfo.DirectoryName, name), obj);
+        }
+        public T Read<T>()
+        {
+            string path = Path.Combine(plugin.FileInfo.DirectoryName, name);
+            if(Exists)
+            {
+                return JSONHelper.FromFile<T>(path);
+            }
+            return default(T);
         }
         public async Task LoadAsync()
         {

@@ -33,7 +33,7 @@ namespace Redox.API.Commands
             this.plugin = plugin;          
         }
 
-        public Command Register(string command, string description, CommandFlags commandFlags, Action<CommandExecutor, string[]> action)
+        public Command Register(string command, string description, CommandCaller commandFlags, Action<CommandExecutor, string[]> action)
         {
             if (!RegisteredCommands.Contains(command))
             {

@@ -22,7 +22,7 @@ namespace Redox.Core.PluginEngines
             var engine = typeof(TEngine);
             if (!_engines.Contains(engine))
                 _engines.Add(engine);
-            Logger.LogColor($"[Redox] Succesfully Registered {engine.Name}", ConsoleColor.Cyan);
+            Logger.LogInfo($"[Redox] Succesfully Registered {engine.Name}");
         }
         public static void Unregister(string name)
         {
@@ -45,7 +45,7 @@ namespace Redox.Core.PluginEngines
                 var instance = (IPluginEngine)Activator.CreateInstance(engine);
                 if (!_instances.Contains(instance))
                 {
-                    logger.LogColor(string.Format("[Redox] Loading {0} Engine..", instance.Language), ConsoleColor.Cyan);
+                    logger.LogInfo(string.Format("[Redox] Loading {0} Engine..", instance.Language));
                     _instances.Add(instance);
                     instance.LoadPlugins();
                     
@@ -61,7 +61,7 @@ namespace Redox.Core.PluginEngines
 
             foreach(var instance in _instances)
             {
-                Logger.LogColor(string.Format("[Redox] Unloading engine {0}", instance.Language), ConsoleColor.DarkBlue);
+                Logger.LogInfo(string.Format("[Redox] Unloading engine {0}", instance.Language));
                 instance.UnloadPlugins();
             }
         }

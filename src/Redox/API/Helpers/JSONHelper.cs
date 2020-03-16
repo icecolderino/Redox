@@ -14,6 +14,10 @@ namespace Redox.API.Helpers
             return SerializeObject(obj, Newtonsoft.Json.Formatting.Indented);
         }
         
+        public static object FromJson(string value)
+        {
+            return FromJson<object>(value);
+        }
         public static T FromJson<T>(string value)
         {
             try

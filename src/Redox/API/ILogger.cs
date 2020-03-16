@@ -16,7 +16,6 @@ namespace Redox.API
 
         void LogError(string message);
 
-        void LogColor(string message, ConsoleColor Color);
         void LogSpeed(string message);
 
         void LogException(Exception ex);

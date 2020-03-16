@@ -33,9 +33,9 @@ namespace Redox.Core.Plugins
 
         protected virtual Translations translation { get; set; }
         protected virtual PluginCollector Collector { get;  }
-        protected virtual IServer Server { get;}
+        public virtual IServer Server { get;}
         public ILogger Logger = Redox.Logger;
-        protected virtual IEntityManager World { get; }
+        public virtual IEntityManager World { get; }
 
         public FileInfo FileInfo { get; set; }
 

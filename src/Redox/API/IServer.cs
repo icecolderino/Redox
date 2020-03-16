@@ -6,7 +6,7 @@ using Redox.API.Player;
 
 namespace Redox.API
 {
-    public interface IServer
+    public interface IServer : IPlayerManager
     {
         /// <summary>
         /// The name of the server
