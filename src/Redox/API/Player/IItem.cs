@@ -1,5 +1,5 @@
 ﻿
-namespace Redox.API.Entity
+namespace Redox.API.Player
 {
     public interface IItem
     {

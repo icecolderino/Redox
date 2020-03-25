@@ -7,7 +7,6 @@ using Redox.Core.Plugins;
 using Redox.API.Helpers;
 using Redox.API.Commands;
 using Redox.API.Libraries;
-using Redox.API.Libraries.SQLite;
 using Redox.API.DependencyInjection;
 
 using Jint;
@@ -15,7 +14,6 @@ using Jint.Parser;
 using Jint.Runtime.Interop;
 using Jint.Native;
 using Jint.Parser.Ast;
-using Redox.API.Entity;
 using UnityEngine;
 
 namespace Redox.API.Plugins.Javascript
@@ -41,14 +39,13 @@ namespace Redox.API.Plugins.Javascript
             Engine.SetValue("Plugin", this);
             Engine.SetValue("Server", DependencyContainer.Resolve<IServer>());
             Engine.SetValue("Logger", Redox.Logger);
-            Engine.SetValue("World", DependencyContainer.Resolve<IEntityManager>());
             Engine.SetValue("Plugins", PluginCollector.GetCollector());
-            Engine.SetValue("Storage", LocalStorage.GetStorage());
-        //    Engine.SetValue("Web", TypeReference.CreateTypeReference(Engine, typeof(Web)));
+            //    Engine.SetValue("Web", TypeReference.CreateTypeReference(Engine, typeof(Web)));
+            Engine.SetValue("Storage", TypeReference.CreateTypeReference(Engine, typeof(LocalStorage)));
             Engine.SetValue("Util", TypeReference.CreateTypeReference(Engine, typeof(Util)));
             Engine.SetValue("Json", TypeReference.CreateTypeReference(Engine, typeof(JSONHelper)));
-            Engine.SetValue("SQLite", TypeReference.CreateTypeReference(Engine, typeof(SQLite)));
-            foreach (var pair in Redox.InterpreterVariables)
+          //  Engine.SetValue("SQLite", TypeReference.CreateTypeReference(Engine, typeof(SQLite)));
+            foreach (var pair in Redox.InterpreterVariables) 
             {
                 Engine.SetValue(pair.Key, pair.Value);
             }       

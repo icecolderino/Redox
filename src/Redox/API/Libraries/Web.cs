@@ -2,7 +2,6 @@
 using System.IO;
 using System.Net;
 using System.Text;
-using System.Threading;
 using System.Collections.Generic;
 
 namespace Redox.API.Libraries
@@ -35,7 +34,6 @@ namespace Redox.API.Libraries
             public string PostData { get; }
             public Action<int, string> CallBack { get; }
 
-            private Thread thread;
             public bool Complete { get; private set; } = false;
 
             internal Request(RequestType type, string url, string data, string[] headers, Action<int, string> callback)
@@ -46,8 +44,7 @@ namespace Redox.API.Libraries
                 Headers = headers;
                 CallBack = callback;
 
-                thread = new Thread(Create);
-                thread.Start();
+                Create();
             }
 
             internal void Create()
@@ -80,12 +77,7 @@ namespace Redox.API.Libraries
                     using (Stream stream = response.GetResponseStream())
                     using (StreamReader reader = new StreamReader(stream))
                     {
-                        int code = (int)response.StatusCode;
-                        if (code == 408)
-                        {
-                            Redox.Logger.LogWarning("[Redox] Webrequest timeout...");
-                            return;
-                        }
+                        int code = (int)response.StatusCode;                     
                         string res = reader.ReadToEnd();
                         try
                         {

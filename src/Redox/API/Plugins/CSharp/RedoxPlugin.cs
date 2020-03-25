@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 using Redox.API;
 using Redox.API.DependencyInjection;
-using Redox.API.Entity;
 using Redox.Core.Plugins;
 
 namespace Redox.API.Plugins.CSharp
@@ -17,7 +16,6 @@ namespace Redox.API.Plugins.CSharp
     {         
         protected override PluginCollector Collector => PluginCollector.GetCollector();
         public override IServer Server => DependencyContainer.Resolve<IServer>();
-        public override IEntityManager World => DependencyContainer.Resolve<IEntityManager>();
 
         private readonly IDictionary<string, MethodInfo> Methods = new Dictionary<string, MethodInfo>();
 

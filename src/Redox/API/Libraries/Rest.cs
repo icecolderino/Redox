@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Redox.API.Player;
 using RestSharp;
 using RestSharp.Authenticators;
 
@@ -23,6 +24,7 @@ namespace Redox.API.Libraries
 
         private readonly string _url;
 
+    
         public Rest(string url, string username, string password)
         {
             _url = url;

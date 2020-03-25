@@ -12,7 +12,6 @@ using Redox.Core.PluginEngines;
 using Redox.API;
 using Redox.API.Helpers;
 using Redox.API.Libraries;
-using Redox.API.Collections;
 using Redox.API.Permissions;
 using Redox.API.DependencyInjection;
 using Redox.API.Plugins;
@@ -28,13 +27,13 @@ namespace Redox
         public static readonly Version version = assembly.GetName().Version;
 
         #region Paths
-        public static string DefaultPath { get; private set; } = Directory.GetCurrentDirectory() + "\\Redox\\";
-        public static string PluginPath { get; private set; } = Path.Combine(DefaultPath, "Plugins\\");
-        public static string ExtensionPath { get; private set; } = Path.Combine(DefaultPath, "Extensions\\");
-        public static string DependencyPath { get; private set; } = Path.Combine(DefaultPath, "Dependencies\\");
-        public static string LibrariesPath { get; private set; } = Path.Combine(DefaultPath, "Libs\\");
-        public static string DataPath { get; private set; } = Path.Combine(DefaultPath, "Data\\");
-        public static string LoggingPath { get; private set; } = Path.Combine(DefaultPath, "Logs\\");
+        public static string RootPath { get; private set; } = Directory.GetCurrentDirectory() + "\\Redox\\";
+        public static string PluginPath { get; private set; } = Path.Combine(RootPath, "Plugins\\");
+        public static string ExtensionPath { get; private set; } = Path.Combine(RootPath, "Extensions\\");
+        public static string DependencyPath { get; private set; } = Path.Combine(RootPath, "Dependencies\\");
+        public static string LibrariesPath { get; private set; } = Path.Combine(RootPath, "Libs\\");
+        public static string DataPath { get; private set; } = Path.Combine(RootPath, "Data\\");
+        public static string LoggingPath { get; private set; } = Path.Combine(RootPath, "Logs\\");
         public static string AssemblePath { get; private set; } = Path.GetDirectoryName(assembly.Location);
 
         #endregion Paths
@@ -57,17 +56,17 @@ namespace Redox
             {
                 if(!string.IsNullOrEmpty(customPath))
                 {
-                    DefaultPath = customPath;
-                    PluginPath = Path.Combine(DefaultPath, "Plugins\\");
-                    ExtensionPath = Path.Combine(DefaultPath, "Extensions\\");
-                    DependencyPath = Path.Combine(DefaultPath, "Dependencies\\");
-                    LibrariesPath = Path.Combine(DefaultPath, "Libs\\");
-                    DataPath = Path.Combine(DefaultPath, "Data\\");
-                    LoggingPath = Path.Combine(DefaultPath, "Logs\\");
+                    RootPath = customPath;
+                    PluginPath = Path.Combine(RootPath, "Plugins\\");
+                    ExtensionPath = Path.Combine(RootPath, "Extensions\\");
+                    DependencyPath = Path.Combine(RootPath, "Dependencies\\");
+                    LibrariesPath = Path.Combine(RootPath, "Libs\\");
+                    DataPath = Path.Combine(RootPath, "Data\\");
+                    LoggingPath = Path.Combine(RootPath, "Logs\\");
                 }
                 
 
-                if (!Directory.Exists(DefaultPath)) Directory.CreateDirectory(DefaultPath);
+                if (!Directory.Exists(RootPath)) Directory.CreateDirectory(RootPath);
                 if (!Directory.Exists(LoggingPath)) Directory.CreateDirectory(LoggingPath);
                 if (!Directory.Exists(ExtensionPath)) Directory.CreateDirectory(ExtensionPath);
                 if (!Directory.Exists(DependencyPath)) Directory.CreateDirectory(DependencyPath);
@@ -76,11 +75,11 @@ namespace Redox
                 if (!Directory.Exists(DataPath)) Directory.CreateDirectory(DataPath);
 
            
-                string path = Path.Combine(DefaultPath, "Redox.yml");
+                string path = Path.Combine(RootPath, "Redox.json");
                 if (File.Exists(path))
-                    config = YAMLHelper.FromFile<RedoxConfig>(path);
+                    config = JSONHelper.FromFile<RedoxConfig>(path);
                 else
-                    YAMLHelper.ToFile(path, config.Init());
+                    JSONHelper.ToFile(path, config.Init());
 
                 InterpreterAssemblies.Add(Assembly.GetAssembly(typeof(GameObject)));
 
@@ -99,7 +98,7 @@ namespace Redox
                 PermissionManager.CreateGroup("admin");
 
                 Logger.LogInfo("[Redox] Loading standard library..");
-                LocalStorage.GetStorage();              
+                LocalStorage.Load();             
                 PluginCollector.GetCollector();
 
             }
@@ -140,14 +139,14 @@ namespace Redox
             }
         }
 
-        public static async void Disable()
+        public static void Disable()
         {
             //   await Permissions.Save();
             //await Groups.Save();
 
             Logger.Log("[Redox] Preparing to shutdown..");
 
-            await LocalStorage.GetStorage().Save();
+            LocalStorage.Save();
             PluginEngines.UnloadAll();
           
         }
@@ -160,22 +159,12 @@ namespace Redox
             public bool LoadIncompitablePlugins;
             public string[] WhitelistedAssemblyNames;
 
-            public HashMap<string, object> Rest;
-
             public RedoxConfig Init()
             {
                 UnknownCommand = "Unknown Command!";
                 PluginSecurity = true;
                 LoadIncompitablePlugins = false;
-                WhitelistedAssemblyNames = new string[] { };
-
-                Rest = new HashMap<string, object>
-                {
-                    {"URL", "https://exampledomain.com"  },
-                    {"Username", "username" },
-                    {"password", "password" }
-                };
-                    
+                WhitelistedAssemblyNames = new string[] { };                           
                 return this;
             }
         }

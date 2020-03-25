@@ -1,205 +1,114 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
-
-using Redox.API.Collections;
-
-using UnityEngine;
-using System.Threading.Tasks;
+using Redox.API.Helpers;
+using Redox.API.Serialization;
 
 namespace Redox.API.Libraries
 {
+
     /// <summary>
-    /// Represents a localstore data file
+    /// LocalStorage for redox
     /// </summary>
-    public class LocalStorage 
+    public static class LocalStorage
     {
-        private readonly Hashtable table = new Hashtable();
-        private readonly string path = Path.Combine(Redox.DefaultPath, "Redox.storage");
+        private static readonly string path = Path.Combine(Redox.RootPath, "Storage.data");
+        private static Map<string, Map<object, object>> map = new Map<string, Map<object, object>>();
 
-        private static LocalStorage instance;
 
-        public static LocalStorage GetStorage()
+        public static void Add(string tablename, object key, object value)
         {
-            
-            if (instance == null)
-                instance = new LocalStorage();
-            return instance;
-        }
-
-        public LocalStorage()
-        {
-            Redox.Logger.LogInfo("[LocalStorage] Loading data..");
-            if(File.Exists(path))
+            if(!map.ContainsKey(tablename))
             {
-                using (FileStream fs = new FileStream(path, FileMode.Open))
-                {
-                    BinaryFormatter formatter = new BinaryFormatter();
-                    table = formatter.Deserialize(fs) as Hashtable;
-                }
+                map.Add(tablename, new Map<object, object> { { key, value } });
+            }
+            else if(!map[tablename].ContainsKey(key))
+            {
+                map[tablename].Add(key, value);
             }
         }
 
 
-        public void Append(string tablename, object key, object value)
-        {
-            if(key != null)
-            {
-                Stringify(ref value);
 
-
-                if (!(table[tablename] is Hashtable hash))
-                {
-                    hash = new Hashtable();
-                    table.Add(tablename, hash);
-                }
-                hash[key] = value;
-            }
-        }
-     
-        public void Remove(string tablename, object key)
+        public static void Set(string tablename, object key, object value)
         {
-            if(key != null)
+            if(map.ContainsKey(tablename))
             {
-                if (table[tablename] is Hashtable hash)
+                if(map[tablename].ContainsKey(key))
                 {
-                    hash.Remove(key);
+                    map[tablename][key] = value;
                 }
             }
         }
-
-        public void SetValue(string tablename, object key, object value)
+        public static void Remove(string tablename, object key)
         {
-            if((key != null) && (value != null))
+            if(map.ContainsKey(tablename))
             {
-                Stringify(ref value);
-
-                Hashtable hash = table[tablename] as Hashtable;
-
-                if(hash != null)
-                {
-                    hash[key] = value;
-                    return;
-                }
-                hash.Add(key, value);
+                if (map[tablename].ContainsKey(key))
+                    map[tablename].Remove(key);
             }
         }
-
-
-        public object GetValue(string tablename, object key)
+        public static bool HasKey(string tablename, object key)
         {
-            if(key != null)
-            {
-                if (table[tablename] is Hashtable hash)
-                {
-                    return hash[key];
-                }
-                return null;
-            }
+            return map.ContainsKey(tablename) && map[tablename].ContainsKey(key);
+        }
+        public static object Get(string tablename, object key)
+        {
+            if (map.ContainsKey(tablename) && HasKey(tablename, key))
+                return map[tablename][key];
             return null;
         }
-
-        public bool TryGetValue(string tablename, object key, out object value)
+        public static T Get<T>(string tablename, object key)
         {
-            object result = GetValue(tablename, key);
-
-            if(result != null)
-            {
-                value = result;
-                return true;
-            }
-            value = null;
-            return false;
+            return (T)Get(tablename, key);
+        }
+        public static void FlushAll()
+        {
+            map.Clear();
         }
 
-        public bool ContainsKey(string tablename, object key)
+        public static void Flush(string tablename)
         {
-            if (table[tablename] is Hashtable hash)
-            {
-                return hash.ContainsKey(key);
-            }
-            return false;
+            if (map.ContainsKey(tablename))
+                map[tablename].Clear();
         }
 
-        public object[] GetKeys (string tablename)
+        public static void Dump(string path)
         {
-            if (table[tablename] is Hashtable hash)
+            JSONHelper.ToFile(path, map);
+        }
+        public static void Load()
+        {
+            if(File.Exists(path))
             {
-                List<object> keys = new List<object>();
-
-                foreach (object key in hash.Keys)
+                try
                 {
-                    keys.Add(key);
+                    using (FileStream fs = new FileStream(path, FileMode.Open))
+                    {
+                        BinaryFormatter formatter = new BinaryFormatter();
+                        map = (Map<string, Map<object, object>>)formatter.Deserialize(fs);
+                    }
                 }
-                return keys.ToArray();
-            }
-            return new object[0];
-           
-        }
-
-        public HashMap<object, object> ToMap(string tablename)
-        {
-            if (table[tablename] is Hashtable hash)
-            {
-                var dict = new HashMap<object, object>();
-
-                foreach (KeyValuePair<object, object> pair in hash)
+                catch(Exception ex)
                 {
-                    dict.Add(pair.Key, pair.Value);
+                    Redox.Logger.LogError("[LocalStorage] Failed to load a storage because of error: " + ex.Message);
                 }
-                return dict;
-            }
-            return new HashMap<object, object>();
-        }
-
-        public HashMap<object, T> FilterType<T>(string tablename)
-        {
-            if (table[tablename] is Hashtable hash)
-            {
-                var dict = new HashMap<object, T>();
-
-                foreach (KeyValuePair<object, object> pair in hash)
-                {
-                    if (pair.Value is T)
-                        dict.Add(pair.Key, (T)pair.Value);
-
-                }
-                return dict;
-            }
-            return new HashMap<object, T>();
-        }
-
-        public void ClearTable(string tablename)
-        {
-            if (table[tablename] is Hashtable hash)
-            {
-                hash.Clear();
             }
         }
-
-        public async Task Save()
+        public static void Save()
         {
-            await Task.Run(() =>
+            try
             {
-                File.Delete(path);
-
-                using (FileStream fs = new FileStream(path, FileMode.Create))
+                using(FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     BinaryFormatter formatter = new BinaryFormatter();
-                    formatter.Serialize(fs, table);
-                    fs.Dispose();
+                    formatter.Serialize(fs, map);
                 }
-            });
-           
-        }
-
-        private void Stringify(ref object value)
-        {
-            if((value is Vector2) || (value is Vector3) || (value is Vector4) || (value is Quaternion))
-                value = value.ToString();
+            }
+            catch(Exception ex)
+            {
+                Redox.Logger.LogError("[LocalStorage] Failed to save storage because of error: " + ex.Message);
+            }
         }
     }
 }

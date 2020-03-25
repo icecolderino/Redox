@@ -75,13 +75,14 @@
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\Old\Oxygen mod\Core\Oxygen\bin\Debug\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="YamlDotNet, Version=8.0.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
-      <HintPath>..\packages\YamlDotNet.8.1.0\lib\net45\YamlDotNet.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API\Collections\HashList.cs" />
-    <Compile Include="API\Collections\HashMap.cs" />
+    <Compile Include="API\Data\BinaryDatafile.cs" />
+    <Compile Include="API\Libraries\LocalStorage.cs" />
+    <Compile Include="API\Player\IInventory.cs" />
+    <Compile Include="API\Player\IItem.cs" />
+    <Compile Include="API\Serialization\Set.cs" />
+    <Compile Include="API\Serialization\Map.cs" />
     <Compile Include="API\Commands\Command.cs" />
     <Compile Include="API\Commands\CommandExecutor.cs" />
     <Compile Include="API\Commands\CommandCaller.cs" />
@@ -92,25 +93,19 @@
     <Compile Include="API\DependencyInjection\DependencyContainer.cs" />
     <Compile Include="API\DependencyInjection\ServiceLifetime.cs" />
     <Compile Include="API\DependencyInjection\ServiceDescriptor.cs" />
-    <Compile Include="API\Entity\IEntity.cs" />
-    <Compile Include="API\Entity\IEntityManager.cs" />
-    <Compile Include="API\Entity\IInventory.cs" />
-    <Compile Include="API\Entity\IItem.cs" />
     <Compile Include="API\Events\ChatEvent.cs" />
     <Compile Include="API\Events\PlayerBanEvent.cs" />
     <Compile Include="API\Extensions\CollectionExtension.cs" />
     <Compile Include="API\Extensions\ObjectExtension.cs" />
     <Compile Include="API\Extensions\VectorExtension.cs" />
     <Compile Include="API\IServer.cs" />
-    <Compile Include="API\Configuration\Datafile.cs" />
-    <Compile Include="API\Libraries\LocalStorage.cs" />
+    <Compile Include="API\Data\Datafile.cs" />
     <Compile Include="API\ILogger.cs" />
     <Compile Include="API\Helpers\JSONHelper.cs" />
     <Compile Include="API\Libraries\Rest.cs" />
-    <Compile Include="API\Libraries\SQLite\SQLite.cs" />
+    <Compile Include="API\Libraries\SQLite.cs" />
     <Compile Include="API\Libraries\Timers.cs" />
     <Compile Include="API\Libraries\Web.cs" />
-    <Compile Include="API\Helpers\YAMLHelper.cs" />
     <Compile Include="API\Permissions\Group.cs" />
     <Compile Include="API\Permissions\Permission.cs" />
     <Compile Include="API\Permissions\PermissionManager.cs" />

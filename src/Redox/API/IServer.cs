@@ -51,7 +51,11 @@ namespace Redox.API
 
         void Broadcast(string prefix, string message);
 
-
+        /// <summary>
+        /// Unban a player from the server
+        /// </summary>
+        /// <param name="id"></param>
+        void Unban(string id);
 
     }
 }

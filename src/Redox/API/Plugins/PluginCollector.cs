@@ -141,8 +141,12 @@ namespace Redox.API.Plugins
         public void CallHook(string hookName, params object[] args)
         {
             foreach (var container in Plugins.Values)
-            {      
-                container.Plugin.Call(hookName, args);
+            {  
+                if(container.Running)
+                {
+                    container.Plugin.Call(hookName, args);
+                }
+                
             }
 
         }

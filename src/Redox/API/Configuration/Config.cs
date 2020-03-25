@@ -10,12 +10,6 @@ using Redox.API.Helpers;
 
 namespace Redox.API.Configuration
 {
-
-    public enum ConfigType : ushort
-    {
-        JSON = 0,
-        YAML = 1
-    }
     /// <summary>
     /// Represents a json & YAML configuration
     /// </summary>
@@ -25,7 +19,6 @@ namespace Redox.API.Configuration
         private readonly Plugin plugin;
         private Dictionary<string, object> Settings;
         private readonly string name;
-        private readonly ConfigType configType;
 
         public bool Exists
         {
@@ -35,30 +28,21 @@ namespace Redox.API.Configuration
             }
         }
 
-        public Config(string name, Plugin plugin, ConfigType configType = ConfigType.JSON)
+        public Config(string name, Plugin plugin)
         {
             Settings = new Dictionary<string, object>();
             this.plugin = plugin;
-            this.configType = configType;
-            this.name = configType == ConfigType.JSON ? name + ".json" : name + ".yml";
+            this.name = name + ".json";
         }
 
         public object this[string Key]
         {
             get
             {
-
                 if (Settings.TryGetValue(Key, out object value))
                     return value;
                 return null;
-            }
-            set
-            {
-                if (Settings.ContainsKey(Key))
-                    SetSetting(Key, value);
-                else
-                    AddSetting(Key, value);
-            }
+            }   
         }
         public void AddSetting(string key, object value)
         {
@@ -114,21 +98,14 @@ namespace Redox.API.Configuration
             if (Exists)
             {
                 string path = Path.Combine(plugin.FileInfo.DirectoryName, name);
-                if (configType == ConfigType.JSON)
-                    Settings = JSONHelper.FromFile<Dictionary<string, object>>(path);
-                else
-                    Settings = YAMLHelper.FromFile<Dictionary<string, object>>(path);
+                Settings = JSONHelper.FromFile<Dictionary<string, object>>(path);              
             }
         }
         public void Save()
         {
 
             string path = Path.Combine(plugin.FileInfo.DirectoryName, name);
-
-            if (configType == ConfigType.JSON)
-                JSONHelper.ToFile(path, Settings);
-            else
-                YAMLHelper.ToFile(path, Settings);
+            JSONHelper.ToFile(path, Settings);       
         }
 
         public void Write(object obj)

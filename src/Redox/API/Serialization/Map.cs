@@ -5,18 +5,19 @@ using System.Runtime.Serialization;
 
 using Redox.API.Helpers;
 
-namespace Redox.API.Collections
+namespace Redox.API.Serialization
 {
+    [Serializable]
     /// <summary>
     /// Provides a serializable dictionary with extra features
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class HashMap<TKey,TValue> : Dictionary<TKey, TValue>
+    public class Map<TKey,TValue> : Dictionary<TKey, TValue>
     {
-        public HashMap() : base() { }
+        public Map() : base() { }
 
-        public HashMap(SerializationInfo info, StreamingContext context) : base(info, context) {  }
+        public Map(SerializationInfo info, StreamingContext context) : base(info, context) {  }
       
         /// <summary>
         /// Returns true or false when the map is empty

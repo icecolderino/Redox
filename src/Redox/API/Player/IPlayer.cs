@@ -3,8 +3,6 @@ using System.Globalization;
 using System.Collections.Generic;
 
 using Redox.Core.User;
-
-using Redox.API.Entity;
 using Redox.API.Permissions;
 
 
@@ -110,19 +108,12 @@ namespace Redox.API.Player
         /// <param name="reason"></param>
         void Kick(string reason);
 
-
         /// <summary>
-        /// Bans a player from the server
-        /// </summary>
-        /// <param name="duration"></param>
-        void Ban(TimeSpan duration = default);
-
-        /// <summary>
-        /// 
+        /// Bans the player from the server
         /// </summary>
         /// <param name="reason"></param>
         /// <param name="duration"></param>
-        void Ban(string reason, TimeSpan duration = default);
+        void Ban(string reason);
 
         void Teleport(float x, float y, float z);
         void Teleport(Vector3 loc);

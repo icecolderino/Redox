@@ -7,7 +7,6 @@ using Redox.API.Commands;
 using Redox.API.Configuration;
 using Redox.API.Configuration.Translation;
 using Redox.API.DependencyInjection;
-using Redox.API.Entity;
 using Redox.API.Plugins;
 
 namespace Redox.Core.Plugins
@@ -25,7 +24,7 @@ namespace Redox.Core.Plugins
         public virtual Version Version { get { return new Version("1.0.0.0"); } }
         public virtual Version CoreVersion { get { return new Version("0.0.0.0"); } }      
         public virtual Uri LicenseURL { get { return new Uri("https://yourlicenseurl.com"); } }     
-        public virtual Uri ResourceURL { get { return new Uri("https://redoxmod.org"); } }
+        public virtual Uri ResourceURL { get { return new Uri("https://redoxmodding.org"); } }
 
     
         public virtual CommandManager Commands { get; internal set; }
@@ -35,8 +34,6 @@ namespace Redox.Core.Plugins
         protected virtual PluginCollector Collector { get;  }
         public virtual IServer Server { get;}
         public ILogger Logger = Redox.Logger;
-        public virtual IEntityManager World { get; }
-
         public FileInfo FileInfo { get; set; }
 
         internal virtual void Initialize() { }

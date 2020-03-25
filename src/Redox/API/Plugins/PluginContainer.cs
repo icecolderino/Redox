@@ -53,7 +53,6 @@ namespace Redox.API.Plugins
             this.Plugin.CheckTranslation();
             this.Plugin.Initialize();
             this.Running = true;
-           // PluginCollector.GetCollector().CallHook("OnPluginLoaded", Plugin);
         }
 
         public void Disable()

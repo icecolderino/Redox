@@ -23,12 +23,11 @@ namespace Redox.API.Libraries
                 return t_Timers.Count;
             }
             internal set
-            {
-
+            {           
             }
 
         }
-
+      
         internal static readonly HashSet<Timer> t_Timers = new HashSet<Timer>();
 
         public static Timer Create(double interval, TimerType timerType, Action callBack, int repeatRate = 0, bool startOnJoin = true)

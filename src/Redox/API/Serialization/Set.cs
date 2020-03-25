@@ -4,15 +4,16 @@ using System.Collections.Generic;
 
 using Redox.API.Helpers;
 
-namespace Redox.API.Collections
+namespace Redox.API.Serialization
 {
+    [Serializable]
     /// <summary>
     /// Provides a serializable dictionary with extra features
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
-    public class HashList<TKey> : List<TKey>
+    public class Set<TKey> : List<TKey>
     {
-        public HashList() : base() { }
+        public Set() : base() { }
 
 
         /// <summary>

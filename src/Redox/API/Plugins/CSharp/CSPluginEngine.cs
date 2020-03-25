@@ -62,6 +62,9 @@ namespace Redox.API.Plugins.CSharp
                         assembly = Assembly.Load(File.ReadAllBytes(file));
                         Assemblies.Add(name, assembly);
                     }
+                    if (Plugins.ContainsKey(name))
+                        continue;
+
                     if (this.IsSecure(assembly, out ViolationType violationType))
                     {
                         foreach (Type type in assembly.GetExportedTypes())
@@ -138,15 +141,9 @@ namespace Redox.API.Plugins.CSharp
         {
             if(Plugins.TryGetValue(name, out RedoxPlugin plugin))
             {
-                var container = PluginCollector.GetCollector().GetContainer(name);
-
-                if(container.Running)
-                {
-                    PluginCollector.GetCollector().UnloadPlugin(plugin.Title);
-                    Plugins.Remove(plugin.Title);
-
-                    logger.Log("[CSharp] Succesfully unloaded plugin " + plugin.Title);
-                }
+                PluginCollector.GetCollector().GetContainer(name).Disable();
+                Plugins.Remove(name);
+                logger.LogInfo("[CSharp] Succesfully unloaded plugin " + plugin.Title);
             }
         }
 
@@ -158,13 +155,12 @@ namespace Redox.API.Plugins.CSharp
 
         public void ReloadPlugin(string Name)
         {
-            var container = PluginCollector.GetCollector().GetContainer(Name);
-
-            if (container != null && container.Language == Language)
+            if(Plugins.TryGetValue(Name, out RedoxPlugin plugin))
             {
-                PluginCollector.GetCollector().ReloadPlugin(Name);
-                logger.LogInfo($"[CSharp] Succesfully reloaded plugin \"{container.Plugin.Title}\"");
-            }           
+                plugin.Deinitialize();
+                plugin.Initialize();
+                logger.LogInfo("[CSharp] Succesfully reloaded plugin " + Name);
+            }
         }
     }
 }

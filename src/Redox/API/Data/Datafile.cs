@@ -3,20 +3,21 @@ using System.IO;
 using System.Collections.Generic;
 
 using Redox.API.Helpers;
+using Redox.API.Serialization;
 
-namespace Redox.API.Configuration
+namespace Redox.API.Data
 {
     public sealed class Datafile
     {
 
-        private Dictionary<string, object> _settings;
+        private Map<string, object> _settings;
 
         private readonly string path;
 
 
         public Datafile(string Name)
         {
-            _settings = new Dictionary<string, object>();
+            _settings = new Map<string, object>();
             path = Path.Combine(Redox.DataPath, Name + ".json");              
         }
 
@@ -26,7 +27,7 @@ namespace Redox.API.Configuration
             {
                 if (File.Exists(path))
                 {
-                    _settings = JSONHelper.FromFile<Dictionary<string, object>>(path);
+                    _settings = JSONHelper.FromFile<Map<string, object>>(path);
                 }
             }
             catch(Exception ex)
