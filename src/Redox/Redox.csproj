@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\Data\BinaryDatafile.cs" />
+    <Compile Include="API\Exceptions\WebhookException.cs" />
     <Compile Include="API\Libraries\LocalStorage.cs" />
     <Compile Include="API\Player\IInventory.cs" />
     <Compile Include="API\Player\IItem.cs" />
@@ -117,6 +118,8 @@
     <Compile Include="API\Plugins\Javascript\JSPlugin.cs" />
     <Compile Include="API\Plugins\Watcher\PluginWatcher.cs" />
     <Compile Include="API\Util.cs" />
+    <Compile Include="API\WebHooks\Embed.cs" />
+    <Compile Include="API\WebHooks\Webhook.cs" />
     <Compile Include="Bootstrap.cs" />
     <Compile Include="API\Plugins\PluginCollector.cs" />
     <Compile Include="Core\Configuration\IConfiguration.cs" />
@@ -128,10 +131,8 @@
     <Compile Include="API\Plugins\PluginContainer.cs" />
     <Compile Include="API\Plugins\CSharp\CSPluginEngine.cs" />
     <Compile Include="Core\User\IUser.cs" />
-    <Compile Include="API\WebHook\Embed.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Redox.cs" />
-    <Compile Include="API\WebHook\Webhook.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

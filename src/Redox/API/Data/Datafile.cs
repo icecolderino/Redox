@@ -14,6 +14,13 @@ namespace Redox.API.Data
 
         private readonly string path;
 
+        public bool Exists
+        {
+            get
+            {
+                return File.Exists(path);
+            }
+        }
 
         public Datafile(string Name)
         {

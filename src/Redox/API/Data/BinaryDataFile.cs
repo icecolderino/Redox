@@ -8,6 +8,12 @@ namespace Redox.API.Data
 {
     public sealed class BinaryDatafile
     {
+       
+
+        private readonly string path;
+
+        private Map<string, object> _settings;
+
         public bool Exists
         {
             get
@@ -15,11 +21,6 @@ namespace Redox.API.Data
                 return File.Exists(path);
             }
         }
-
-        private readonly string path;
-
-        private Map<string, object> _settings;
-       
         public BinaryDatafile(string Name)
         {
             _settings = new Map<string, object>();

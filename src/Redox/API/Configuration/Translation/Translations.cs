@@ -12,13 +12,13 @@ namespace Redox.API.Configuration.Translation
     public sealed class Translations
     {
         private Plugin _plugin;
-        private Dictionary<string, Dictionary<string, string>> _message = new Dictionary<string, Dictionary<string, string>>();
+        private Dictionary<string, Dictionary<string, string>> messages = new Dictionary<string, Dictionary<string, string>>();
 
         public bool HasMessages
         {
             get
             {
-                return _message.Count > 0;
+                return messages.Count > 0;
             }
         }
 
@@ -30,22 +30,22 @@ namespace Redox.API.Configuration.Translation
         public void Save()
         {
             string path = Path.Combine(_plugin.FileInfo.DirectoryName, "Translation.json");
-            JSONHelper.ToFile(path, this);
+            JSONHelper.ToFile(path, messages);
             
         }
         
-        public void Register(string Language, Dictionary<string, string> messages)
+        public void Register(string Language, Dictionary<string, string> msg)
         {
-            if(!_message.ContainsKey(Language))
+            if(!messages.ContainsKey(Language))
             {
-                _message.Add(Language, messages);
+                messages.Add(Language, msg);
             }
         }
         public string Translate(string Language, string Key)
         {           
-            if(_message.ContainsKey(Language) && _message[Language].ContainsKey(Key))
+            if(messages.ContainsKey(Language) && messages[Language].ContainsKey(Key))
             {
-                return _message[Language][Key];
+                return messages[Language][Key];
             }
             return string.Empty;
         }
@@ -56,7 +56,7 @@ namespace Redox.API.Configuration.Translation
 
             if(File.Exists(path))
             {
-                _message = JSONHelper.FromFile<Dictionary<string, Dictionary<string, string>>>(path);
+                messages = JSONHelper.FromFile<Dictionary<string, Dictionary<string, string>>>(path);
             }
         }
     }
