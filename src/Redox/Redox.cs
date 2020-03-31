@@ -141,9 +141,7 @@ namespace Redox
 
         public static void Disable()
         {
-            //   await Permissions.Save();
-            //await Groups.Save();
-
+            PermissionManager.Save();
             Logger.Log("[Redox] Preparing to shutdown..");
 
             LocalStorage.Save();

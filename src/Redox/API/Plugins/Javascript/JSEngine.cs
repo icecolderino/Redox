@@ -28,10 +28,15 @@ namespace Redox.API.Plugins.Javascript
                 try
                 {
                     FileInfo info = new FileInfo(file);
-
-                    if (!Plugins.ContainsKey(Path.GetFileNameWithoutExtension(info.Name)))
+                    string name = Path.GetFileNameWithoutExtension(info.Name);
+                    if (!Plugins.ContainsKey(name))
                     {
                         JSPlugin plugin = new JSPlugin(File.ReadAllText(file));
+                        if(name != plugin.Title)
+                        {
+                            Redox.Logger.LogWarning($"[Jint] Failed to load plugin {plugin.Title} because the file name is not the same as the title");
+                            return;
+                        }
                         plugin.FileInfo = info;
                         PluginContainer container = new PluginContainer(plugin, null, Language);
                         PluginCollector.GetCollector().AddPlugin(container);
@@ -59,10 +64,10 @@ namespace Redox.API.Plugins.Javascript
 
         public void ReloadPlugins()
         {
-            foreach(string name in Plugins.Keys)
+            foreach(var plugin in Plugins.Values.ToList())
             {
-                UnloadPlugin(name);
-                LoadPlugin(name);
+                UnloadPlugin(plugin.Title);
+                LoadPlugin(plugin.Title);
             }
         }
 
@@ -77,8 +82,10 @@ namespace Redox.API.Plugins.Javascript
         }     
         public void UnloadPlugins()
         {
-            UnloadPlugins();
-            LoadPlugins();
+            foreach(var plugin in Plugins.Values.ToList())
+            {
+                UnloadPlugin(plugin.Title);
+            }
         }
     }
 }

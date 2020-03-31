@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace Redox.API.Permissions
@@ -30,7 +30,7 @@ namespace Redox.API.Permissions
         }
         public bool HasPermission(string permission)
         {
-            return Permissions.Contains(permission);
+            return Permissions.Contains(permission) || Groups.Any(x => PermissionManager.GetGroup(x).Permissions.Contains(permission));
         }
 
         public void JoinGroup(string group)

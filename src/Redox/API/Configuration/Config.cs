@@ -11,7 +11,7 @@ using Redox.API.Helpers;
 namespace Redox.API.Configuration
 {
     /// <summary>
-    /// Represents a json & YAML configuration
+    /// Represents a json configuration
     /// </summary>
     public class Config : IConfiguration
     {
@@ -35,12 +35,12 @@ namespace Redox.API.Configuration
             this.name = name + ".json";
         }
 
-        public object this[string Key]
+        public object this[string key]
         {
             get
             {
-                if (Settings.TryGetValue(Key, out object value))
-                    return value;
+                if (Settings.ContainsKey(key))
+                    return Settings[key];
                 return null;
             }   
         }

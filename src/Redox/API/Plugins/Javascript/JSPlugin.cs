@@ -15,6 +15,7 @@ using Jint.Runtime.Interop;
 using Jint.Native;
 using Jint.Parser.Ast;
 using UnityEngine;
+using Redox.API.Data;
 
 namespace Redox.API.Plugins.Javascript
 {
@@ -34,7 +35,6 @@ namespace Redox.API.Plugins.Javascript
         public JSPlugin(string code)
         {
             this.Code = code;
-
             Engine = new Engine(cfg => cfg.AllowClr(Redox.InterpreterAssemblies.ToArray()));         
             Engine.SetValue("Plugin", this);
             Engine.SetValue("Server", DependencyContainer.Resolve<IServer>());
@@ -87,7 +87,14 @@ namespace Redox.API.Plugins.Javascript
             }, headers);
         }
 
-
+        public Datafile CreateDatafile(string name)
+        {
+            return new Datafile(name);
+        }
+        public BinaryDatafile CreateBinaryDatafile(string name)
+        {
+            return new BinaryDatafile(name);
+        }
         private void CallFunction(JsValue func, params object[] args)
         {
             Engine.Invoke(func, args);

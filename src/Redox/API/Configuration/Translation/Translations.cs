@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 
 using Redox.API.Helpers;
 using Redox.Core.Plugins;
+using System.Globalization;
 
 namespace Redox.API.Configuration.Translation
 {
@@ -41,6 +42,12 @@ namespace Redox.API.Configuration.Translation
                 messages.Add(Language, msg);
             }
         }
+
+        public string Translate(CultureInfo culture, string key)
+        {
+            return Translate(culture.DisplayName.ToLower(), key);
+        }
+
         public string Translate(string Language, string Key)
         {           
             if(messages.ContainsKey(Language) && messages[Language].ContainsKey(Key))

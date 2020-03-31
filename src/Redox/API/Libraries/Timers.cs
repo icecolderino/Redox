@@ -30,7 +30,7 @@ namespace Redox.API.Libraries
       
         internal static readonly HashSet<Timer> t_Timers = new HashSet<Timer>();
 
-        public static Timer Create(double interval, TimerType timerType, Action callBack, int repeatRate = 0, bool startOnJoin = true)
+        public static Timer Create(double interval, TimerType timerType, Action<Timer> callBack, int repeatRate = 0, bool startOnJoin = true)
         {
             var timer = new Timer(interval, timerType, callBack, startOnJoin, repeatRate);
             t_Timers.Add(timer);
@@ -46,7 +46,7 @@ namespace Redox.API.Libraries
         private readonly int _repeatRate = 0;
         private int _repeated = 0;
 
-        private readonly Action _callBack;
+        private readonly Action<Timer> _callBack;
 
         private readonly double _interval;
 
@@ -54,8 +54,9 @@ namespace Redox.API.Libraries
 
         private System.Timers.Timer _timer;
 
-        public bool IsDestroyed = false;
+        public bool IsDestroyed { get; private set; }
 
+        public Dictionary<string, object> Data;
 
         public double TimeLeft
         {
@@ -65,13 +66,13 @@ namespace Redox.API.Libraries
             }
         }
 
-        public Timer(double Interval, TimerType timerType, Action callBack, bool startOnJoin, int repeatRate)
+        public Timer(double Interval, TimerType timerType, Action<Timer> callBack, bool startOnJoin, int repeatRate)
         {
             _callBack = callBack;
             _interval = Interval;
             _repeatRate = repeatRate;
             _timerType = timerType;
-
+            Data = new Dictionary<string, object>();
             if (startOnJoin)
                 this.Start();
         }
@@ -88,7 +89,7 @@ namespace Redox.API.Libraries
             };
             _timer.Elapsed += (x, y) =>
             {
-                _callBack.Invoke();
+                _callBack.Invoke(this);
 
                 if (_timerType == TimerType.Once)
                     this.Stop();

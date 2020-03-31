@@ -4,9 +4,6 @@ using System.Collections.Generic;
 
 using Redox.Core.User;
 using Redox.API.Permissions;
-
-
-
 using UnityEngine;
 
 namespace Redox.API.Player
@@ -58,8 +55,6 @@ namespace Redox.API.Player
 
         bool IsOnline { get; }
 
-        IInventory Inventory { get; }
-
         /// <summary>
         /// The culture of the player
         /// </summary>
@@ -77,7 +72,11 @@ namespace Redox.API.Player
         /// </summary>
         DateTime? LeaveDate { set; get; }
 
- 
+        uint TimeOnline { get; }
+
+        IList<string> BlockedCommands { get; }
+
+
         /// <summary>
         /// The original object of the player
         /// </summary>
@@ -118,7 +117,8 @@ namespace Redox.API.Player
         void Teleport(float x, float y, float z);
         void Teleport(Vector3 loc);
 
-        uint TimeOnline { get; }
+        void BlockCommand(string command);
+        void UnblockCommand(string command);
 
         #region Permissions
 

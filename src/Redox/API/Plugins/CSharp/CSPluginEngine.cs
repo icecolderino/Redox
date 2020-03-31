@@ -74,12 +74,17 @@ namespace Redox.API.Plugins.CSharp
                                 object instance = Activator.CreateInstance(type);
                                 RedoxPlugin plugin = (RedoxPlugin)instance;
 
+                                if (name != plugin.Title)
+                                {
+                                    logger.LogWarning($"[CSharp] Failed to load plugin {plugin.Title} because the file name is not the same as the title");
+                                    return;
+                                }
                                 if (((plugin.CoreVersion.ToString() == "0.0.0.0") || (plugin.CoreVersion >= Redox.version)) || Redox.config.LoadIncompitablePlugins)
                                 {
                                     plugin.FileInfo = info;
                                     PluginContainer container = new PluginContainer(plugin, instance, Language);
                                     PluginCollector.GetCollector().AddPlugin(container);
-                                    Plugins.Add(name, plugin);
+                                    Plugins.Add(plugin.Title, plugin);
                                     logger.LogInfo(string.Format("[CSharp] Succesfully loaded plugin {0}, {1}, Author {2} ({3})", plugin.Title, plugin.Version, plugin.Author, plugin.Description));
                                 }
                                 else
@@ -132,7 +137,7 @@ namespace Redox.API.Plugins.CSharp
 
         public void UnloadPlugins()
         {
-            foreach(var plugin in Plugins.Values)
+            foreach(var plugin in Plugins.Values.ToList())
             {
                 UnloadPlugin(plugin.Title);
             }

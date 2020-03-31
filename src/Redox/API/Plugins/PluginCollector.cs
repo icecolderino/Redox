@@ -144,7 +144,14 @@ namespace Redox.API.Plugins
             {  
                 if(container.Running)
                 {
-                    container.Plugin.Call(hookName, args);
+                    try
+                    {
+                        container.Plugin.Call(hookName, args);
+                    }
+                    catch
+                    {
+                        continue;
+                    }
                 }
                 
             }
