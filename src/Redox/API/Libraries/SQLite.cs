@@ -31,7 +31,7 @@ namespace Redox.API.Libraries
 
         public SQLite(string name, string password = "")
         {
-            string path = Path.Combine(Redox.DataPath, name);
+            string path = Path.Combine(Bootstrap.RedoxMod.DataPath, name);
             if (!File.Exists(path))
                 SQLiteConnection.CreateFile(path);
             FilePath = new FileInfo(path);
@@ -57,7 +57,7 @@ namespace Redox.API.Libraries
             }
             catch(SQLiteException ex)
             {
-                Redox.Logger.LogError($"[SQLite] Failed to open connection to {Name} because of error: {ex.Message}");
+                Bootstrap.RedoxMod.Logger.LogError($"[SQLite] Failed to open connection to {Name} because of error: {ex.Message}");
                 return false;
             }
         }
@@ -79,7 +79,7 @@ namespace Redox.API.Libraries
             }
             catch(SQLiteException ex)
             {
-                Redox.Logger.LogError($"[SQLite] Failed to close _connection of {Name} because of error: {ex.Message}");
+                Bootstrap.RedoxMod.Logger.LogError($"[SQLite] Failed to close _connection of {Name} because of error: {ex.Message}");
             }
         }
 

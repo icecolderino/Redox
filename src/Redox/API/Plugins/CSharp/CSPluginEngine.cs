@@ -23,18 +23,17 @@ namespace Redox.API.Plugins.CSharp
         }
         private static readonly Dictionary<string, RedoxPlugin> Plugins = new Dictionary<string, RedoxPlugin>();
         private static readonly Dictionary<string, Assembly> Assemblies = new Dictionary<string, Assembly>();
-        private static readonly string path = Redox.PluginPath;
+        private static readonly string path = Bootstrap.RedoxMod.PluginPath;
 
         public string Language => "CSharp";
         public string Pattern => "*.dll";
 
         public Dictionary<string, object> Values => new Dictionary<string, object>();
 
-        private static ILogger logger;
+        private static ILogger logger => Bootstrap.RedoxMod.Logger;
 
         public CSPluginEngine()
         {
-            logger = Redox.Logger;
         }
 
         public void LoadPlugins()
@@ -57,13 +56,23 @@ namespace Redox.API.Plugins.CSharp
                     sw.Start();
                     info = new FileInfo(file);
                     string name = Path.GetFileNameWithoutExtension(info.Name);
+                    if (Plugins.TryGetValue(name, out RedoxPlugin p))                    
+                    {
+                        if (p.Initialized)
+                        {
+                            logger.LogWarning(string.Format("[CSharp] Failed to load {0} because its already initialized", p.Title));
+                            break;
+                        }
+                        logger.LogInfo(string.Format("[CSharp] Succesfully loaded plugin {0}, {1}, Author {2} ({3})", p.Title, p.Version, p.Author, p.Description));
+                        p.Initialize();
+                        break;
+                    }
                     if (!Assemblies.TryGetValue(name, out Assembly assembly))
                     {
                         assembly = Assembly.Load(File.ReadAllBytes(file));
                         Assemblies.Add(name, assembly);
                     }
-                    if (Plugins.ContainsKey(name))
-                        continue;
+                   
 
                     if (this.IsSecure(assembly, out ViolationType violationType))
                     {
@@ -79,7 +88,7 @@ namespace Redox.API.Plugins.CSharp
                                     logger.LogWarning($"[CSharp] Failed to load plugin {plugin.Title} because the file name is not the same as the title");
                                     return;
                                 }
-                                if (((plugin.CoreVersion.ToString() == "0.0.0.0") || (plugin.CoreVersion >= Redox.version)) || Redox.config.LoadIncompitablePlugins)
+                                if (((plugin.CoreVersion.ToString() == "0.0.0.0") || (plugin.CoreVersion >= Redox.version)) || Bootstrap.RedoxMod.Config.LoadIncompitablePlugins)
                                 {
                                     plugin.FileInfo = info;
                                     PluginContainer container = new PluginContainer(plugin, instance, Language);
@@ -89,8 +98,6 @@ namespace Redox.API.Plugins.CSharp
                                 }
                                 else
                                     logger.LogWarning($"[Redox] Plugin \"{plugin.Title}\" is not compitable with the current redox version!");
-
-
                             }
                         }
                         sw.Stop();
@@ -115,7 +122,7 @@ namespace Redox.API.Plugins.CSharp
 
         private bool IsSecure(Assembly assembly, out ViolationType violationType)
         {
-            if (Redox.config.PluginSecurity)
+            if (Bootstrap.RedoxMod.Config.PluginSecurity)
             {
                 if (assembly.IsFullyTrusted)
                 {

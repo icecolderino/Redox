@@ -1,18 +1,22 @@
 ﻿using System;
-using UnityEngine;
 
 namespace Redox
 {
     public class Bootstrap
     {
-       public static GameObject Mod;
+        /// <summary>
+        /// RedoxMod instance
+        /// </summary>
+        public static Redox RedoxMod { get; private set; }
 
-        public static void Init(string customPath)
+
+        public static void Init(string customPath = "")
         {
-            Mod = new GameObject("Redox");
-            Mod.AddComponent<Redox>().Initialize(customPath);
-            UnityEngine.Object.DontDestroyOnLoad(Mod);
-         
+            if (RedoxMod != null)
+                return;
+
+            RedoxMod = new Redox();
+            RedoxMod.Initialize(customPath);
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using Redox.API.Helpers;
 using Redox.API.Serialization;
 
 namespace Redox.API.Libraries
@@ -12,7 +11,7 @@ namespace Redox.API.Libraries
     /// </summary>
     public static class LocalStorage
     {
-        private static readonly string path = Path.Combine(Redox.RootPath, "Storage.data");
+        private static readonly string path = Path.Combine(Bootstrap.RedoxMod.RootPath, "Storage.data");
         private static Map<string, Map<object, object>> map = new Map<string, Map<object, object>>();
 
 
@@ -75,7 +74,7 @@ namespace Redox.API.Libraries
 
         public static void Dump(string path)
         {
-            JSONHelper.ToFile(path, map);
+            Utility.Json.ToFile(path, map);
         }
         public static void Load()
         {
@@ -91,7 +90,7 @@ namespace Redox.API.Libraries
                 }
                 catch(Exception ex)
                 {
-                    Redox.Logger.LogError("[LocalStorage] Failed to load a storage because of error: " + ex.Message);
+                    Bootstrap.RedoxMod.Logger.LogError("[LocalStorage] Failed to load a storage because of error: " + ex.Message);
                 }
             }
         }
@@ -107,7 +106,7 @@ namespace Redox.API.Libraries
             }
             catch(Exception ex)
             {
-                Redox.Logger.LogError("[LocalStorage] Failed to save storage because of error: " + ex.Message);
+                Bootstrap.RedoxMod.Logger.LogError("[LocalStorage] Failed to save storage because of error: " + ex.Message);
             }
         }
     }

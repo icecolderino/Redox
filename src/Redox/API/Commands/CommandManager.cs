@@ -8,7 +8,7 @@ namespace Redox.API.Commands
     public class CommandManager
     {
         private static CommandManager instance;
-        private static ILogger Logger => Redox.Logger;
+        private static ILogger Logger => Bootstrap.RedoxMod.Logger;
         private readonly Plugin plugin;
         
 

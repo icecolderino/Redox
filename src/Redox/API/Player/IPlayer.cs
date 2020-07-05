@@ -4,8 +4,6 @@ using System.Collections.Generic;
 
 using Redox.Core.User;
 using Redox.API.Permissions;
-using UnityEngine;
-
 namespace Redox.API.Player
 {
     /// <summary>
@@ -56,7 +54,12 @@ namespace Redox.API.Player
         bool IsOnline { get; }
 
         /// <summary>
-        /// The culture of the player
+        /// The position of the player.
+        /// </summary>
+        Position Position { get; set; }
+
+        /// <summary>
+        /// The culture of the player  
         /// </summary>
         CultureInfo Language { get; }
 
@@ -115,7 +118,7 @@ namespace Redox.API.Player
         void Ban(string reason);
 
         void Teleport(float x, float y, float z);
-        void Teleport(Vector3 loc);
+        void Teleport(Position pos);
 
         void BlockCommand(string command);
         void UnblockCommand(string command);

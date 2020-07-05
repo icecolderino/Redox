@@ -1,19 +1,23 @@
 ﻿using System;
 using System.IO;
-using System.Threading.Tasks;
+using System.Reflection;
 using System.Collections.Generic;
 
-using Redox.Core.Plugins;
-using Redox.Core.Configuration;
 
-using Redox.API.Helpers;
+using Newtonsoft.Json;
+using Redox.API.Plugins.CSharp;
+using Redox.Core.Configuration;
+using Redox.Core.Plugins;
+using System.Threading.Tasks;
 
 namespace Redox.API.Configuration
 {
+
+    
     /// <summary>
     /// Represents a json configuration
     /// </summary>
-    public class Config : IConfiguration
+    public class PluginConfig : IConfiguration
     {
              
         private readonly Plugin plugin;
@@ -28,7 +32,7 @@ namespace Redox.API.Configuration
             }
         }
 
-        public Config(string name, Plugin plugin)
+        public PluginConfig(string name, Plugin plugin)
         {
             Settings = new Dictionary<string, object>();
             this.plugin = plugin;
@@ -98,26 +102,26 @@ namespace Redox.API.Configuration
             if (Exists)
             {
                 string path = Path.Combine(plugin.FileInfo.DirectoryName, name);
-                Settings = JSONHelper.FromFile<Dictionary<string, object>>(path);              
+                Settings = Utility.Json.FromFile<Dictionary<string, object>>(path);              
             }
         }
         public void Save()
         {
 
             string path = Path.Combine(plugin.FileInfo.DirectoryName, name);
-            JSONHelper.ToFile(path, Settings);       
+            Utility.Json.ToFile(path, Settings);       
         }
 
         public void Write(object obj)
         {
-            JSONHelper.ToFile(Path.Combine(plugin.FileInfo.DirectoryName, name), obj);
+            Utility.Json.ToFile(Path.Combine(plugin.FileInfo.DirectoryName, name), obj);
         }
         public T Read<T>()
         {
             string path = Path.Combine(plugin.FileInfo.DirectoryName, name);
             if(Exists)
             {
-                return JSONHelper.FromFile<T>(path);
+                return Utility.Json.FromFile<T>(path);
             }
             return default(T);
         }
@@ -131,5 +135,6 @@ namespace Redox.API.Configuration
             await Task.Run(() => Save());
         }
     }
+    
 }
   

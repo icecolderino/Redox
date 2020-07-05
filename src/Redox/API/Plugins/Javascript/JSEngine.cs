@@ -17,7 +17,7 @@ namespace Redox.API.Plugins.Javascript
 
         public void LoadPlugins()
         {
-            foreach (string dir in Directory.GetDirectories(Redox.PluginPath))
+            foreach (string dir in Directory.GetDirectories(Bootstrap.RedoxMod.PluginPath))
                 LoadPlugin(dir);
         }
 
@@ -34,19 +34,19 @@ namespace Redox.API.Plugins.Javascript
                         JSPlugin plugin = new JSPlugin(File.ReadAllText(file));
                         if(name != plugin.Title)
                         {
-                            Redox.Logger.LogWarning($"[Jint] Failed to load plugin {plugin.Title} because the file name is not the same as the title");
+                            Bootstrap.RedoxMod.Logger.LogWarning($"[Jint] Failed to load plugin {plugin.Title} because the file name is not the same as the title");
                             return;
                         }
                         plugin.FileInfo = info;
                         PluginContainer container = new PluginContainer(plugin, null, Language);
                         PluginCollector.GetCollector().AddPlugin(container);
                         Plugins.Add(plugin.Title, plugin);
-                        Redox.Logger.LogInfo(string.Format("[Jint] Succesfully loaded plugin {0}, Version: {1}, Author {2} ({3})", plugin.Title, plugin.Version, plugin.Author, plugin.Description));
+                        Bootstrap.RedoxMod.Logger.LogInfo(string.Format("[Jint] Succesfully loaded plugin {0}, Version: {1}, Author {2} ({3})", plugin.Title, plugin.Version, plugin.Author, plugin.Description));
                     }
                 }
                 catch(Exception ex)
                 {
-                    Redox.Logger.LogError(string.Format("[Jint] Failed to load {0}, Error: {1}", Path.GetFileNameWithoutExtension(file), ex));
+                    Bootstrap.RedoxMod.Logger.LogError(string.Format("[Jint] Failed to load {0}, Error: {1}", Path.GetFileNameWithoutExtension(file), ex));
                 }
                
             }
@@ -77,7 +77,7 @@ namespace Redox.API.Plugins.Javascript
             {
                 PluginCollector.GetCollector().RemovePlugin(PluginCollector.GetCollector().GetContainer(name));
                 Plugins.Remove(name);
-                Redox.Logger.LogInfo("[Jint] Succesfully unloaded plugin " + name);
+                Bootstrap.RedoxMod.Logger.LogInfo("[Jint] Succesfully unloaded plugin " + name);
             }
         }     
         public void UnloadPlugins()

@@ -24,7 +24,7 @@ namespace Redox.API.Data
         public BinaryDatafile(string Name)
         {
             _settings = new Map<string, object>();
-            path = Path.Combine(Redox.DataPath, Name + ".bin");
+            path = Path.Combine(Bootstrap.RedoxMod.DataPath, Name + ".bin");
         }
 
 
@@ -44,7 +44,7 @@ namespace Redox.API.Data
             }
             catch (Exception ex)
             {
-                Redox.Logger.LogError(string.Format("[Redox] An exception has thrown while trying to deserialize datafile {0}, Error: {1}", Path.GetFileName(path), ex.Message));
+                Bootstrap.RedoxMod.Logger.LogError(string.Format("[Redox] An exception has thrown while trying to deserialize datafile {0}, Error: {1}", Path.GetFileName(path), ex.Message));
             }
 
         }

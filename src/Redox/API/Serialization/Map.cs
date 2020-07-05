@@ -3,8 +3,6 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-using Redox.API.Helpers;
-
 namespace Redox.API.Serialization
 {
     [Serializable]
@@ -74,7 +72,7 @@ namespace Redox.API.Serialization
 
         public void ReadJson(string path)
         {
-           var dict = JSONHelper.FromFile<Dictionary<TKey, TValue>>(path);
+           var dict = Utility.Json.FromFile<Dictionary<TKey, TValue>>(path);
 
             base.Clear();
             foreach(KeyValuePair<TKey, TValue> pair in dict)
@@ -86,7 +84,7 @@ namespace Redox.API.Serialization
 
         public void WriteJson(string path)
         {
-            JSONHelper.ToFile(path, this);
+            Utility.Json.ToFile(path, this);
         }
        
         public override string ToString()

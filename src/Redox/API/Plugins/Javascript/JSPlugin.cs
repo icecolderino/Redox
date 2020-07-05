@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Redox.Core.Plugins;
 
-using Redox.API.Helpers;
 using Redox.API.Commands;
 using Redox.API.Libraries;
 using Redox.API.DependencyInjection;
@@ -14,7 +13,6 @@ using Jint.Parser;
 using Jint.Runtime.Interop;
 using Jint.Native;
 using Jint.Parser.Ast;
-using UnityEngine;
 using Redox.API.Data;
 
 namespace Redox.API.Plugins.Javascript
@@ -38,12 +36,12 @@ namespace Redox.API.Plugins.Javascript
             Engine = new Engine(cfg => cfg.AllowClr(Redox.InterpreterAssemblies.ToArray()));         
             Engine.SetValue("Plugin", this);
             Engine.SetValue("Server", DependencyContainer.Resolve<IServer>());
-            Engine.SetValue("Logger", Redox.Logger);
+            Engine.SetValue("Logger", Bootstrap.RedoxMod.Logger);
             Engine.SetValue("Plugins", PluginCollector.GetCollector());
             //    Engine.SetValue("Web", TypeReference.CreateTypeReference(Engine, typeof(Web)));
             Engine.SetValue("Storage", TypeReference.CreateTypeReference(Engine, typeof(LocalStorage)));
-            Engine.SetValue("Util", TypeReference.CreateTypeReference(Engine, typeof(Util)));
-            Engine.SetValue("Json", TypeReference.CreateTypeReference(Engine, typeof(JSONHelper)));
+            Engine.SetValue("Util", TypeReference.CreateTypeReference(Engine, typeof(Utility)));
+            Engine.SetValue("Json", TypeReference.CreateTypeReference(Engine, typeof(Utility.Json)));
           //  Engine.SetValue("SQLite", TypeReference.CreateTypeReference(Engine, typeof(SQLite)));
             foreach (var pair in Redox.InterpreterVariables) 
             {

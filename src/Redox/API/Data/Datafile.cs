@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-
-using Redox.API.Helpers;
 using Redox.API.Serialization;
 
 namespace Redox.API.Data
@@ -25,7 +23,7 @@ namespace Redox.API.Data
         public Datafile(string Name)
         {
             _settings = new Map<string, object>();
-            path = Path.Combine(Redox.DataPath, Name + ".json");              
+            path = Path.Combine(Bootstrap.RedoxMod.DataPath, Name + ".json");              
         }
 
         public void Load()
@@ -34,18 +32,18 @@ namespace Redox.API.Data
             {
                 if (File.Exists(path))
                 {
-                    _settings = JSONHelper.FromFile<Map<string, object>>(path);
+                    _settings = Utility.Json.FromFile<Map<string, object>>(path);
                 }
             }
             catch(Exception ex)
             {
-                Redox.Logger.LogError(string.Format("[Redox] An exception has thrown while trying to deserialize datafile {0}, Error: {1}", Path.GetFileName(path), ex.Message));
+                Bootstrap.RedoxMod.Logger.LogError(string.Format("[Bootstrap.RedoxMod] An exception has thrown while trying to deserialize datafile {0}, Error: {1}", Path.GetFileName(path), ex.Message));
             }
           
         }
         public void Save()
         {
-            JSONHelper.ToFile(path, _settings);
+            Utility.Json.ToFile(path, _settings);
         }
 
         public object this[string key]
@@ -69,11 +67,11 @@ namespace Redox.API.Data
    
         public void WriteObject(object obj)
         {
-            JSONHelper.ToFile(path, obj);
+            Utility.Json.ToFile(path, obj);
         }
         public T ReadObject<T>()
         {
-            return JSONHelper.FromFile<T>(path);
+            return Utility.Json.FromFile<T>(path);
         }
         public void Remove(string key)
         {
@@ -86,7 +84,7 @@ namespace Redox.API.Data
      
         public override string ToString()
         {
-            return JSONHelper.ToJson(_settings);
+            return Utility.Json.ToJson(_settings);
         }
     }
 }

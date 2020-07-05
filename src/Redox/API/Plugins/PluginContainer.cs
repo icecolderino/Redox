@@ -49,7 +49,6 @@ namespace Redox.API.Plugins
         {
             this.Plugin.LoadMethods();
             this.Plugin.Commands = CommandManager.GetInstance(Plugin);
-            this.Plugin.DefaultConfig = new Config("Configuration", Plugin);
             this.Plugin.CheckTranslation();
             this.Plugin.Initialize();
             this.Running = true;

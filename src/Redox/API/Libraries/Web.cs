@@ -44,7 +44,7 @@ namespace Redox.API.Libraries
                 Headers = headers;
                 CallBack = callback;
 
-                Create();
+               // Create();
             }
 
             internal void Create()
@@ -85,13 +85,13 @@ namespace Redox.API.Libraries
                         }
                         catch (Exception ex)
                         {
-                            Redox.Logger.LogError("[Redox] Failed to callback webrequest, error: " + ex.Message);
+                            Bootstrap.RedoxMod.Logger.LogError("[Redox] Failed to callback webrequest, error: " + ex.Message);
                         }
                     }
                 }
                 catch(Exception ex)
                 {
-                    Redox.Logger.LogError("[Redox] Failed to create GET request, error: " + ex.Message);
+                    Bootstrap.RedoxMod.Logger.LogError("[Redox] Failed to create GET request, error: " + ex.Message);
                 }
                 finally
                 {
@@ -129,7 +129,7 @@ namespace Redox.API.Libraries
                 }
                 catch(Exception ex)
                 {
-                    Redox.Logger.LogError("[Redox] Failed to create post request, error: " + ex.Message);
+                    Bootstrap.RedoxMod.Logger.LogError("[Redox] Failed to create post request, error: " + ex.Message);
                 }
                 finally
                 {

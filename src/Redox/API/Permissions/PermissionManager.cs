@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Redox.API.Helpers;
 
 namespace Redox.API.Permissions
 {
@@ -14,22 +13,22 @@ namespace Redox.API.Permissions
         private static IDictionary<ulong, Permission> _permissions;
         private static HashSet<Group> _groups;
 
-        private static string _permsPath = Path.Combine(Redox.DataPath, "redox_permissions.json");
-        private static string _groupsPath = Path.Combine(Redox.DataPath, "redox_groups.json");
+        private static string _permsPath = Path.Combine(Bootstrap.RedoxMod.DataPath, "redox_permissions.json");
+        private static string _groupsPath = Path.Combine(Bootstrap.RedoxMod.DataPath, "redox_groups.json");
 
         public static async Task Initialize()
         {
             await Task.Run(() =>
             {
-                _permissions = JSONHelper.FromFile<Dictionary<ulong, Permission>>(_permsPath) ?? new Dictionary<ulong, Permission>();
-                _groups = JSONHelper.FromFile<HashSet<Group>>(_groupsPath) ?? new HashSet<Group>();
+                _permissions = Utility.Json.FromFile<Dictionary<ulong, Permission>>(_permsPath) ?? new Dictionary<ulong, Permission>();
+                _groups = Utility.Json.FromFile<HashSet<Group>>(_groupsPath) ?? new HashSet<Group>();
             });
         }
 
         public static async Task Save()
         {
-            await JSONHelper.ToFileAsync(_permsPath, _permissions);
-            await JSONHelper.ToFileAsync(_groupsPath, _groups);
+            await Utility.Json.ToFileAsync(_permsPath, _permissions);
+            await Utility.Json.ToFileAsync(_groupsPath, _groups);
         }
 
         /// <summary>

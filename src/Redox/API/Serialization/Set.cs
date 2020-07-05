@@ -2,8 +2,6 @@
 using System.Linq;
 using System.Collections.Generic;
 
-using Redox.API.Helpers;
-
 namespace Redox.API.Serialization
 {
     [Serializable]
@@ -57,7 +55,7 @@ namespace Redox.API.Serialization
   
         public void ReadJson(string path)
         {
-            var list = JSONHelper.FromFile<List<TKey>>(path);
+            var list = Utility.Json.FromFile<List<TKey>>(path);
 
             base.Clear();
             foreach (var x in list)
@@ -67,7 +65,7 @@ namespace Redox.API.Serialization
 
         public void WriteJson(string path)
         {
-            JSONHelper.ToFile(path, this);
+            Utility.Json.ToFile(path, this);
         }
 
         public override string ToString()

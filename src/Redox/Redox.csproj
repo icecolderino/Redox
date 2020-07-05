@@ -72,21 +72,19 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\Old\Oxygen mod\Core\Oxygen\bin\Debug\UnityEngine.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\Data\BinaryDatafile.cs" />
     <Compile Include="API\Exceptions\WebhookException.cs" />
     <Compile Include="API\Libraries\LocalStorage.cs" />
+    <Compile Include="API\Player\Position.cs" />
     <Compile Include="API\Serialization\Set.cs" />
     <Compile Include="API\Serialization\Map.cs" />
     <Compile Include="API\Commands\Command.cs" />
     <Compile Include="API\Commands\CommandExecutor.cs" />
     <Compile Include="API\Commands\CommandCaller.cs" />
     <Compile Include="API\Commands\CommandManager.cs" />
-    <Compile Include="API\Configuration\Config.cs" />
+    <Compile Include="API\Configuration\PluginConfig.cs" />
     <Compile Include="API\Configuration\Translation\Translations.cs" />
     <Compile Include="API\Console\IConsole.cs" />
     <Compile Include="API\DependencyInjection\DependencyContainer.cs" />
@@ -96,11 +94,9 @@
     <Compile Include="API\Events\PlayerBanEvent.cs" />
     <Compile Include="API\Extensions\CollectionExtension.cs" />
     <Compile Include="API\Extensions\ObjectExtension.cs" />
-    <Compile Include="API\Extensions\VectorExtension.cs" />
     <Compile Include="API\IServer.cs" />
     <Compile Include="API\Data\Datafile.cs" />
     <Compile Include="API\ILogger.cs" />
-    <Compile Include="API\Helpers\JSONHelper.cs" />
     <Compile Include="API\Libraries\Rest.cs" />
     <Compile Include="API\Libraries\SQLite.cs" />
     <Compile Include="API\Libraries\Timers.cs" />
@@ -115,9 +111,7 @@
     <Compile Include="API\Plugins\Javascript\JSEngine.cs" />
     <Compile Include="API\Plugins\Javascript\JSPlugin.cs" />
     <Compile Include="API\Plugins\Watcher\PluginWatcher.cs" />
-    <Compile Include="API\Util.cs" />
-    <Compile Include="API\WebHooks\Embed.cs" />
-    <Compile Include="API\WebHooks\Webhook.cs" />
+    <Compile Include="API\Utility.cs" />
     <Compile Include="Bootstrap.cs" />
     <Compile Include="API\Plugins\PluginCollector.cs" />
     <Compile Include="Core\Configuration\IConfiguration.cs" />

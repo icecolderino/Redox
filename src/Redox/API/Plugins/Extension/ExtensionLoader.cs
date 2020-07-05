@@ -11,7 +11,7 @@ namespace Redox.API.Plugins.Extension
 
         private static readonly string Pattern = "Redox.*.dll";
 
-        private static readonly string path = Redox.AssemblePath;
+        private static string path => Bootstrap.RedoxMod.AssemblePath;
 
         public static void Load()
         {
@@ -19,7 +19,7 @@ namespace Redox.API.Plugins.Extension
 
             foreach (var file in Directory.GetFiles(path, Pattern))
                 files.Add(file);
-            foreach (var file in Directory.GetFiles(Redox.ExtensionPath, Pattern))
+            foreach (var file in Directory.GetFiles(Bootstrap.RedoxMod.ExtensionPath, Pattern))
                 files.Add(file);
 
             foreach (var file in files)

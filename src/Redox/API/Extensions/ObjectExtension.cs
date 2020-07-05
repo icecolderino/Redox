@@ -1,6 +1,5 @@
 ﻿using System;
 
-using Redox.API.Helpers;
 
 namespace Redox.API.Extensions
 {
@@ -8,7 +7,7 @@ namespace Redox.API.Extensions
     {
         public static string ToJson(this object ob)
         {
-            return JSONHelper.ToJson(ob);
+            return Utility.Json.ToJson(ob);
         }
     }
 }

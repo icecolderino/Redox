@@ -28,14 +28,14 @@ namespace Redox.Core.Plugins
 
     
         public virtual CommandManager Commands { get; internal set; }
-        public virtual Config DefaultConfig { get; internal set; }
 
         protected virtual Translations translation { get; set; }
         protected virtual PluginCollector Collector { get;  }
         public virtual IServer Server { get;}
-        public ILogger Logger = Redox.Logger;
+        public ILogger Logger = Bootstrap.RedoxMod.Logger;
         public FileInfo FileInfo { get; set; }
 
+        internal bool Initialized;
         internal virtual void Initialize() { }
         internal virtual void Deinitialize() { }
 

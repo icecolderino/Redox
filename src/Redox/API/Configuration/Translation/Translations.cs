@@ -1,12 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-
-using Newtonsoft.Json;
-
-using Redox.API.Helpers;
-using Redox.Core.Plugins;
 using System.Globalization;
+
+using Redox.Core.Plugins;
+
 
 namespace Redox.API.Configuration.Translation
 {
@@ -31,7 +29,7 @@ namespace Redox.API.Configuration.Translation
         public void Save()
         {
             string path = Path.Combine(_plugin.FileInfo.DirectoryName, "Translation.json");
-            JSONHelper.ToFile(path, messages);
+            Utility.Json.ToFile(path, messages);
             
         }
         
@@ -63,7 +61,7 @@ namespace Redox.API.Configuration.Translation
 
             if(File.Exists(path))
             {
-                messages = JSONHelper.FromFile<Dictionary<string, Dictionary<string, string>>>(path);
+                messages = Utility.Json.FromFile<Dictionary<string, Dictionary<string, string>>>(path);
             }
         }
     }

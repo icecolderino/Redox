@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Redox.API;
 using Redox.API.DependencyInjection;
 using Redox.Core.Plugins;
+using Redox.API.Configuration;
 
 namespace Redox.API.Plugins.CSharp
 {
@@ -18,7 +19,6 @@ namespace Redox.API.Plugins.CSharp
         public override IServer Server => DependencyContainer.Resolve<IServer>();
 
         private readonly IDictionary<string, MethodInfo> Methods = new Dictionary<string, MethodInfo>();
-
         protected abstract void Load();
 
         protected abstract void Unload();
@@ -26,6 +26,7 @@ namespace Redox.API.Plugins.CSharp
 
         internal override void Initialize()
         {
+            Initialized = true;
             this.Load();
             if(base.LicenseURL.ToString() != "https://yourlicenseurl.com/")
             {
@@ -34,6 +35,7 @@ namespace Redox.API.Plugins.CSharp
         }
         internal override void Deinitialize()
         {
+            Initialized = false;
             this.Unload();
         }
 
