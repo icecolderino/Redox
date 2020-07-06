@@ -15,8 +15,15 @@ namespace Redox
             if (RedoxMod != null)
                 return;
 
-            RedoxMod = new Redox();
-            RedoxMod.Initialize(customPath);
+            RedoxMod = new Redox(customPath);
+            RedoxMod.Initialize();
+        }
+        public static void DeInit()
+        {
+            if (RedoxMod != null)
+                return;
+            RedoxMod.DeInitialize();
+            RedoxMod = null;
         }
     }
 }

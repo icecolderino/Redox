@@ -29,8 +29,8 @@ namespace Redox.Core.Plugins
     
         public virtual CommandManager Commands { get; internal set; }
 
-        protected virtual Translations translation { get; set; }
-        protected virtual PluginCollector Collector { get;  }
+        public virtual Translations translation { get; set; }
+        public virtual PluginCollector Collector { get;  }
         public virtual IServer Server { get;}
         public ILogger Logger = Bootstrap.RedoxMod.Logger;
         public FileInfo FileInfo { get; set; }

@@ -123,6 +123,9 @@ namespace Redox.API.Player
         void BlockCommand(string command);
         void UnblockCommand(string command);
 
+        void Give(string name, int amount = 1);
+
+
         #region Permissions
 
         Permission Permission { get; }

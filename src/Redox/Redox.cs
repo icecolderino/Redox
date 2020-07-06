@@ -17,6 +17,9 @@ using Redox.API.Plugins;
 using Redox.API.Plugins.CSharp;
 using Redox.API.Plugins.Javascript;
 using Redox.API.Plugins.Extension;
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
+using System.Net.Security;
 
 namespace Redox
 {
@@ -28,13 +31,13 @@ namespace Redox
         private readonly List<Assembly> dependencies = new List<Assembly>();
         private Stopwatch LifeTimeWatch;
         private Timer WebRequestTimer;
+        private string CustomPath;
 
         #region Directories
         public string RootPath { get; private set; }
         public string PluginPath { get; private set; } 
         public string ExtensionPath { get; private set; }
         public string DependencyPath { get; private set; } 
-        public string LibrariesPath { get; private set; } 
         public string DataPath { get; private set; } 
         public string LoggingPath { get; private set; } 
         public string AssemblePath { get; private set; }
@@ -63,22 +66,24 @@ namespace Redox
 
         public static readonly List<Assembly> InterpreterAssemblies = new List<Assembly>();
 
-     
-        public async void Initialize(string customPath = "")
+        public Redox(string customPath = "")
+        {
+            CustomPath = customPath;
+        }
+        public async void Initialize()
         {
             
             try
             {
                 
-                if (!string.IsNullOrEmpty(customPath))
-                    RootPath = customPath;
+                if (!string.IsNullOrEmpty(CustomPath))
+                    RootPath = CustomPath;
                 else
                     RootPath = Directory.GetCurrentDirectory() + "\\Redox\\";
 
                 PluginPath = Path.Combine(RootPath, "Plugins\\");
                 ExtensionPath = Path.Combine(RootPath, "Extensions\\");
                 DependencyPath = Path.Combine(RootPath, "Dependencies\\");
-                LibrariesPath = Path.Combine(RootPath, "Libs\\");
                 DataPath = Path.Combine(RootPath, "Data\\");
                 LoggingPath = Path.Combine(RootPath, "Logs\\");
                 AssemblePath = Path.GetDirectoryName(assembly.Location);
@@ -88,7 +93,6 @@ namespace Redox
                 if (!Directory.Exists(LoggingPath)) Directory.CreateDirectory(LoggingPath);
                 if (!Directory.Exists(ExtensionPath)) Directory.CreateDirectory(ExtensionPath);
                 if (!Directory.Exists(DependencyPath)) Directory.CreateDirectory(DependencyPath);
-                if (!Directory.Exists(LibrariesPath)) Directory.CreateDirectory(LibrariesPath);
                 if (!Directory.Exists(PluginPath)) Directory.CreateDirectory(PluginPath);
                 if (!Directory.Exists(DataPath)) Directory.CreateDirectory(DataPath);
 
@@ -99,12 +103,13 @@ namespace Redox
                 else
                     Utility.Json.ToFile(path, Config.Init());
 
-               this.LoadDependencies();
+                this.EnableCertificates();
+                this.LoadDependencies();
 
                 ExtensionLoader.Load();
 
                 Logger = DependencyContainer.Resolve<API.ILogger>();
-
+                Logger.LogInfo("[Redox] The Redox modding framework is brought by Ice Cold");
                 PluginEngines.Register<CSPluginEngine>();
                 PluginEngines.Register<JSEngine>();
                 Logger.LogInfo("[Redox] Loading data...");
@@ -128,7 +133,17 @@ namespace Redox
             LifeTimeWatch.Start();
             WebRequestTimer = Timers.Create(5, TimerType.Repeat, WebRequestUpdate);
         }
-        
+
+        private void EnableCertificates()
+        {
+            ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(AcceptAllCertifications);
+        }
+
+        private bool AcceptAllCertifications(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        {
+            return true;
+        }
+
         public void WebRequestUpdate(Timer timer)
         {
             if(Web.Requests.Count <= 2)
@@ -167,9 +182,8 @@ namespace Redox
             PermissionManager.Save();
             Logger.Log("[Redox] Preparing to shutdown..");
 
-            LocalStorage.Save();
             PluginEngines.UnloadAll();
-          
+            LocalStorage.Save();                
         }
 
         public class RedoxConfig

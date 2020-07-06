@@ -15,7 +15,7 @@ namespace Redox.API.Plugins.CSharp
 {
     public abstract class RedoxPlugin : Plugin
     {         
-        protected override PluginCollector Collector => PluginCollector.GetCollector();
+        public override PluginCollector Collector => PluginCollector.GetCollector();
         public override IServer Server => DependencyContainer.Resolve<IServer>();
 
         private readonly IDictionary<string, MethodInfo> Methods = new Dictionary<string, MethodInfo>();

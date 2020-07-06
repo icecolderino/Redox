@@ -1,12 +1,9 @@
 ﻿using System;
-using System.IO;
 
 namespace Redox.API
 {
     public interface ILogger
     {
-
-        TextWriter writer { get;}
 
         void Log(string message);
 
