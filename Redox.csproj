@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.1</Version>
+    <Authors>Michiel Arkema</Authors>
+    <Company>redoxmodding.org</Company>
+    <Description>Core framework for the Redox modding platform</Description>
+    <Copyright>(c) 2019-2020 Michiel Arkema</Copyright>
+    <PackageProjectUrl></PackageProjectUrl>
+    <RepositoryUrl>https://github.com/RedoxMod/Redox</RepositoryUrl>
+    <PackageTags>Redox, RedoxMod, RedoxModding</PackageTags>
+    <PackageReleaseNotes>1. Project moved to .net standard
+2. Improved the plugin system.</PackageReleaseNotes>
+    <UserSecretsId>06a57728-e7e0-42e9-a816-924b69f60ae6</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="5.2.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.113.1" />
+  </ItemGroup>
+
+</Project>
