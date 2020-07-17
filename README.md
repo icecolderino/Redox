@@ -18,6 +18,7 @@ Here are some features that are worth mentioning:
 - Using RestSharp for the Rest API.
 - Manage plugins externally with our own RCON tool (Under development)
 - Advanced Role & Permission system for players.
+- Redox is crossplatform.
 
 
 ## Games
