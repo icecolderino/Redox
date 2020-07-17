@@ -1,6 +1,7 @@
 # Redox 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
-[![Nuget:](https://img.shields.io/nuget/v/Redox)]
+[![Nuget:](https://img.shields.io/nuget/v/Redox)](https://www.nuget.org/packages/Redox/)
+[![Discord](https://img.shields.io/discord/660131995619426310?label=discord&logo=Discord&logoColor=white)](https://discord.gg/TjfJypA)
        
 
 
