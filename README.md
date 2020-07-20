@@ -15,7 +15,7 @@ Here are some features that are worth mentioning:
 - Built-in support for C# plugins and extensions.
 - Modern code and flexible API for advanced and beginning developers.
 - We use Newtonsoft.Json for all our configurations.
-- IoC and Dependency Injection with Autofac.
+- Independent core API
 - Using RestSharp for the Rest API.
 - Manage plugins externally with our own RCON tool (Under development)
 - Advanced Role & Permission system for players.
