@@ -16,10 +16,10 @@ Here are some features that are worth mentioning:
 - Modern code and flexible API for advanced and beginning developers.
 - We use Newtonsoft.Json for all our configurations.
 - Independent core API
-- Using RestSharp for the Rest API.
 - Manage plugins externally with our own RCON tool (Under development)
 - Advanced Role & Permission system for players.
 - Redox is crossplatform.
+- Autoupdate with nuget (Under development)
 
 
 ## Games
