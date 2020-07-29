@@ -1,15 +1,17 @@
-﻿using Redox.API.Player;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+
+using Redox.API.Player;
+
+using Redox.Core.Data;
+
 
 namespace Redox.Core.Permissions
 {
     /// <summary>
     /// The permission provider is responsible for managing permissions.
     /// </summary>
-    public interface IPermissionProvider
+    public interface IPermissionProvider : IData
     {
         /// <summary>
         /// Gets the permissions of the player.
@@ -33,17 +35,5 @@ namespace Redox.Core.Permissions
         /// <param name="permission"></param>
         /// <returns></returns>
         Task RevokePermission(IPlayer player, string permission);
-
-        /// <summary>
-        /// Save the file.
-        /// </summary>
-        /// <returns></returns>
-        Task SaveAsync();
-
-        /// <summary>
-        /// Load the file.
-        /// </summary>
-        /// <returns></returns>
-        Task LoadAsync();
     }
 }

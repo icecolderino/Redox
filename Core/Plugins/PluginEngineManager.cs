@@ -10,21 +10,21 @@ using Redox.API.Plugins;
 
 namespace Redox.Core.Plugins
 {
-    public static class PluginEngineManager
+    public class PluginEngineManager
     {
-        private static readonly IList<Type> _engines = new List<Type>();
-        private static readonly IList<IPluginEngine> _instances = new List<IPluginEngine>();
+        private readonly IList<Type> _engines = new List<Type>();
+        private readonly IList<IPluginEngine> _instances = new List<IPluginEngine>();
 
-        private static ILogger Logger => Bootstrap.RedoxMod.Logger;
+        private ILogger Logger => Bootstrap.RedoxMod.Logger;
 
-        public static void Register<TEngine>() where TEngine : IPluginEngine
+        public void Register<TEngine>() where TEngine : IPluginEngine
         {
             var engine = typeof(TEngine);
             if (!_engines.Contains(engine))
                 _engines.Add(engine);
             Logger.LogInfo($"[Redox] Succesfully Registered {engine.Name}");
         }
-        public static void Unregister(string name)
+        public void Unregister(string name)
         {
             var engine = GetEngineByName(name);
 
@@ -37,39 +37,39 @@ namespace Redox.Core.Plugins
             }
         }
 
-        public static void StartAll()
+        public void StartAll()
         {
             foreach (var engine in _engines)
             {
                 var instance = (IPluginEngine)Activator.CreateInstance(engine);
                 if (!_instances.Contains(instance))
                 {
-                    Logger.LogInfo(string.Format("[Redox] Loading {0} Engine..", instance.Language));
+                    Logger.LogInfo($"[Redox] Loading {instance.Language} Engine..");
                     _instances.Add(instance);
                     instance.LoadPlugins();
                     
                 }
                 else
-                   Logger.LogWarning(string.Format("[Redox] Skipping engine {0} because its already loaded!", engine.Name));                   
+                   Logger.LogWarning($"[Redox] Skipping engine {engine.Name} because its already loaded!");                   
             }
-            Logger.LogInfo($"[Redox] Succesfully loaded {PluginCollector.GetCollector().GetPlugins().Count} Plugins");
+            Logger.LogInfo($"[Redox] Succesfully loaded {Redox.Mod.Plugins.GetPlugins().Count()} Plugins");
         }
-        public static void UnloadAll()
+        public void UnloadAll()
         {
 
             foreach(var instance in _instances)
             {
-                Logger.LogInfo(string.Format("[Redox] Unloading engine {0}", instance.Language));
+                Logger.LogInfo($"[Redox] Unloading engine {instance.Language}");
                 instance.UnloadPlugins();
             }
         }
 
-        private static IPluginEngine GetEngineByName(string name)
+        private IPluginEngine GetEngineByName(string name)
         {
             return _instances.SingleOrDefault(x => x.GetType().Name == name);
         }
 
-        internal static void LoadPlugin(string dirName)
+        internal void LoadPlugin(string dirName)
         {
             string path = Path.Combine(Bootstrap.RedoxMod.PluginPath, dirName);
             if (Directory.Exists(path))
@@ -81,25 +81,25 @@ namespace Redox.Core.Plugins
                 Logger.LogWarning($"[Redox] There is no plugin folder called {dirName}");
         }
 
-        internal static void UnloadPlugin(string name, PluginContainer pc = null)
+        internal void UnloadPlugin(string name, PluginContainer pc = null)
         {
             foreach (var engine in _instances)
                 engine.UnloadPlugin(name, pc);
         }
 
-        internal static void ReloadPlugin(string name)
+        internal void ReloadPlugin(string name)
         {
             foreach (var engine in _instances)
                 engine.ReloadPlugin(name);
         }
 
-        internal static void ReloadAllPlugins()
+        internal void ReloadAllPlugins()
         {
             foreach (var engine in _instances)
                 engine.ReloadPlugins();
         }
 
-        internal static void UnloadAllPlugins()
+        internal void UnloadAllPlugins()
         {
             foreach (var engine in _instances)
                 engine.UnloadPlugins();

@@ -14,22 +14,6 @@ namespace Redox.Core.Commands
     public interface ICommand
     {
         /// <summary>
-        /// The name of the command.
-        /// <para></para>
-        /// </summary>
-        string Name { get; }
-
-        /// <summary>
-        /// A brief description.
-        /// </summary>
-        string Summary { get; }
-
-        /// <summary>
-        /// Who should be able to execute this command?
-        /// </summary>
-        CommandCaller Caller { get; }
-
-        /// <summary>
         /// Gets called when someone executes the command.
         /// </summary>
         /// <param name="executor">The executor of the command.</param>

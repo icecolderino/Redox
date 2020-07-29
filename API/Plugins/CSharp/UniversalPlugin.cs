@@ -9,8 +9,6 @@ namespace Redox.API.Plugins.CSharp
     public abstract class UniversalPlugin : CSPlugin
     {
         protected IServer Server = Redox.Mod.Container.Resolve<IServer>();
-        protected IPermissionProvider Permissions = Redox.Mod.PermissionManager;
-        protected IRoleProvider RoleManager = Redox.Mod.RoleManager;
         protected ILogger Logger = Redox.Mod.Logger;     
     }
 }

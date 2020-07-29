@@ -2,7 +2,7 @@
 
 namespace Redox
 {
-    public class Bootstrap
+    public static class Bootstrap
     {
         /// <summary>
         /// RedoxMod instance
@@ -16,13 +16,6 @@ namespace Redox
 
             RedoxMod = new Redox(customPath);
             RedoxMod.Initialize();
-        }
-        public static void DeInit()
-        {
-            if (RedoxMod != null)
-                return;
-            RedoxMod.DeInitialize();
-            RedoxMod = null;
         }
     }
 }

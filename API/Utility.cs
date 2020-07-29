@@ -6,11 +6,30 @@ using System.Threading.Tasks;
 using static Newtonsoft.Json.JsonConvert;
 
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Redox.API
 {
-    public class Utility
+    public static class Utility
     {
+
+        internal static void ExtractEssentials()
+        {
+            string path = Path.Combine(Redox.Mod.PluginPath, "RedoxEssentials");
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("RedoxEssentials.dll"))
+            {
+                using (FileStream file = new FileStream(Path.Combine(path, "RedoxEssentials.dll"), FileMode.Create,
+                    FileAccess.Write))
+                {
+                    stream.CopyTo(file);
+                }
+            }
+        }
+        
+        
+        
         public static class Json
         {
             public static string ToJson(object obj)

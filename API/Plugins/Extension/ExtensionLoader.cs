@@ -11,13 +11,13 @@ namespace Redox.API.Plugins.Extension
 
         private static readonly string Pattern = "Redox.*.dll";
 
-        private static string path => Bootstrap.RedoxMod.AssemblePath;
+        private static string Path => Bootstrap.RedoxMod.AssemblePath;
 
         public static void Load()
         {
             List<string> files = new List<string>();
 
-            foreach (var file in Directory.GetFiles(path, Pattern))
+            foreach (var file in Directory.GetFiles(Path, Pattern))
                 files.Add(file);
             foreach (var file in Directory.GetFiles(Bootstrap.RedoxMod.ExtensionPath, Pattern))
                 files.Add(file);
@@ -27,7 +27,7 @@ namespace Redox.API.Plugins.Extension
                 try
                 {
                     FileInfo info = new FileInfo(file);
-                    string name = Path.GetFileNameWithoutExtension(file);
+                    string name = System.IO.Path.GetFileNameWithoutExtension(file);
 
                     if (!Extensions.ContainsKey(name))
                     {
@@ -41,7 +41,7 @@ namespace Redox.API.Plugins.Extension
                                 extension.Init();
                                 Extensions.Add(name, extension);
 
-                             //  Redox.Logger.LogColor(string.Format("[Redox] Succesfully loaded extension {0}, {1}, Author {2} ({3}", extension.Title, extension.Version, extension.Author, extension.Description), ConsoleColor.Yellow);
+                           //    Redox.Mod.Logger.Log(string.Format("[Redox] Succesfully loaded extension {0}, {1}, Author {2} ({3}", extension.Title, extension.Version, extension.Author, extension.Description));
                             }
                         }
                     }

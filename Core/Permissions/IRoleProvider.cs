@@ -2,68 +2,81 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Redox.Core.Data;
 
 namespace Redox.Core.Permissions
 {
     /// <summary>
     /// The role provider is responsible for managing roles.
     /// </summary>
-    public interface IRoleProvider
+    public interface IRoleProvider : IData
     {
         /// <summary>
-        /// Gets all roles.
+        /// Gets all groups.
         /// </summary>
-        /// <returns>A list of all roles.</returns>
+        /// <returns></returns>
         Task<IEnumerable<IRole>> GetRolesAsync();
 
         /// <summary>
-        /// Get all groups associated with the role.
+        /// Returns a group with the given name.
         /// </summary>
-        /// <param name="name">The name of the role.</param>
+        /// <param name="name">The name of the group.</param>
         /// <returns></returns>
-        Task<IEnumerable<IGroup>> GetRoleGroupsAsync(string name);
+        Task<IRole> GetRoleAsync(string name);
+
 
         /// <summary>
-        /// Creates a new role.
+        /// Create a new group.
         /// </summary>
-        /// <param name="role">The role you want to add</param>
+        /// <param name="group">The group you want to add.</param>
         /// <returns></returns>
-        Task<bool> CreateRoleAsync(IRole role);
+        Task CreateRoleAsync(IRole group);
 
         /// <summary>
-        /// Deletes a role with all its associated groups.
+        /// Removes a group with the given name.
         /// </summary>
-        /// <param name="name">The name of the role you want to delete.</param>
+        /// <param name="name">The name of the group.</param>
         /// <returns></returns>
-        Task<bool> DeleteRoleAsync(string name);
+        Task RemoveRoleAsync(string name);
 
         /// <summary>
-        /// Adds a new group to the role.
+        /// Gets all groups associated with the player.
         /// </summary>
-        /// <param name="role">The name of the role.</param>
-        /// <param name="group">The name of the group.</param>
+        /// <param name="id">The id of the player.</param>
         /// <returns></returns>
-        Task<bool> AddGroupAsync(string role, string group);
+        Task<IEnumerable<IRole>> GetPlayerRolesAsync(ulong id);
 
         /// <summary>
-        /// Removes a group from the role.
+        /// Adds a player to a group.
         /// </summary>
-        /// <param name="role">The name of the role.</param>
-        /// <param name="group">The name of the group.</param>
+        /// <param name="id">The id of the player.</param>
+        /// <param name="name">The name of the group.</param>
         /// <returns></returns>
-        Task<bool> RemoveGroupAsync(string role, string group);
+        Task AddPlayerAsync(ulong id, string name);
 
         /// <summary>
-        /// Saves the file.
+        /// Removes a player to a group.
         /// </summary>
+        /// <param name="id">The id of the player.</param>
+        /// <param name="name">The name of the group.</param>
         /// <returns></returns>
-        Task SaveAsync();
+        Task RemovePlayerAsync(ulong id, string name);
 
         /// <summary>
-        /// Loads the file.
+        /// Adds a permission to a group.
         /// </summary>
-        /// <remarks>Doing this will overwrite the current role data.</remarks>
+        /// <param name="permission"></param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        Task LoadAsync();
+        Task AddPermissionAsync(string permission, string name);
+
+        // <summary>
+        /// Removes a permission to a group.
+        /// </summary>
+        /// <param name="permission"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        Task RemovePermissionAsync(string permission, string name);
     }
 }
+    

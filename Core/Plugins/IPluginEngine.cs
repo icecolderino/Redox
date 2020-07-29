@@ -17,10 +17,10 @@ namespace Redox.Core.Plugins
 
         void UnloadPlugins();
 
-        void UnloadPlugin(string Name, PluginContainer container = null);
+        void UnloadPlugin(string name, PluginContainer container = null);
 
         void ReloadPlugins();
 
-        void ReloadPlugin(string Name);
+        void ReloadPlugin(string name);
     }
 }

@@ -4,27 +4,22 @@ using System.Collections.Generic;
 
 namespace Redox.API.Player
 {
-    public interface IPlayerManager 
+    public interface IPlayerManager
     {
-
-        /// <summary>
-        /// List of players
-        /// </summary>
-        IList<IPlayer> Players { get; }
+        IEnumerable<IPlayer> GetPlayers();
 
         /// <summary>
         /// Finds a player by name
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        IPlayer FindPlayer(string name);
+        Task<IPlayer> FindPlayerAsync(string name);
 
         /// <summary>
         /// Finds a player by id
         /// </summary>
-        /// <param name="ID"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        IPlayer FindPlayerByID(string ID);
-
+        Task<IPlayer> FindPlayerByIdAsync(string id);
     }
 }

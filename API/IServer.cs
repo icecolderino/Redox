@@ -21,13 +21,21 @@ namespace Redox.API
         /// <summary>
         /// The server port
         /// </summary>
-        ushort ServerPort { get; }
+        int ServerPort { get; }
+        
+        /// <summary>
+        /// The app id of the game.
+        /// </summary>
+        int AppId { get; }
 
         /// <summary>
         /// The game version
         /// </summary>
         Version GameVersion { get; }
 
+        /// <summary>
+        /// The culture of the server.
+        /// </summary>
         CultureInfo Language { get; }
         /// <summary>
         /// The console of the game server
@@ -46,15 +54,23 @@ namespace Redox.API
         /// <returns></returns>
         void Shutdown();
 
-
+        /// <summary>
+        /// Broadcasts a global message in chat.
+        /// </summary>
+        /// <param name="message">The message you want to send.</param>
         void Broadcast(string message);
 
+        /// <summary>
+        /// Broadcasts a global message in chat with prefix.
+        /// </summary>
+        /// <param name="prefix">The prefix of the message.</param>
+        /// <param name="message">The message you want to send.</param>
         void Broadcast(string prefix, string message);
 
         /// <summary>
         /// Unban a player from the server
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">The id of the player.</param>
         void Unban(string id);
 
     }

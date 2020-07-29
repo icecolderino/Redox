@@ -8,13 +8,12 @@ namespace Redox.Core.Commands
         Task RegisterAsync<TCommand>(Plugin plugin) where TCommand : ICommand;
 
         Task UnregisterAsync<TCommand>(Plugin plugin) where TCommand : ICommand;
-
-        Task CallAsync(ICommandExecutor executor, string command, string[] args);
-
+        
         Task<bool> HasCommandAsync(string name, Plugin plugin);
 
-        Task<ICommand> GetCommandAsync(string name, Plugin plugin);
-
+        Task<ICommandContext> GetCommandAsync(string name, Plugin plugin);
         
+        Task CallAsync(ICommandExecutor executor, string command, string[] args);
+
     }
 }

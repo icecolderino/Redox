@@ -1,25 +1,23 @@
-﻿using System;
-
+﻿using Redox.API.Console;
 using Redox.API.Player;
-using Redox.API.Console;
 using Redox.Core.User;
 
 namespace Redox.API.Events
 {
-    public sealed class PlayerBanEvent
+    public sealed class PlayerKickEvent
     {
         /// <summary>
-        /// The reason for the ban
+        /// The reason for the kick
         /// </summary>
         public string Reason { get; }
 
         /// <summary>
-        /// The player that got banned
+        /// The player that got kicked
         /// </summary>
         public IPlayer Victim { get; }
 
         /// <summary>
-        /// The Executor of the ban command, This either be an console or player
+        /// The Executor of the kick command, This either be an console or player
         /// </summary>
         public IUser Executor { get; }
 
@@ -42,7 +40,7 @@ namespace Redox.API.Events
 
         public IPlayer GetExecutorAsPlayer()
         {
-            if(ExecutorIsPlayer())
+            if (ExecutorIsPlayer())
             {
                 return (IPlayer)Executor;
             }
@@ -58,7 +56,7 @@ namespace Redox.API.Events
             return null;
         }
 
-        public PlayerBanEvent(string reason, IPlayer victim, IUser executor)
+        public PlayerKickEvent(string reason, IPlayer victim, IUser executor)
         {
             this.Reason = reason;
             this.Victim = victim;

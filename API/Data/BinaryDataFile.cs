@@ -9,21 +9,21 @@ namespace Redox.API.Data
     {
        
 
-        private readonly string path;
+        private readonly string _path;
 
-        private Dictionary<string, object> _settings;
+        private IDictionary<string, object> _settings;
 
         public bool Exists
         {
             get
             {
-                return File.Exists(path);
+                return File.Exists(_path);
             }
         }
-        public BinaryDatafile(string Name)
+        public BinaryDatafile(string name)
         {
             _settings = new Dictionary<string, object>();
-            path = Path.Combine(Bootstrap.RedoxMod.DataPath, Name + ".bin");
+            _path = Path.Combine(Bootstrap.RedoxMod.DataPath, name + ".bin");
         }
         public void Load()
         {
@@ -31,7 +31,7 @@ namespace Redox.API.Data
             {
                 if (Exists)
                 {
-                    using(FileStream fs = new FileStream(path, FileMode.Open))
+                    using(FileStream fs = new FileStream(_path, FileMode.Open))
                     {
                         BinaryFormatter formatter = new BinaryFormatter();
                         _settings = formatter.Deserialize(fs) as Dictionary<string, object>;
@@ -40,13 +40,13 @@ namespace Redox.API.Data
             }
             catch (Exception ex)
             {
-                Bootstrap.RedoxMod.Logger.LogError(string.Format("[Redox] An exception has thrown while trying to deserialize datafile {0}, Error: {1}", Path.GetFileName(path), ex.Message));
+                Bootstrap.RedoxMod.Logger.LogError(string.Format("[Redox] An exception has thrown while trying to deserialize datafile {0}, Error: {1}", Path.GetFileName(_path), ex.Message));
             }
 
         }
         public void Save()
         {
-            using(FileStream fs  = new FileStream(path, FileMode.Create))
+            using(FileStream fs  = new FileStream(_path, FileMode.Create))
             {
                 BinaryFormatter formatter = new BinaryFormatter();
                 formatter.Serialize(fs, _settings);
@@ -74,7 +74,7 @@ namespace Redox.API.Data
 
         public void WriteObject(object obj)
         {
-            using (FileStream fs = new FileStream(path, FileMode.Create))
+            using (FileStream fs = new FileStream(_path, FileMode.Create))
             {
                 BinaryFormatter formatter = new BinaryFormatter();
                 formatter.Serialize(fs, obj);
@@ -82,7 +82,7 @@ namespace Redox.API.Data
         }
         public T ReadObject<T>()
         {
-            using (FileStream fs = new FileStream(path, FileMode.Open))
+            using (FileStream fs = new FileStream(_path, FileMode.Open))
             {
                 BinaryFormatter formatter = new BinaryFormatter();
                 return (T)formatter.Deserialize(fs);

@@ -1,11 +1,6 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
+﻿using System.IO;
 using System.Collections.Generic;
 
-
-using Newtonsoft.Json;
-using Redox.API.Plugins.CSharp;
 using Redox.Core.Configuration;
 using Redox.Core.Plugins;
 using System.Threading.Tasks;
@@ -20,106 +15,101 @@ namespace Redox.API.Configuration
     public class Configuration : IConfiguration
     {
              
-        private readonly CSPlugin plugin;
-        private Dictionary<string, object> Settings;
-        private readonly string name;
+        private readonly Plugin _plugin;
+        private readonly string _path;
+        private Dictionary<string, object> _settings;
 
         public bool Exists
         {
             get
             {
-                return File.Exists(Path.Combine(plugin.FileInfo.DirectoryName, name));
+                return File.Exists(_path);
             }
         }
 
-        public Configuration(string name, CSPlugin plugin)
+        public Configuration(string name, Plugin plugin)
         {
-            Settings = new Dictionary<string, object>();
-            this.plugin = plugin;
-            this.name = name + ".json";
+            _settings = new Dictionary<string, object>();
+            this._plugin = plugin;
+            this._path = Path.Combine(this._plugin.FileInfo.DirectoryName, name + ".json");
         }
 
         public object this[string key]
         {
             get
             {
-                if (Settings.ContainsKey(key))
-                    return Settings[key];
+                if (_settings.ContainsKey(key))
+                    return _settings[key];
                 return null;
             }   
         }
-        public Task AddSetting(string key, object value)
+        public Task AddSettingAsync(string key, object value)
         {
            
-            if (!Settings.ContainsKey(key))
+            if (!_settings.ContainsKey(key))
             {
-                Settings.Add(key, value);
+                _settings.Add(key, value);
             }
             return Task.CompletedTask;   
                 
         }
 
-        public Task SetSetting(string key, object value)
+        public async Task SetSettingAsync(string key, object value)
         {
            // this[key] = value;
             
-            if (Settings.ContainsKey(key))
-                Settings[key] = value;
+            if (_settings.ContainsKey(key))
+                _settings[key] = value;
             else
-                AddSetting(key, value);
-
-            return Task.CompletedTask;
+                await AddSettingAsync(key, value);
         }
-        public Task<object> GetSetting(string key)
+        public Task<object> GetSettingAsync(string key)
         {
           //  return this[key];
             
-            if (Settings.ContainsKey(key))
-                return Task.FromResult(Settings[key]);
+            if (_settings.ContainsKey(key))
+                return Task.FromResult(_settings[key]);
             return null;
            
         }  
-        public Task<bool> TryGetSetting(string key, out object ob)
+        public Task<bool> TryGetSettingAsync(string key, out object ob)
         {
-            if(Settings.ContainsKey(key))
+            if(_settings.ContainsKey(key))
             {
-                ob = Settings[key];
+                ob = _settings[key];
                 return Task.FromResult(true);
             }
             ob = null;
             return Task.FromResult(false);
         }
 
-        public Task<bool> HasSetting(string key)
+        public Task<bool> HasSettingAsync(string key)
         {
-            return Task.FromResult(Settings.ContainsKey(key));
+            return Task.FromResult(_settings.ContainsKey(key));
         }
         public Dictionary<string, object> GetSettings()
         {
-            return Settings;
+            return _settings;
         }
         public async Task LoadAsync()
         {
-            string path = Path.Combine(plugin.FileInfo.DirectoryName, name);
-            Settings = await Utility.Json.FromFileAsync<Dictionary<string, object>>(path);              
+            _settings = await Utility.Json.FromFileAsync<Dictionary<string, object>>(_path);              
         }
         public async Task SaveAsync()
         {
-
-            string path = Path.Combine(plugin.FileInfo.DirectoryName, name);
-            await Utility.Json.ToFileAsync(path, Settings);       
+            
+            await Utility.Json.ToFileAsync(_path, _settings);       
         }
 
         public void Write(object obj)
         {
-            Utility.Json.ToFile(Path.Combine(plugin.FileInfo.DirectoryName, name), obj);
+            Utility.Json.ToFile(_path, obj);
         }
         public T Read<T>()
         {
-            string path = Path.Combine(plugin.FileInfo.DirectoryName, name);
             if(Exists)
             {
-                return Utility.Json.FromFile<T>(path);
+                return Utility.Json.FromFile<T>(_path);
             }
             return default(T);
         }

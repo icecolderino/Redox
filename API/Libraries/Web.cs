@@ -3,24 +3,37 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Redox.API.Libraries
 {
-    public static class Web
+    public class Web
     {
 
         internal static Queue<Request> RequestsQueue = new Queue<Request>();
         internal static List<Request> Requests = new List<Request>();
 
-        public static void GET(string url, Action<int, string> callback, string[] headers = null)
+        /// <summary>
+        /// Creates a GET request.
+        /// </summary>
+        /// <param name="url">The URL.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="headers">List of headers.</param>
+        public void Get(string url, Action<int, string> callback, string[] headers = null)
         {
-            Request request = new Request(RequestType.GET, url, null, headers, callback);
+            Request request = new Request(RequestType.Get, url, null, headers, callback);
             RequestsQueue.Enqueue(request);
         }
-
-        public static void POST(string url, Action<int, string> callback, string data, string[] headers = null)
+        /// <summary>
+        /// Creates a POST request.
+        /// </summary>
+        /// <param name="url">The URL.</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="data">The data you want to post</param>
+        /// <param name="headers">List of headers</param>
+        public void Post(string url, Action<int, string> callback, string data, string[] headers = null)
         {
-            Request request = new Request(RequestType.POST, url, data, headers, callback);
+            Request request = new Request(RequestType.Post, url, data, headers, callback);
             RequestsQueue.Enqueue(request);
         }
         internal class Request
@@ -47,21 +60,21 @@ namespace Redox.API.Libraries
                // Create();
             }
 
-            internal void Create()
+            internal async Task Create()
             {
                 switch (Type)
                 {
-                    case RequestType.GET:
-                        CreateGetRequest();
+                    case RequestType.Get:
+                        await CreateGetRequest();
                         break;
-                    case RequestType.POST:
-                        CreatePostRequest();
+                    case RequestType.Post:
+                        await CreatePostRequest();
                         break;
                 }
             }
 
          
-            private void CreateGetRequest()
+            private Task CreateGetRequest()
             {
                 try
                 {
@@ -97,9 +110,10 @@ namespace Redox.API.Libraries
                 {
                     Complete = true;
                 }
-               
+
+                return Task.CompletedTask;
             }
-            private void CreatePostRequest()
+            private  Task CreatePostRequest()
             {
                 try
                 {
@@ -135,12 +149,13 @@ namespace Redox.API.Libraries
                 {
                     Complete = true;
                 }
-                
+
+                return Task.CompletedTask;
             }
         }
         internal enum RequestType
         {
-            GET, POST
+            Get, Post
         }
         /*
         public static void CreateAsync(string url, Action<int, string> callback, string[] headers = null)

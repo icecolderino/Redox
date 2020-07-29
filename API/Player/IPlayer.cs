@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Globalization;
 using System.Collections.Generic;
+using System.Net;
 
-using Redox.Core.User;
-using Redox.API.Permissions;
 namespace Redox.API.Player
 {
     /// <summary>
@@ -14,17 +13,17 @@ namespace Redox.API.Player
         /// <summary>
         /// The display name of the Player
         /// </summary>
-        string displayName { get; }
+        string DisplayName { get; }
 
         /// <summary>
         /// The SteamID of the player
         /// </summary>
-        string ID { get; }
+        string Id { get; }
 
         /// <summary>
         /// The steam ID as ulong
         /// </summary>
-        ulong UID { get; }
+        ulong Uid { get; }
 
         /// <summary>
         /// The ping of the player
@@ -33,7 +32,7 @@ namespace Redox.API.Player
         /// <summary>
         /// The ipaddress of the player
         /// </summary>
-        string IP { get; }
+        IPAddress Ip { get; }
       
 
         /// <summary>
@@ -56,26 +55,13 @@ namespace Redox.API.Player
         /// <summary>
         /// The position of the player.
         /// </summary>
-        Position Position { get; set; }
+        Position Position { get; }
 
         /// <summary>
         /// The culture of the player  
         /// </summary>
         CultureInfo Language { get; }
-
-        /// <summary>
-        /// The date of the join session
-        /// </summary>
-        DateTime? JoinDate { get;  }
-
-        /// <summary>
-        /// The date of the leave session
-        /// 
-        /// <para> Returns null if the player never left</para>
-        /// </summary>
-        DateTime? LeaveDate { set; get; }
-
-        uint TimeOnline { get; }
+        
 
         IList<string> BlockedCommands { get; }
 
@@ -122,27 +108,6 @@ namespace Redox.API.Player
 
         void BlockCommand(string command);
         void UnblockCommand(string command);
-
-        void Give(string name, int amount = 1);
-
-
-        #region Permissions
-
-        PermissionsManager Permission { get; }
-
-        #endregion
-
-        #region Groups
-
-        IEnumerable<Group> Groups { get; }
-
-        void SetGroup(string Name);
-
-        void RemoveGroup(string Name);
-
-        bool InGroup(string Name);
-
-        #endregion
     }
 
 }

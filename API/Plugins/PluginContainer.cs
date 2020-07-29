@@ -27,26 +27,25 @@ namespace Redox.API.Plugins
             private set;
         }
 
-        public PluginContainer(Plugin plugin, object instance, string Language)
+        public PluginContainer(Plugin plugin, object instance, string language)
         {
             this.Running = true;
             this.Plugin = plugin;
-            this.Language = Language;
-            this.Plugin.Container = this;
+            this.Language = language;
+            //this.Plugin.Container = this;
         }
-        public async Task Start()
+        public async void Start()
         {
             this.Plugin.LoadMethods();
             this.Plugin.Commands = Redox.Mod.Container.Resolve<ICommandProvider>();
-            this.Plugin.CheckTranslation();
-            await this.Plugin.Initialize();
+            await this.Plugin.CheckTranslation();
+            this.Plugin.Initialize();
             this.Running = true;
         } 
 
-        public async Task Disable()
+        public void Disable()
         {
-          //  this.Plugin.Commands.
-            await this.Plugin.Deinitialize();
+            this.Plugin.Deinitialize();
             this.Running = false;
         }    
     }

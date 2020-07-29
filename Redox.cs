@@ -18,22 +18,24 @@ using Redox.API.Plugins.CSharp;
 using Redox.API.Plugins.Extension;
 
 using Redox.Core.Plugins;
-using Autofac;
 using Redox.Core.Permissions;
 using Redox.Core.Commands;
 using Redox.API.Commands;
+using Redox.API.Configuration;
+
+using Autofac;
 
 namespace Redox
 {
     public sealed class Redox
     {
-        private readonly static Assembly assembly = Assembly.GetExecutingAssembly();
-        public static readonly Version Version = assembly.GetName().Version;
+        private static readonly Assembly Assembly = Assembly.GetExecutingAssembly();
+        public static readonly Version Version = Assembly.GetName().Version;
 
-        private readonly List<Assembly> dependencies = new List<Assembly>();
-        private Stopwatch LifeTimeWatch;
-        private Timer WebRequestTimer;
-        private string CustomPath;
+        private readonly List<Assembly> _dependencies = new List<Assembly>();
+        private Stopwatch _lifeTimeWatch;
+        private Timer _webRequestTimer;
+        private readonly string _customPath;
 
         #region Directories
         public string RootPath { get; private set; }
@@ -46,12 +48,19 @@ namespace Redox
 
         #endregion  Directories
 
-        public API.ILogger Logger { get; private set; }
-        public IRoleProvider RoleManager { get; private set; }
-        public IGroupProvider GroupManager { get; private set; }
-        public IPermissionProvider PermissionManager { get; private set; }
+        #region Properties
         public RedoxConfig Config { get; private set; }
-        public IContainer Container { get; private set; }
+        
+        public ContainerBuilder Builder { get; internal set; }
+        public IContainer Container { get; internal set; }
+        public API.ILogger Logger { get; internal set; }
+        public IRoleProvider RoleManager { get; internal set; }
+        public IPermissionProvider PermissionManager { get; internal set; }
+        public PluginEngineManager EngineManager { get; internal set; }
+        public PluginManager Plugins { get; internal set; }
+        public DataStore Storage { get; internal set; }
+        public Timers Timers { get; internal set; }
+        #endregion
         public static Redox Mod
         {
             get
@@ -61,28 +70,27 @@ namespace Redox
         }
 
         /// <summary>
-        /// Gets the number of seconds since Redox got initialized (Usefull for time measurements).
+        /// Gets the number of seconds since Redox got initialized (Useful for time measurements).
         /// </summary>
         public float LifeTime
         {
             get
             {
-                return (float)LifeTimeWatch.Elapsed.TotalSeconds;
+                return (float)_lifeTimeWatch.Elapsed.TotalSeconds;
             }
         }
 
         public Redox(string customPath = "")
         {
-            CustomPath = customPath;         
+            _customPath = customPath;         
         }
         public async void Initialize()
         {
-            
             try
             {
                 
-                if (!string.IsNullOrEmpty(CustomPath))
-                    RootPath = CustomPath;
+                if (!string.IsNullOrEmpty(_customPath))
+                    RootPath = _customPath;
                 else
                     RootPath = Directory.GetCurrentDirectory() + "\\Redox\\";
 
@@ -91,8 +99,7 @@ namespace Redox
                 DependencyPath = Path.Combine(RootPath, "Dependencies\\");
                 DataPath = Path.Combine(RootPath, "Data\\");
                 LoggingPath = Path.Combine(RootPath, "Logs\\");
-                AssemblePath = Path.GetDirectoryName(assembly.Location);
-
+                AssemblePath = Path.GetDirectoryName(Assembly.Location);
 
 
                 if (!Directory.Exists(RootPath)) Directory.CreateDirectory(RootPath);
@@ -101,7 +108,7 @@ namespace Redox
                 if (!Directory.Exists(DependencyPath)) Directory.CreateDirectory(DependencyPath);
                 if (!Directory.Exists(PluginPath)) Directory.CreateDirectory(PluginPath);
                 if (!Directory.Exists(DataPath)) Directory.CreateDirectory(DataPath);
-
+               // Utility.ExtractEssentials();
                 Config = new RedoxConfig();
                 string path = Path.Combine(RootPath, "Redox.json");
                 if (File.Exists(path))
@@ -110,37 +117,26 @@ namespace Redox
                     Utility.Json.ToFile(path, Config.Init());
 
                 this.EnableCertificates();
-                this.LoadDependencies();    
+                this.LoadDependencies();
+                ContainerConfig.Configure();
                 ExtensionLoader.Load();
-                this.Container = ContainerConfig.Configure();
-                this.BuildContainer();
-                Logger = Container.Resolve<ILogger>();
+                Container = Builder.Build();
+                ContainerConfig.ResolveAll();
                 Logger.LogInfo("[Redox] Initializing RedoxMod..");
-                PluginEngineManager.Register<CSPluginEngine>();
                 Logger.LogInfo("[Redox] Loading data...");
-
                 await PermissionManager.LoadAsync();
-                await GroupManager.LoadAsync();
-                await RoleManager.LoadAsync();
-                await RoleManager.CreateRoleAsync(new Role("default", "default role", 0, false));
-                await GroupManager.CreateGroupAsync(new Group("default", "default group for players.", "default", 0, true, false));
-
-                await RoleManager.AddGroupAsync("default", "default");
-
-                Logger.LogInfo("[Redox] Loading standard library..");
-                LocalStorage.Load();             
-                PluginCollector.GetCollector();
+                _lifeTimeWatch = Stopwatch.StartNew();
+                _webRequestTimer = Timers.Create(5, TimerType.Repeat, WebRequestUpdate);
                 Logger.LogInfo($"[Redox] RedoxMod V{Version} has been initialized.");
-
+                EngineManager.StartAll();
             }
             catch(Exception ex)
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(string.Format("[Error] Failed to load Redox, Error: {0}", ex));
+                Console.WriteLine($"[Error] Failed to load Redox, Error: {ex}");
             }
-            LifeTimeWatch = Stopwatch.StartNew();
-            WebRequestTimer = Timers.Create(5, TimerType.Repeat, WebRequestUpdate);
+         
         }
 
        
@@ -155,15 +151,15 @@ namespace Redox
             return true;
         }
 
-        public void WebRequestUpdate(Timer timer)
+        public async void WebRequestUpdate(Timer timer)
         {
             if(Web.Requests.Count <= 2)
             {
                 if (Web.RequestsQueue.Count != 0 && Web.RequestsQueue.Peek() != null)
                 {
                     var request = Web.RequestsQueue.Dequeue();
-                    request.Create();
                     Web.Requests.Add(request);
+                    await request.Create();
                 }
                     
             }
@@ -184,7 +180,7 @@ namespace Redox
             foreach (var file in Directory.GetFiles(DependencyPath, "*.dll"))
             { 
                  var assembly = Assembly.LoadFrom(file);
-                 dependencies.Add(assembly);
+                 _dependencies.Add(assembly);
             }
         }
 
@@ -192,41 +188,10 @@ namespace Redox
         {            
             Logger.Log("[Redox] Preparing to shutdown..");
 
-            PluginEngineManager.UnloadAll();
-            LocalStorage.Save();
+            EngineManager.UnloadAll();
+            await Storage.SaveAsync();
             await PermissionManager.SaveAsync();
-        }
-        private void BuildContainer()
-        {
-           
-        }
-        public class RedoxConfig
-        {
-            [JsonProperty("This message will be sent when an executed command doesn't exist.")]
-            public string UnknownCommand { get; private set; }
-            [JsonProperty("Plugin security prevents plugins from having resources.")]
-            public bool PluginSecurity { get; private set; }
-            [JsonProperty("Do you want outdated plugins to be loaded? (It's recommended to keep this disabled)")]
-            public bool LoadIncompitablePlugins { get; private set; }
-
-            [JsonProperty("Do you want Redox to log messages into the console?")]
-            public bool Logging { get; private set; }
-
-            [JsonProperty("Do you want to debug messages to show in the console? (This contains the load time of plugins)")]
-            public bool DebugLogging { get; private set; }
-            [JsonProperty("Enter here the plugin names you want to bypass the security check (Only works when PluginSecurity is enabled).")]
-            public string[] WhitelistedAssemblyNames { get; private set; }
-
-            public RedoxConfig Init()
-            {
-                UnknownCommand = "Unknown Command!";
-                PluginSecurity = true;
-                LoadIncompitablePlugins = false;
-                Logging = true;
-                DebugLogging = true;
-                WhitelistedAssemblyNames = new string[] { };
-                return this;
-            }
+            await RoleManager.SaveAsync();
         }
     }
 }

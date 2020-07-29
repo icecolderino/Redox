@@ -13,24 +13,15 @@ namespace Redox.API.Plugins.CSharp
 {
     public sealed class CSPluginEngine : IPluginEngine
     {
-        public enum ViolationType : short
-        {
-            None = 0x01,
-            Resources = 0x02,
-            ForbiddenTypes = 0x03,
-            UntrustedAssembly = 0x04
 
-        }
-        private static readonly Dictionary<string, CSPlugin> Plugins = new Dictionary<string, CSPlugin>();
-        private static readonly Dictionary<string, Assembly> Assemblies = new Dictionary<string, Assembly>();
-        private static readonly string path = Bootstrap.RedoxMod.PluginPath;
+        private readonly Dictionary<string, CSPlugin> Plugins = new Dictionary<string, CSPlugin>();
+        private readonly Dictionary<string, Assembly> Assemblies = new Dictionary<string, Assembly>();
+        private readonly string Path = Bootstrap.RedoxMod.PluginPath;
 
         public string Language => "CSharp";
         public string Pattern => "*.dll";
 
-        public Dictionary<string, object> Values => new Dictionary<string, object>();
-
-        private static ILogger logger => Bootstrap.RedoxMod.Logger;
+        private ILogger Logger => Bootstrap.RedoxMod.Logger;
 
         public CSPluginEngine()
         {
@@ -38,9 +29,9 @@ namespace Redox.API.Plugins.CSharp
 
         public void LoadPlugins()
         {
-            logger.LogInfo("[CSharp] Loading plugins..");
+            Logger.LogInfo("[CSharp] Loading plugins..");
 
-            foreach (var dir in Directory.GetDirectories(path))
+            foreach (var dir in Directory.GetDirectories(Path))
                 LoadPlugin(dir);
         }
 
@@ -55,16 +46,16 @@ namespace Redox.API.Plugins.CSharp
                     Stopwatch sw = new Stopwatch();
                     sw.Start();
                     info = new FileInfo(file);
-                    string name = Path.GetFileNameWithoutExtension(info.Name);
+                    string name = System.IO.Path.GetFileNameWithoutExtension(info.Name);
                     if (Plugins.TryGetValue(name, out CSPlugin p))                    
                     {
-                        if (p.Container.Running)
+                        if (p.Running)
                         {
-                            logger.LogWarning(string.Format("[CSharp] Failed to load {0} because its already initialized", p.Title));
+                            Logger.LogWarning(string.Format("[CSharp] Failed to load {0} because its already initialized", p.Info.Title));
                             break;
                         }
-                        logger.LogInfo(string.Format("[CSharp] Succesfully loaded plugin {0}, {1}, Author {2} ({3})", p.Title, p.Version, p.Author, p.Description));
-                        p.Container.Start();
+                        p.Initialize();
+                        Logger.LogInfo(string.Format("[CSharp] Succesfully loaded plugin {0}, {1}, Author {2} ({3})", p.Info.Title, p.Info.Version, p.Info.Authors, p.Info.Description));                     
                         break;
                     }
                     if (!Assemblies.TryGetValue(name, out Assembly assembly))
@@ -72,90 +63,57 @@ namespace Redox.API.Plugins.CSharp
                         assembly = Assembly.Load(File.ReadAllBytes(file));
                         Assemblies.Add(name, assembly);
                     }
-                   
-
-                    if (this.IsSecure(assembly, out ViolationType violationType))
+                    foreach (Type type in assembly.GetExportedTypes())
                     {
-                        foreach (Type type in assembly.GetExportedTypes())
+                        if (type.IsSubclassOf(typeof(CSPlugin)) && type.IsPublic && !type.IsAbstract)
                         {
-                            if (type.IsSubclassOf(typeof(CSPlugin)) && type.IsPublic && !type.IsAbstract)
+                            object instance = Activator.CreateInstance(type);
+                            CSPlugin plugin = (CSPlugin)instance;
+
+                            if (name != plugin.Info.Title)
                             {
-                                object instance = Activator.CreateInstance(type);
-                                CSPlugin plugin = (CSPlugin)instance;
-
-                                if (name != plugin.Title)
-                                {
-                                    logger.LogWarning($"[CSharp] Failed to load plugin {plugin.Title} because the file name is not the same as the title");
-                                    return;
-                                }
-                                if (((plugin.CoreVersion.ToString() == "0.0.0.0") || (plugin.CoreVersion >= Redox.Version)) || Bootstrap.RedoxMod.Config.LoadIncompitablePlugins)
-                                {
-                                    plugin.FileInfo = info;
-                                    PluginContainer container = new PluginContainer(plugin, instance, Language);
-                                    PluginCollector.GetCollector().AddPlugin(container);
-                                    Plugins.Add(plugin.Title, plugin);
-                                    logger.LogInfo(string.Format("[CSharp] Succesfully loaded plugin {0}, {1}, Author {2} ({3})", plugin.Title, plugin.Version, plugin.Author, plugin.Description));
-                                }
-                                else
-                                    logger.LogWarning($"[Redox] Plugin \"{plugin.Title}\" is not compitable with the current redox version!");
+                                Logger.LogError($"[CSharp] Failed to load plugin {plugin.Info.Title} because the file name is not the same as the title");
+                                return;
                             }
+                            plugin.FileInfo = info;
+                            PluginContainer container = new PluginContainer(plugin, instance, Language);
+                            Redox.Mod.Plugins.AddPlugin(plugin);
+                            Plugins.Add(plugin.Info.Title, plugin);
+                            plugin.Initialize();
+                            Logger.LogInfo(string.Format("[CSharp] Succesfully loaded plugin {0}, {1}, Author {2} ({3})", plugin.Info.Title, plugin.Info.Version, plugin.Info.Authors, plugin.Info.Description));
                         }
-                        sw.Stop();
-                        int time = sw.Elapsed.Milliseconds;
-
-                        if (time > 500)
-                            logger.LogSpeed(string.Format("[CSharp] Plugin {0} took {1} milliseconds to load", name, time));
                     }
-                    else
-                        logger.LogWarning(string.Format("[CSharp] {0} has been blocked due security violation: {1}", assembly.GetName().Name, violationType));
+                    sw.Stop();
+                    int time = sw.Elapsed.Milliseconds;
+
+                    if (time > 500)
+                        Logger.LogSpeed(string.Format("[CSharp] Plugin {0} took {1} milliseconds to load", name, time));
                 }
 
 
                 catch (Exception ex)
                 {
 
-                    logger.LogError(string.Format("[CSharp] Failed to load {0}, Error: {1}", info.Name, ex));
+                    Logger.LogError(string.Format("[CSharp] Failed to load {0}, Error: {1}", info.Name, ex));
                 }
 
             }
-        }
-
-        private bool IsSecure(Assembly assembly, out ViolationType violationType)
-        {
-            if (Bootstrap.RedoxMod.Config.PluginSecurity)
-            {
-                if (assembly.IsFullyTrusted)
-                {
-                    bool flag = assembly.GetManifestResourceNames().Count() == 0;
-
-                    if (flag)
-                        violationType = ViolationType.None;
-                    else
-                        violationType = ViolationType.Resources;
-
-                    return flag;
-                }
-                violationType = ViolationType.UntrustedAssembly;
-                return false;
-            }
-            violationType = ViolationType.None;
-            return true;
         }
 
         public void UnloadPlugins()
         {
-            foreach(var plugin in Plugins.Values.ToList())
+            foreach(var plugin in Plugins.Values)
             {
-                UnloadPlugin(plugin.Title);
+                UnloadPlugin(plugin.Info.Title);
             }
         }
         public void UnloadPlugin(string name, PluginContainer pc = null)
         {
             if(Plugins.TryGetValue(name, out CSPlugin plugin))
             {
-                PluginCollector.GetCollector().GetContainer(name).Disable();
+                plugin.Deinitialize();
                 Plugins.Remove(name);
-                logger.LogInfo("[CSharp] Succesfully unloaded plugin " + plugin.Title);
+                Logger.LogInfo("[CSharp] Succesfully unloaded plugin " + plugin.Info.Title);
             }
         }
 
@@ -165,13 +123,13 @@ namespace Redox.API.Plugins.CSharp
             LoadPlugins();
         }
 
-        public void ReloadPlugin(string Name)
+        public void ReloadPlugin(string name)
         {
-            if(Plugins.TryGetValue(Name, out CSPlugin plugin))
+            if(Plugins.TryGetValue(name, out CSPlugin plugin))
             {
                 plugin.Deinitialize();
                 plugin.Initialize();
-                logger.LogInfo("[CSharp] Succesfully reloaded plugin " + Name);
+                Logger.LogInfo("[CSharp] Succesfully reloaded plugin " + name);
             }
         }
     }

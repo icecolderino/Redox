@@ -10,34 +10,37 @@ namespace Redox.API.Libraries
         Once = 0,
         Repeat = 1
     }
+
     public class Timers
     {
         /// <summary>
         /// The amount of running timers
         /// </summary>
-        public static int Count
+        public int Count
         {
-            get
-            {
-                return t_Timers.Count;
-            }
-            internal set
-            {           
-            }
-
+            get { return timers.Count; }
         }
-      
-        internal static readonly HashSet<Timer> t_Timers = new HashSet<Timer>();
 
-        public static Timer Create(double interval, TimerType timerType, Action<Timer> callBack, int repeatRate = 0, bool startOnJoin = true)
+        internal static readonly HashSet<Timer> timers = new HashSet<Timer>();
+
+        /// <summary>
+        /// Creates a new timer.
+        /// </summary>
+        /// <param name="interval">The timer interval in milliseconds.</param>
+        /// <param name="timerType">The type of the timer.</param>
+        /// <param name="callBack">The callback of the timer.</param>
+        /// <param name="repeatRate">The times the timer should execute.</param>
+        /// <param name="startOnJoin">Start the timer immediately after creation?</param>
+        /// <returns></returns>
+        public Timer Create(double interval, TimerType timerType, Action<Timer> callBack, int repeatRate = 0,
+            bool startOnJoin = true)
         {
             var timer = new Timer(interval, timerType, callBack, startOnJoin, repeatRate);
-            t_Timers.Add(timer);
+            timers.Add(timer);
             return timer;
         }
-
-      
     }
+
     public class Timer : IDisposable
     {
         private DateTime _startTime;
@@ -65,10 +68,10 @@ namespace Redox.API.Libraries
             }
         }
 
-        public Timer(double Interval, TimerType timerType, Action<Timer> callBack, bool startOnJoin, int repeatRate)
+        public Timer(double interval, TimerType timerType, Action<Timer> callBack, bool startOnJoin, int repeatRate)
         {
             _callBack = callBack;
-            _interval = Interval;
+            _interval = interval;
             _repeatRate = repeatRate;
             _timerType = timerType;
             Data = new Dictionary<string, object>();
@@ -78,7 +81,6 @@ namespace Redox.API.Libraries
 
         public void Start()
         {
-            Timers.Count++;
             _startTime = DateTime.Now.AddMilliseconds(_interval);
             _timer = new System.Timers.Timer
             {
@@ -106,7 +108,7 @@ namespace Redox.API.Libraries
             IsDestroyed = true;
             _timer.Stop();
             _timer.Dispose();
-            Timers.t_Timers.Remove(this);
+            Timers.timers.Remove(this);
             this.Dispose();
         }
 

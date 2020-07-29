@@ -7,42 +7,42 @@ namespace Redox.API.Data
     public sealed class Datafile
     {
 
-        private IDictionary<string, object> settings;
+        private IDictionary<string, object> _settings;
 
-        private readonly string path;
+        private readonly string _path;
 
         public bool Exists
         {
             get
             {
-                return File.Exists(path);
+                return File.Exists(_path);
             }
         }
 
-        public Datafile(string Name)
+        public Datafile(string name)
         {
-            settings = new Dictionary<string, object>();
-            path = Path.Combine(Bootstrap.RedoxMod.DataPath, Name + ".json");              
+            _settings = new Dictionary<string, object>();
+            _path = Path.Combine(Bootstrap.RedoxMod.DataPath, name + ".json");              
         }
 
         public void Load()
         {
             try
             {
-                if (File.Exists(path))
+                if (File.Exists(_path))
                 {
-                    settings = Utility.Json.FromFile<Dictionary<string, object>>(path);
+                    _settings = Utility.Json.FromFile<Dictionary<string, object>>(_path);
                 }
             }
             catch(Exception ex)
             {
-                Bootstrap.RedoxMod.Logger.LogError(string.Format("[Bootstrap.RedoxMod] An exception has thrown while trying to deserialize datafile {0}, Error: {1}", Path.GetFileName(path), ex.Message));
+                Bootstrap.RedoxMod.Logger.LogError(string.Format("[RedoxMod] An exception has thrown while trying to deserialize datafile {0}, Error: {1}", Path.GetFileName(_path), ex.Message));
             }
           
         }
         public void Save()
         {
-            Utility.Json.ToFile(path, settings);
+            Utility.Json.ToFile(_path, _settings);
         }
 
         public object this[string key]
@@ -50,40 +50,40 @@ namespace Redox.API.Data
             get
             {
 
-                if (settings.TryGetValue(key, out object value))
+                if (_settings.TryGetValue(key, out object value))
                     return value;
                 return null;
             }
             set
             {
-                if (settings.ContainsKey(key))
-                    settings[key] = value;
+                if (_settings.ContainsKey(key))
+                    _settings[key] = value;
                 else
-                    settings.Add(key, value);
+                    _settings.Add(key, value);
             }
         }
 
    
         public void WriteObject(object obj)
         {
-            Utility.Json.ToFile(path, obj);
+            Utility.Json.ToFile(_path, obj);
         }
         public T ReadObject<T>()
         {
-            return Utility.Json.FromFile<T>(path);
+            return Utility.Json.FromFile<T>(_path);
         }
         public void Remove(string key)
         {
-            settings.Remove(key);
+            _settings.Remove(key);
         }
         public void Clear()
         {
-            settings.Clear();
+            _settings.Clear();
         }
      
         public override string ToString()
         {
-            return Utility.Json.ToJson(settings);
+            return Utility.Json.ToJson(_settings);
         }
     }
 }
